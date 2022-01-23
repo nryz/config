@@ -1,0 +1,54 @@
+{ config, options, lib, pkgs, inputs, ... }:
+
+with lib;
+with lib.my;
+{
+  config.services.xserver = {
+    enable = true;
+    layout = "us";
+    xkbOptions = "eurosign:e";
+
+    monitorSection = ''
+    Option "DPMS" "disable"
+    '';
+
+    serverFlagsSection  = ''
+    Option "StandbyTime" "0"
+    Option "SuspendTime" "0"
+    Option "OffTime" "0"
+    Option "BlankTime" "0"
+    '';
+
+    desktopManager = {
+      xterm.enable = false;
+      session = [{
+        name = "WM";
+        start = ''${pkgs.runtimeShell} $HOME/.xsession & waitPID=$!'';
+      }];
+    };
+
+    displayManager = {
+      sddm = {
+        enable = true;
+        theme = "custom";
+      };
+    };
+  };
+
+  config.environment.systemPackages = with pkgs; [
+    (sddm-theme.override {conf = with config.scheme.withHashtag; '' 
+        [General]
+        default_background=${config.sourcePath}/backgrounds/${config.theme.background}
+        font=Fira Code
+        accent1=${base00}
+        accent1_text=${base05}
+        accent2=${base00}
+        accent2_hover=${base0C}
+        user_name=select
+        primary_screen_only=true
+        am_pm_clock=false
+    '';})
+    qt5.qtgraphicaleffects
+    qt5.qtquickcontrols
+  ];
+}
