@@ -11,4 +11,4 @@
 // @icon               https://www.redditstatic.com/desktop2x/img/favicon/apple-icon-76x76.png
 // ==/UserScript==
 
-window.location.replace("https://libredd.it" + window.location.pathname + window.location.search);
+#window.location.replace("https://libredd.it" + window.location.pathname + window.location.search);

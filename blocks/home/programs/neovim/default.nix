@@ -3,7 +3,7 @@
 with lib;
 with lib.my;
 {
-  persist.directories = [ ".local/nvim" ];
+  persist.directories = [ ".local/share/nvim" ];
 
   home.packages = with pkgs; [
     gcc

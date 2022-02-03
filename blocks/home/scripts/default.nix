@@ -9,14 +9,19 @@ let
     stty -echo
     trap 'stty echo' EXIT
 
-    server="''$(passage show server/seedbox/url)"
-    user="''$(passage show server/seedbox/username)"
-    password="''$(passage show server/seedbox/password)"
+    server="''$(passage show root/servers/seedbox/url)"
+    user="''$(passage show root/servers/seedbox/username)"
+    password="''$(passage show root/servers/seedbox/password)"
 
-    path="$(ncftpls -1 -x "-d */*.mkv" ftp://$user:$password@$server/files/ | fzf)"
+    ret="$(ncftpls -1 -x "R" -i "*" ftp://$user:$password@$server/files/ | grep ".\.mkv" | sort | fzf)"
 
-    if [ -n "$path" ]; then
-      mpv "sftp://$user:$password@$server/files/$path"
+    if [ -n "$ret" ]; then
+      readarray -t paths <<<"$ret"
+      for p in "''${paths[@]}"
+      do
+        umpv "sftp://$user:$password@$server/files/$p" &
+        sleep .5
+      done
     fi
 
     stty echo

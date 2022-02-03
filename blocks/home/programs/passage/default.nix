@@ -4,27 +4,33 @@ with lib;
 with lib.my;
 {
   options = with types; {
-    passage.storeLocation = mkOpt str "${config.home.homeDirectory}/.passage/store";
-    passage.identitiesLocation = mkOpt str "${config.home.homeDirectory}/.passage/identities";
+    passage.storeLocation = mkOpt str "${config.home.homeDirectory}/.passage";
     passage.storeClipTime = mkOpt int 10;
   };
 
   config = {
     home.packages = with pkgs; [
-      gopass
+      pinentry_curses
       age
+      rage
+      age-plugin-yubikey
+      #yubikey-manager
+      yubikey-manager-qt
+      yubioath-desktop
       (passage.override {
         postInstall = ''
           wrapProgram $out/bin/passage \
-          --prefix PASSAGE_DIR : "${config.passage.storeLocation}" \
-          --prefix PASSAGE_IDENTITIES_FILE : "${config.passage.identitiesLocation}" \
+          --prefix PASSAGE_AGE : "rage" \
+          --prefix PASSAGE_DIR : "${config.passage.storeLocation}/store" \
+          --prefix PASSAGE_IDENTITIES_FILE : "${config.passage.storeLocation}/identities" \
+          --prefix PASSAGE_RECIPIENTS_FILE : "${config.passage.storeLocation}/.age-recipients" \
           --prefix PASSWORD_STORE_CLIP_TIME : "${builtins.toString config.passage.storeClipTime}"
         '';
       })
       (pkgs.writeShellScriptBin "fzfPassage" ''
             #! /usr/bin/env bash
             set -eou pipefail
-            LOC=${config.passage.storeLocation}
+            LOC=${config.passage.storeLocation}/store
             name="$(find "$LOC" -type f -name '*.age' | \
               sed -e "s|$LOC/||" -e 's|\.age$||' | \
               fzf --height 40% --reverse)"
@@ -33,7 +39,7 @@ with lib.my;
       (pkgs.writeShellScriptBin "fzfPassageSsh" ''
             #! /usr/bin/env bash
             set -eou pipefail
-            LOC=${config.passage.storeLocation}/ssh
+            LOC=${config.passage.storeLocation}/store/ssh
             name="$(find "$LOC" -type f -name '*.age' | \
               sed -e "s|$LOC/||" -e 's|\.age$||' | \
               fzf --height 40% --reverse)"

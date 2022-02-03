@@ -1,7 +1,9 @@
 { config, lib, pkgs, inputs, ... }:
 
 {
-  persist.directories = [ ".local/qutebrowser" ];
+  persist.directories = [ 
+    ".local/share/qutebrowser" 
+  ];
 
   xdg.configFile."qutebrowser/greasemonkey" = {
     recursive = true;
@@ -28,7 +30,8 @@
     searchEngines = {
       DEFAULT = "https://google.com/search?q={}";
       ddg = "https://duckduckgo.com/?q={}";
-      r = "https://libredd.it/r/{}";
+      #r = "https://libredd.it/r/{}";
+      r = "https://reddit.com/r/{}";
       # n = "https://github.com/nixos/nixpkgs/search?q={}";
       n = "https://search.nix.gsc.io/?q={}";
       hm = "https://github.com/nix-community/home-manager/search?q={}";
@@ -63,7 +66,7 @@
 
       colors.webpage = {
         bg = "${config.scheme.withHashtag.base00}";
-        darkmode.enabled = true;
+        darkmode.enabled = false;
       };
 
       content = {

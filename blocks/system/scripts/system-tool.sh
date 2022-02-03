@@ -12,7 +12,7 @@ case $1 in
   if [ -z "$2" ]; then
     nix flake update
   else
-    nix flake lock --update-input .# $2
+    nix flake lock --update-input $2
   fi
 ;;
 

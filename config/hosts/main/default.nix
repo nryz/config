@@ -1,13 +1,11 @@
-{ config, lib, pkgs, inputs, blocks, ... }:
+{ config, lib, pkgs, inputs, blocks, ... }: {
 
-{
   imports = with blocks; [
     profiles.desktop { theme = {
-      background = "11";
-      colorscheme = "gruvbox-dark-soft";
+      background = "8";
     }; }
 
-    xserver
+    xserver { autoLoginUser = "nr"; }
 
     hardware.ssd
     hardware.nvidia
@@ -25,7 +23,7 @@
   home.users.nr = {
     shell = pkgs.zsh;
     extraGroups = [ "wheel" ];
-    config = import ./nr.nix;
+    config = import ./home.nix;
   };
 }
 

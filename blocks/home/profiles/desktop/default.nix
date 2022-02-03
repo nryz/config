@@ -14,8 +14,6 @@ in
 
     gapSize = mkOpt' int;
 
-    colorscheme = mkOpt' str;
-
     font = mkOpt' (nullOr hm.types.fontType);
 
     gtk.theme = {
@@ -58,7 +56,7 @@ in
       ripgrep
     ];
 
-    scheme = "${inputs.base16Theme}/${theme.colorscheme}.yaml";
+    scheme = pkgs.base16-colorscheme;
 
     gtk = {
       enable = true;
@@ -69,7 +67,7 @@ in
     };
 
 
-    home.file."backgrounds" = {
+    home.file."${config.home.homeDirectory}/Pictures/backgrounds" = {
       recursive = true;
       source = config.sourcePath + /backgrounds;
     };
@@ -83,7 +81,7 @@ in
 
       Service = {
         Type = "oneshot";
-        ExecStart = "${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${config.home.homeDirectory}/backgrounds/${config.theme.background}";
+        ExecStart = "${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${config.home.homeDirectory}/Pictures/backgrounds/${config.theme.background}";
         IOSchedulingClass = "idle";
       };
 
@@ -107,6 +105,11 @@ in
 
     xdg = {
       enable = true;
+
+      userDirs = {
+        enable = false;
+        createDirectories = false;
+      };
 
       mimeApps = {
         enable = true;

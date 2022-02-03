@@ -15,13 +15,15 @@ with lib.my;
   config = {
     programs.fuse.userAllowOther = true;
 
+    environment.systemPackages = with pkgs; [
+      ncdu
+    ];
+
     environment.persistence."${config.persist.path}/system" = {
       directories = [
         "/var/log"
-        "/var/lib/bluetooth"
         "/var/lib/systemd/coredump"
-        "/etc/NetworkManager"
-        "/etc/ssh"
+        "/var/db/sudo/lectured"
         "/etc/nixos"
       ] ++ config.persist.directories;
 
@@ -33,21 +35,8 @@ with lib.my;
 
     environment.persistence."${config.persist.path}" = {
       users = mapAttrs (n: v: {
-        files = [] ++ v.persist.files;
-	directories = [
-         "Downloads"
-         "Music"
-         "Pictures"
-         "Documents"
-         "Videos"
-         "Projects"
-         "Config"
-         ".ssh"
-         ".gnupg"
-         ".cache/nix-index"
-         ".local/Trash"
-         ".local/nix"
- 	] ++ v.persist.directories;
+        files = map (f: { file = f; parentDirectory = { user = n; group = "users"; }; }) v.persist.files;
+        directories = map (f: { directory = f; user = n; group = "users"; }) v.persist.directories;
       }) config.home-manager.users;
     };
   };

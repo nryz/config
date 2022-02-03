@@ -155,6 +155,9 @@ def getMEM():
 def getCPU():
     return "{:.0f}".format(round(psutil.cpu_percent(), 0)) + '%'
 
+def getVolume():
+    return subprocess.run("GetVolume", capture_output=True).stdout.decode('utf-8').strip()
+
 #wnet = Net(update_interval=1, prefix='M', format='NET {down}')
 
 screens = [
@@ -173,20 +176,23 @@ screens = [
                     background=theme.barBg,
 
                     active=theme.base05,
-                    inactive=theme.base04,
+                    inactive=theme.base03,
 
-                    this_current_screen_border=theme.base08,
-                    this_screen_border=theme.base08,
+                    block_highlight_text_color=theme.base05,
                     highlight_color=theme.base08,
 
+                    this_screen_border=theme.barBg,
+                    this_current_screen_border=theme.barBg,
+                    other_current_screen_border=theme.base03,
+                    other_screen_border=theme.base03,
 
-                    other_screen_border=theme.base09,
-                    other_current_screen_border=theme.base09,
+                    urgent_alert_method='text',
+                    urgent_border=theme.base0E,
                 ),
                 widget.CurrentLayout(
                     padding=5,
                     fmt = '[{}]',
-                    foreground=theme.base0D,
+                    foreground=theme.base05,
                     background=theme.barBg
                 ),
                 widget.Chord(
@@ -209,29 +215,40 @@ screens = [
                 widget.TextBox(
                     "",
                     fontsize=20,
-                    foreground=theme.base0E,
+                    foreground=theme.base05,
                 ),
-                widget.Volume(
-                    fmt="{}", 
-                    padding=2, 
-                    max_chars=6,
-                    foreground=theme.base0E,
+                # widget.Volume(
+                #     fmt="{}", 
+                #     padding=2, 
+                #     max_chars=6,
+                #     foreground=theme.base05,
+                #     background=theme.barBg,
+                #     get_volume_command="GetVolume",
+                #     volume_down_command="DecreaseVolume",
+                #     volume_up_command="IncreaseVolume",
+                # ), 
+                widget.GenPollText(
+                    fmt="{}",
+                    func=getVolume, 
+                    update_interval=0.2,
+                    padding=2,
+                    foreground=theme.base05,
                     background=theme.barBg
-                ), 
+                ),
                 widget.Spacer(10),
 
                 widget.Spacer(10),
                 widget.TextBox(
                     "",
                     fontsize=20,
-                    foreground=theme.base0F,
+                    foreground=theme.base05,
                 ),
                 widget.GenPollText(
                     fmt="{}",
                     func=getCPU, 
                     update_interval=1,
                     padding=2,
-                    foreground=theme.base0F,
+                    foreground=theme.base05,
                     background=theme.barBg
                 ),
                 widget.Spacer(10),
@@ -240,14 +257,14 @@ screens = [
                 widget.TextBox(
                     '',
                     fontsize=20,
-                    foreground=theme.base08,
+                    foreground=theme.base05,
                 ),
                 widget.GenPollText(
                     fmt="{}",
                     func=getMEM, 
                     padding=2,
                     update_interval=1,
-                    foreground=theme.base08,
+                    foreground=theme.base05,
                     background=theme.barBg,
                 ),
                 widget.Spacer(10),

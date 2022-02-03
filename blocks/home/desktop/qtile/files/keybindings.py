@@ -40,9 +40,13 @@ def makeWindowModeKeybindings():
 
 keys = [
     #media
-    Key([], "XF86AudioMute", lazy.spawn("amixer -q set Master toggle"), desc="Toggle mute"),
-    Key([], "XF86AudioLowerVolume", lazy.spawn("amixer set Master 5%-"), desc="Lower volume"),
-    Key([], "XF86AudioRaiseVolume", lazy.spawn("amixer set Master 5%+"), desc="Raise volume"),
+    Key([], "XF86AudioMute", lazy.spawn("ToggleVolume"), desc="Toggle mute"),
+    Key([], "XF86AudioLowerVolume", lazy.spawn("DecreaseVolume"), desc="Lower volume"),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn("IncreaseVolume"), desc="Raise volume"),
+
+    # Key([], "XF86AudioMute", lazy.spawn("amixer -q set Master toggle"), desc="Toggle mute"),
+    # Key([], "XF86AudioLowerVolume", lazy.spawn("amixer set Master 5%-"), desc="Lower volume"),
+    # Key([], "XF86AudioRaiseVolume", lazy.spawn("amixer set Master 5%+"), desc="Raise volume"),
 
     Key([mod], "u", lazy.group['scratchpad'].dropdown_toggle('sway-launcher-desktop'), desc="Spawn launcher"),
     Key([mod], "t", lazy.group['scratchpad'].dropdown_toggle('term')),

@@ -2,8 +2,7 @@
 
 imports = with blocks; [
   profiles.desktop { theme = {
-    background =  "11";
-    colorscheme = "gruvbox-dark-soft";
+    background =  "8";
 
     gapSize = 12;
 
@@ -21,16 +20,15 @@ imports = with blocks; [
   desktop.x11
 
   projects.keyboard
-  projects.nixpkgs
 
-  games.minecraft
-  games.dwarf-fortress
-  games.steam
-  games.lutris
+  # games.minecraft
+  # games.dwarf-fortress
+  # games.steam
+  # games.lutris
 
   sites.youtube
-  sites.reddit
 
+  programs.btop
   programs.neovim
   programs.kitty
   programs.zsh
@@ -42,15 +40,14 @@ imports = with blocks; [
   programs.mpv
   programs.ncmpcpp
   programs.qutebrowser
-  programs.vieb
-  programs.ranger
+  #programs.ranger
+  programs.lf
   programs.spotify
   programs.sway-launcher-desktop
   programs.zathura
   programs.nix-index
   programs.passage {
-    passage.storeLocation = "/run/media/nr/PASSAGE/passage/store";
-    passage.identitiesLocation = "/run/media/nr/PASSAGE/passage/identities";
+    passage.storeLocation = "/run/media/nr/FDP/passage";
   }
 
   services.dunst

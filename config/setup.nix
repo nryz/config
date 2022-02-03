@@ -30,7 +30,7 @@ in
       args.systemBlocks.core
       args.systemBlocks.persist
       args.systemBlocks.scripts
-     (import (args.path + "/${args.hostName}/hardware"))
+     (import (args.path + "/${args.hostName}/hardware.nix"))
      (import (args.path + "/${args.hostName}")) 
    ];
 
@@ -46,15 +46,16 @@ in
     nix.generateNixPathFromInputs = true;
     nix.linkInputs = true;
 
-    users.defaultUserShell = pkgs.zsh;
-    
-    users.mutableUsers = false;
-    users.users = mapAttrs (n: v: {
-      shell = v.shell;
-      extraGroups = v.extraGroups;
-      isNormalUser = true;
-      passwordFile = "/etc/passwords/${n}";
-    }) config.home.users;
+    users = {
+      mutableUsers = false;
+      defaultUserShell = pkgs.zsh;
+      users = (mapAttrs (n: v: {
+        shell = v.shell;
+        extraGroups = v.extraGroups;
+        isNormalUser = true;
+        passwordFile = "/etc/passwords/${n}";
+      }) config.home.users) // { root.passwordFile = "/etc/passwords/root"; };
+    };
 
     home-manager = {
       useGlobalPkgs = true;

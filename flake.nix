@@ -12,7 +12,9 @@ inputs = {
   };
 
   base16 = { url = github:SenchoPens/base16.nix; inputs.nixpkgs.follows = "nixpkgs"; };
-  base16Theme = { url = github:dawikur/base16-gruvbox-scheme; flake = false; };
+  #base16Theme = { url = github:dawikur/base16-gruvbox-scheme; flake = false; };
+  #base16Theme = { url = github:dracula/base16-dracula-scheme; flake = false; };
+  base16Theme = { url = github:reyemxela/base16-helios-scheme; flake = false; };
   base16-vim = { url = github:chriskempson/base16-vim; flake = false; };
   base16-kitty = { url = github:kdrag0n/base16-kitty; flake = false; };
   base16-qutebrowser = { url = github:theova/base16-qutebrowser; flake = false; };
@@ -27,15 +29,20 @@ inputs = {
 
   homeage = { url = github:jordanisaacs/homeage; inputs.nixpkgs.follows = "nixpkgs"; };
 
-  impermanence = { url = github:nix-community/impermanence?ref=nixos-users; };
+  impermanence = { url = github:nix-community/impermanence; };
 
   passage = { url = github:filosottile/passage; flake = false; };
+
+  yubikey-agent = { url = github:filosottile/yubikey-agent?rev=8190e59004113c1c5aee031ea37a4a5513900456; flake = false; };
 
   zsh-pure-prompt = { url = github:sindresorhus/pure; flake = false; };
   picom-ibhagwan = { url = github:ibhagwan/picom; flake = false; };
   sway-launcher-desktop = { url = github:Biont/sway-launcher-desktop; flake = false; };
 
-  neovim-nightly.url = github:nix-community/neovim-nightly-overlay;
+  neovim-nightly = { 
+    url = github:nix-community/neovim-nightly-overlay; 
+    inputs.nixpkgs.follows = "nixpkgs"; 
+  };
   which-key-nvim = { url = github:folke/which-key.nvim; flake = false; };
   fzf-lua = { url = github:ibhagwan/fzf-lua; flake = false; };
 };
@@ -61,6 +68,22 @@ in {
 
           passage = prev.callPackage ./pkgs/passage { src = inputs.passage; };
 
+          yubikey-agent = prev.buildGoModule { 
+            src = inputs.yubikey-agent; 
+            version = "latest";
+            vendorSha256 = "gTZERpmX/1bXXqjK5jTirXBEo+LAvoBdHF7ugsc0HkE=";
+            inherit (prev.yubikey-agent) meta;
+            inherit (prev.yubikey-agent.drvAttrs) pname doCheck nativeBuildInputs 
+                    buildInputs buildPhase installPhase 
+                    postPatch subPackages postInstall;
+          };
+
+          # yubikey-agent = prev.yubikey-agent.overrideAttrs(o: {
+          #   src = inputs.yubikey-agent;
+          #   version = "latest";
+          #   vendorSha256 = "gTZERpmX/1bXXqjK5jTirXBEo+LAvoBdHF7ugsc0HkE";
+          # });
+
           zsh-vi-mode = prev.callPackage ./pkgs/zsh-vi-mode { src = inputs.zsh-vi-mode; };
 
           sway-launcher-desktop = prev.writeShellScriptBin "sway-launcher-desktop"
@@ -84,6 +107,7 @@ in {
           };
 
           picom-ibhagwan = prev.picom.overrideAttrs(o: { src = inputs.picom-ibhagwan; });
+          base16-colorscheme = "${inputs.base16Theme}/helios.yaml" ;
         })
 
         inputs.nur.overlay

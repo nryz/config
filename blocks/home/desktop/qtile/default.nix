@@ -11,7 +11,7 @@ let
   ]);
 in
 {
-  persist.directories = [ ".local/qtile" ];
+  persist.directories = [ ".local/share/qtile" ];
 
   home.packages = [
     pkgs.qtile

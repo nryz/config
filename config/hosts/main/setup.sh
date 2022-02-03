@@ -11,7 +11,6 @@ read -s userPass
 
 echo "input root password"
 read -s rootPass
-
 echo "choose disk"
 
 DISK=
@@ -77,5 +76,3 @@ mount -o bind /mnt/nix/persist/system/etc/passwords /mnt/etc/passwords
 
 mkpasswd --method=sha-512 ${userPass} | sudo tee /mnt/etc/passwords/$user 1> /dev/null
 mkpasswd --method=sha-512 ${rootPass} | sudo tee /mnt/etc/passwords/root 1> /dev/null
-
-

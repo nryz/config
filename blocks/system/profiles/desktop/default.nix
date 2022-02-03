@@ -52,7 +52,6 @@
     usbutils
     xclip
     wget
-    htop
     fup-repl
     moreutils
   ];

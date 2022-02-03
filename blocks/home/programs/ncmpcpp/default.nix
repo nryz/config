@@ -9,7 +9,7 @@ let
   };
 in
 {
-  persist.directories = [ ".local/mpd" ];
+  persist.directories = [ ".local/share/mpd" ];
   services.mpd = {
     enable = true;
   };

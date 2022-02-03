@@ -12,7 +12,6 @@ in
 {
   options.theme = with types; {
     background = mkOpt' str;
-    colorscheme = mkOpt' str;
   };
 
   config = {
@@ -21,10 +20,10 @@ in
 
     programs.steam.enable = (isFlagEnabled "steam");
 
-    scheme = "${inputs.base16Theme}/${theme.colorscheme}.yaml";
+    scheme = pkgs.base16-colorscheme;
 
     boot = {
-      kernelPackages = pkgs.linuxPackages_latest;
+      #kernelPackages = pkgs.linuxPackages_latest;
 
       loader =  {
         timeout = 1;
@@ -52,7 +51,10 @@ in
         automatic = true;
         options = "--delete-older-than 5d";
       };
-      autoOptimiseStore = true;
+
+      settings = {
+        auto-optimise-store = true;
+      };
     };
   };
 }
