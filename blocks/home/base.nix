@@ -1,93 +1,37 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, blocks, ... }:
 
 with lib;
 with lib.my;
 let
   addDesktop = app:
     app + ".desktop";
-
-    theme = config.theme;
 in
 {
-  options.theme = with types; {
-    background = mkOpt' str;
+  imports = with blocks; [ 
+     scripts 
+     theme
+  ];
 
-    gapSize = mkOpt' int;
-
-    font = mkOpt' (nullOr hm.types.fontType);
-
-    gtk.theme = {
-      package = mkOpt' (nullOr package);
-      name = mkOpt' str;
+  options = with types; {
+    defaults = {
+      editor = mkOpt str "vim";
+      shell = mkOpt str "zsh";
+      terminal = mkOpt str "kitty";
+      browser = mkOpt str "qutebrowser";
+      fileManager = mkOpt str "ranger";
+      imageViewer = mkOpt str "sxiv";
+      videoPlayer = mkOpt str "mpv";
+      pdfViewer = mkOpt str "zathura";
     };
 
-    gtk.iconTheme = {
-      package = mkOpt' (nullOr package);
-      name = mkOpt' str;
-    };
+    system.udevPackages = mkOpt (listOf package) [];
+    system.programs = mkOpt (listOf str) [];
+
+    persist.directories = mkOpt (listOf str) [];
+    persist.files = mkOpt (listOf str) [];
   };
 
   config = {
-    home.packages = with pkgs; [
-      lxappearance
-      gnome-icon-theme
-
-      unzip
-
-      xplr
-      xfce.thunar
-      tmpmail
-      ueberzug
-      feh
-      sxiv
-      st
-      libqalculate
-      android-tools
-      gnome.gucharmap
-      scrot
-      imagemagick
-      fontpreview
-      neofetch
-
-      tree
-      lsd
-      bat
-      fd
-      ripgrep
-    ];
-
-    scheme = pkgs.base16-colorscheme;
-
-    gtk = {
-      enable = true;
-
-      theme = theme.gtk.theme;
-      iconTheme = theme.gtk.iconTheme;
-      font = theme.font;
-    };
-
-
-    home.file."${config.home.homeDirectory}/Pictures/backgrounds" = {
-      recursive = true;
-      source = config.sourcePath + /backgrounds;
-    };
-
-    systemd.user.services.background = {
-      Unit = {
-        Description = "set background";
-        After = [ "graphical-session-pre.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${config.home.homeDirectory}/Pictures/backgrounds/${config.theme.background}";
-        IOSchedulingClass = "idle";
-      };
-
-      Install = { WantedBy = [ "graphical-session.target" ]; };
-    };
-
     systemd.user.startServices = "sd-switch";
 
     home.shellAliases = {
@@ -95,7 +39,6 @@ in
       tree = "tree --dirsfirst";
       rg = "rg --no-messages";
       trash-empty = "trash-empty --trash-dir=${config.home.homeDirectory}/.local/share/Trash";
-      c = "cd ${config.configPath}";
     };
 
     home.sessionVariables = {

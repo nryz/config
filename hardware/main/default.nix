@@ -6,20 +6,18 @@
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  #declare this option here so the build fails if we forget to include the hardware config
-  options.persist.path = lib.mkOption { type = lib.types.str; default = "/nix/persist"; };
-
   config = {
-  
     boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ "kvm-intel" ];
     boot.extraModulePackages = [ ];
+
+    persist.path = "/nix/persist";
   
     fileSystems."/" = { 
       device = "none";
       fsType = "tmpfs";
-      options = [ "defaults" "size=4G" "mode=755" ];
+      options = [ "defaults" "size=2G" "mode=755" ];
     };
   
     fileSystems."/etc/passwords" = { 

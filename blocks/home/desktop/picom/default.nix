@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, extraPkgs, ... }:
 
 {
   services.picom = {
@@ -20,6 +20,6 @@
       xinerama-shadow-crop = true;
     '';
 
-    package = pkgs.picom-ibhagwan;
+    package = extraPkgs.picom-ibhagwan;
   };
 }

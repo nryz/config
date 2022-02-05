@@ -93,6 +93,10 @@ EOF
   nix edit -f "<nixpkgs>" $2
 ;;
 
+"list-units")
+  sudo journalctl --field _SYSTEMD_UNIT
+;;
+
 *)
   echo "system update       - update flake inputs"
   echo "system switch       - nixos-rebuild switch"

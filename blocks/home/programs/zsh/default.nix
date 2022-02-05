@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, extraPkgs, ... }:
 
 {
   persist.files = [ ".zsh_history" ];
@@ -10,13 +10,13 @@
     enableSyntaxHighlighting = true;
     history.extended = true;
 
-    plugins = with pkgs; [
+    plugins = with extraPkgs; [
       zsh-pure-prompt
     ];
     
     initExtra = ''
       ZVM_INIT_MODE=sourcing
-      source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
+      source ${extraPkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
 
       export MANPAGER="nvim +Man!"
 

@@ -411,7 +411,6 @@
         "sway-launcher-desktop": "sway-launcher-desktop",
         "utils": "utils",
         "which-key-nvim": "which-key-nvim",
-        "yubikey-agent": "yubikey-agent",
         "zsh-pure-prompt": "zsh-pure-prompt",
         "zsh-vi-mode": "zsh-vi-mode"
       }
@@ -479,23 +478,6 @@
       "original": {
         "owner": "folke",
         "repo": "which-key.nvim",
-        "type": "github"
-      }
-    },
-    "yubikey-agent": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1636793309,
-        "narHash": "sha256-wV8SYaRQs7vH2qRkbACCmyu/ynQHGllyeLSQMHwUDxs=",
-        "owner": "filosottile",
-        "repo": "yubikey-agent",
-        "rev": "8190e59004113c1c5aee031ea37a4a5513900456",
-        "type": "github"
-      },
-      "original": {
-        "owner": "filosottile",
-        "repo": "yubikey-agent",
-        "rev": "8190e59004113c1c5aee031ea37a4a5513900456",
         "type": "github"
       }
     },

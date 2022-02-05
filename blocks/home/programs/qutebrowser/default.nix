@@ -30,9 +30,7 @@
     searchEngines = {
       DEFAULT = "https://google.com/search?q={}";
       ddg = "https://duckduckgo.com/?q={}";
-      #r = "https://libredd.it/r/{}";
       r = "https://reddit.com/r/{}";
-      # n = "https://github.com/nixos/nixpkgs/search?q={}";
       n = "https://search.nix.gsc.io/?q={}";
       hm = "https://github.com/nix-community/home-manager/search?q={}";
       qt = "https://github.com/qtile/qtile/search?q={}";
@@ -43,6 +41,9 @@
         ",m" = "hint links spawn mpv {hint-url} --title='youtube' --pause --no-sub-visibility";
         ",M" = "spawn mpv {url} --title='youtube' --pause --no-sub-visibility";
         ";m" = "hint --rapid links spawn umpv {hint-url} --title='youtube' --pause --no-sub-visibility";
+        #no point in my most used commands being behind a ctrl keymap
+        "d"  = "scroll-page 0 0.5";
+        "u"  = "scroll-page 0 -0.5";
       };
     };
 

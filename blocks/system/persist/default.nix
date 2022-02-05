@@ -7,17 +7,18 @@ with lib.my;
     inputs.impermanence.nixosModules.impermanence
   ];
 
-  options.persist = with types; {
-    directories = mkOpt (listOf str) [];
-    files = mkOpt (listOf str) [];
-  };
-
   config = {
+    assertions = [{
+        assertion = config.fileSystems."/".fsType == "tmpfs"; 
+        message = "no root tmpfs found";
+    }];
+
     programs.fuse.userAllowOther = true;
 
     environment.systemPackages = with pkgs; [
       ncdu
     ];
+
 
     environment.persistence."${config.persist.path}/system" = {
       directories = [

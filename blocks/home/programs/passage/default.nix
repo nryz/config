@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, extraPkgs, ... }:
 
 with lib;
 with lib.my;
@@ -14,10 +14,9 @@ with lib.my;
       age
       rage
       age-plugin-yubikey
-      #yubikey-manager
       yubikey-manager-qt
       yubioath-desktop
-      (passage.override {
+      (extraPkgs.passage.override {
         postInstall = ''
           wrapProgram $out/bin/passage \
           --prefix PASSAGE_AGE : "rage" \

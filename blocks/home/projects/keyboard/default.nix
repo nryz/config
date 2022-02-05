@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     wally-cli
     qmk
+    keymapviz
   ];
 
   system.udevPackages = with pkgs; [

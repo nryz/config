@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, extraPkgs, inputs, ... }:
 
 with lib;
 with lib.my;
@@ -65,8 +65,8 @@ with lib.my;
     vimAlias = true;
 
     plugins = with pkgs.vimPlugins; [
-      fzf-lua
-      which-key-nvim
+      extraPkgs.vimPlugins.which-key-nvim
+      extraPkgs.vimPlugins.fzf-lua
       lualine-nvim
       hop-nvim
       nvim-web-devicons
@@ -98,11 +98,10 @@ with lib.my;
       #snippets
       luasnip
       cmp_luasnip
-    ] ++ [
-       (pkgs.vimPlugins.base16-vim.overrideAttrs (old:
+    ] ++ [(pkgs.vimPlugins.base16-vim.overrideAttrs (old:
          let schemeFile = config.scheme inputs.base16-vim;
-         in { patchPhase = '' cp ${schemeFile} colors/base16-scheme.vim ''; }
-       ))];
+         in { patchPhase = '' cp ${schemeFile} colors/base16-scheme.vim ''; })
+    )];
 
     extraConfig = ''
       set termguicolors

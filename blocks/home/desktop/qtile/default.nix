@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, blocks, ... }:
 
 with lib;
 with lib.my;
@@ -11,6 +11,9 @@ let
   ]);
 in
 {
+  imports = with blocks; [
+    desktop.x11
+  ];
   persist.directories = [ ".local/share/qtile" ];
 
   home.packages = [

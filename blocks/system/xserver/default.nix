@@ -1,17 +1,18 @@
-{ config, options, lib, pkgs, inputs, ... }:
+{ config, options, lib, pkgs, extraPkgs, inputs, flakePath, ... }:
 
 with lib;
 with lib.my;
 {
   options.autoLoginUser = with types; mkOpt str "";
+  options.theme.background = with types; mkOpt' str;
 
   config = {
     persist.directories = [ "/var/lib/sddm" ];
 
     environment.systemPackages = with pkgs; [
-      (sddm-theme.override {conf = with config.scheme.withHashtag; '' 
+      (extraPkgs.sddm-theme.override {conf = with config.scheme.withHashtag; '' 
         [General]
-        default_background=${config.sourcePath}/backgrounds/${config.theme.background}
+        default_background=${flakePath}/data/backgrounds/${config.theme.background}
         font=Fira Code
         accent1=${base00}
         accent1_text=${base05}

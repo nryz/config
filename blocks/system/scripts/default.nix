@@ -7,7 +7,7 @@ with lib.my;
     nvd
     (pkgs.writeScriptBin "system" (''
       #!/usr/bin/env bash
-      configPath=${config.configPath}
+      configPath=~/Config
     '' + (builtins.readFile ./system-tool.sh)))
     (pkgs.writeScriptBin "why-depends" (builtins.readFile ./why-depends.sh))
   ];
