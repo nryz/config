@@ -3,17 +3,18 @@
 {
   persist.directories = [ "/etc/ssh" ];
 
-  programs.ssh = {
-    startAgent = true;
-    askPassword = "${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
-  };
+  # programs.ssh = {
+  #   startAgent = true;
+  #   askPassword = "${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
+  # };
 
   services = {
     pcscd.enable = true;
 
     openssh = {
       enable = true;
-      startWhenNeeded = true;
+      logLevel = "VERBOSE";
+      #startWhenNeeded = true;
       passwordAuthentication = false;
     };
   };

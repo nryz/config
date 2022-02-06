@@ -83,7 +83,8 @@ with lib.my;
       rust-tools-nvim
 
       vim-nix
-      (nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
+      #(nvim-treesitter.withPlugins (plugins: pkgs.tree-sitter.allGrammars))
+      nvim-treesitter
 
       #cmp
       nvim-cmp
