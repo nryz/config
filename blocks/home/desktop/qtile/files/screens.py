@@ -269,7 +269,7 @@ screens = [
                 ),
                 widget.Spacer(10),
             ],
-            22,
+            theme.barSize,
             background=theme.barBg,
             margin=[0, 0, 0, 0],
             border_width=[0, 0, 2, 0],

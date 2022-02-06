@@ -32,7 +32,10 @@ in
 
   xdg.configFile."qtile/theme.py".text = with config.scheme.withHashtag; 
   ''
-    gapSize = ${toString config.theme.gapSize}
+    gapSize = ${toString config.theme.wm.gap}
+    borderSize = ${toString config.theme.wm.border}
+    barSize = ${toString config.theme.wm.bar.size}
+    enableBar = ${toString config.theme.wm.bar.enable}
 
     base00 = "${base00}"
     base01 = "${base01}"

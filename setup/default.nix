@@ -18,6 +18,8 @@ let
       ssd = false;
       nvidia = false;
       amd = false;
+
+      primaryDisplay.name = "";
     };
   } // (import (value.hardware + /settings.nix));
 in lib.nixosSystem {

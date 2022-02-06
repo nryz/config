@@ -6,7 +6,10 @@ with lib.my;
   options.theme = with types; {
     background = mkOpt' str;
 
-    gapSize = mkOpt' int;
+    wm.gap = mkOpt' int;
+    wm.border = mkOpt' int;
+    wm.bar.size = mkOpt' int;
+    wm.bar.enable = mkOpt' bool;
 
     font = mkOpt' (nullOr hm.types.fontType);
 

@@ -16,7 +16,7 @@
     config = {
       osc = "no";
       "keepaspect-window" = "no";
-      "keepaspect" = "no";
+      "keepaspect" = "yes";
     };
   };
 }

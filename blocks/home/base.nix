@@ -19,7 +19,7 @@ in
       terminal = mkOpt str "kitty";
       browser = mkOpt str "qutebrowser";
       fileManager = mkOpt str "ranger";
-      imageViewer = mkOpt str "sxiv";
+      imageViewer = mkOpt str "imv";
       videoPlayer = mkOpt str "mpv";
       pdfViewer = mkOpt str "zathura";
     };

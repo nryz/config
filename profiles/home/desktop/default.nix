@@ -8,7 +8,6 @@ in {
     desktop.qtile
     desktop.picom
 
-
     sites.youtube
 
     programs.btop
@@ -21,6 +20,7 @@ in {
     programs.ncmpcpp
     programs.qutebrowser
     programs.lf
+    programs.imv
     programs.spotify
     programs.sway-launcher-desktop
     programs.zathura
@@ -49,7 +49,11 @@ in {
   theme = {
     background =  "8";
 
-    gapSize = 12;
+    wm.gap = 12;
+    wm.border = 2;
+    wm.bar.enable = true;
+    wm.bar.size  = 22;
+
 
     font.name = "System-ui regular"; 
     font.size = 10;
@@ -69,18 +73,14 @@ in {
     unzip
   ] ++ lib.optionals (sa.diskSpace > 1) [
     lxappearance
-    gnome-icon-theme
     xplr
     xfce.thunar
     tmpmail
     ueberzug
-    feh
-    sxiv
     st
     libqalculate
     android-tools
     gnome.gucharmap
-    scrot
     imagemagick
     fontpreview
     neofetch

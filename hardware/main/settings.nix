@@ -8,5 +8,7 @@
   hardware = {
     ssd = true;
     nvidia = true;
+
+    primaryDisplay.name = "DVI-D-0";
   };
 }

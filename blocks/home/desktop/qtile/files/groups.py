@@ -12,10 +12,10 @@ dropdown_opacity=0.9
 layout_style = {
     #'font': 'font',
     'margin': theme.gapSize,
-    'border_width': 2,
+    'border_width': theme.borderSize,
     'border_normal': theme.base02,
     'border_focus': theme.base08,
-    'single_border_width': 2,
+    'single_border_width': theme.borderSize,
     'single_margin': theme.gapSize,
 }
 
