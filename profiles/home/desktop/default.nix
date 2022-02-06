@@ -5,8 +5,9 @@ in {
 
   imports = with blocks; [
     persist
+
     desktop.qtile
-    desktop.picom
+    #desktop.sway
 
     sites.youtube
 

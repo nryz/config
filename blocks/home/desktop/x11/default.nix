@@ -1,6 +1,10 @@
-{ config, lib, pkgs, ...}:
+{ config, lib, pkgs, blocks, ...}:
 
 {
+  imports = with blocks; [
+    desktop.picom
+  ];
+
   xsession = {
     enable = true;
 

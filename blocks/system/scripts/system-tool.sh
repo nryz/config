@@ -1,4 +1,4 @@
-pushd $configPath
+pushd $configPath > /dev/null
 
 listChanges() {
   prev="$(find "/nix/var/nix/profiles" -name "system-*-link" | sort -V | tail --lines=2 | head -1)"
@@ -43,8 +43,12 @@ case $1 in
   sudo nix-store --optimise
 ;;
 
+"rollback")
+  sudo nixos-rebuild switch --flake .# --rollback
+;;
+
 "generations")
-  sudo nix-env --list-generations
+  sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 ;;
 
 "installed")
@@ -115,4 +119,4 @@ EOF
   echo "system edit-drv     - open a drv in the /nix/store"
 esac
 
-popd
+popd > /dev/null

@@ -14,6 +14,7 @@ in
   imports = with blocks; [
     desktop.x11
   ];
+
   persist.directories = [ ".local/share/qtile" ];
 
   home.packages = [

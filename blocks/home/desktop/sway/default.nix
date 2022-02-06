@@ -4,29 +4,29 @@
   wayland.windowManager.sway = {
     enable = true;
 
+    systemdIntegration = true;
+
+    extraSessionCommands = ''
+      export XDG_SESSION_TYPE=wayland
+      export XDG_CURRENT_DESKTOP=sway
+
+      export MOZ_ENABLE_WAYLAND="1"
+      
+      export QT_QPA_PLATFORM=wayland
+      export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+    '';
+
+    wrapperFeatures = {
+      base = true;
+      gtk = true;
+    };
+
     config = {
-      systemdIntegration = true;
 
       focus.followMouse = false;
 
-      wrapperFeatures = {
-        base = true;
-        gtk = true;
-        xwayland = true;
-      };
-
-      extraSessionCommands = ''
-        export XDG_SESSION_TYPE=wayland
-        export XDG_CURRENT_DESKTOP=sway
-
-        export MOZ_ENABLE_WAYLAND="1"
-        
-        export QT_QPA_PLATFORM=wayland
-        export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-      '';
-
       terminal = config.defaults.terminal;
-      modifier = "mod4";
+      modifier = "Mod4";
       keybindings = let
         modifier = config.wayland.windowManager.sway.config.modifier;
       in lib.mkOptionDefault {
@@ -51,7 +51,7 @@
         bottom = config.theme.wm.gap;
         top = config.theme.wm.gap;
         left = config.theme.wm.gap;
-        bottom = config.theme.wm.gap;
+        right = config.theme.wm.gap;
       };
       
       colors = with config.scheme.withHashtag; {
@@ -89,7 +89,7 @@
           childBorder = base08;
         };
 
-        urgent = {
+        placeholder = {
           border = base00;
           background = base00;
           text = base05;
@@ -105,7 +105,7 @@
     clipman
   ];
 
-  programs.waybar = mkIf config.theme.wm.bar.enable {
+  programs.waybar = lib.mkIf config.theme.wm.bar.enable {
     enable = true;
     systemd.enable = true;
     systemd.target = "sway-session.target";
