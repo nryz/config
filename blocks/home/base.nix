@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, blocks, ... }:
+{ config, lib, pkgs, inputs, blocks, flakePath, ... }:
 
 with lib;
 with lib.my;
@@ -34,11 +34,12 @@ in
   config = {
     systemd.user.startServices = "sd-switch";
 
+    scheme = flakePath + /data/colourschemes + "/${config.theme.colour}.yaml";
+
     home.shellAliases = {
       cat = "bat";
       tree = "tree --dirsfirst";
       rg = "rg --no-messages";
-      trash-empty = "trash-empty --trash-dir=${config.home.homeDirectory}/.local/share/Trash";
     };
 
     home.sessionVariables = {

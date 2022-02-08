@@ -45,10 +45,9 @@ in {
     # games.lutris
   ]; 
 
-  scheme = extraPkgs.base16-colorscheme;
-
   theme = {
-    background =  "8";
+    background =  "10";
+    colour = "solarized-dark";
 
     wm.gap = 12;
     wm.border = 2;

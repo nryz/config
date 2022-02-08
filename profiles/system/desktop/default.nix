@@ -28,6 +28,7 @@ in {
 
   theme = {
     background = "8";
+    colour = "helios";
   };
 }
 

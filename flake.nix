@@ -11,8 +11,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    impermanence = { url = github:nix-community/impermanence; };
+
     base16 = { url = github:SenchoPens/base16.nix; inputs.nixpkgs.follows = "nixpkgs"; };
-    base16Theme = { url = github:reyemxela/base16-helios-scheme; flake = false; };
     base16-vim = { url = github:chriskempson/base16-vim; flake = false; };
     base16-kitty = { url = github:kdrag0n/base16-kitty; flake = false; };
     base16-qutebrowser = { url = github:theova/base16-qutebrowser; flake = false; };
@@ -23,15 +24,12 @@
     poly-dark-grub = { url = github:shvchk/poly-dark; flake = false; };
     sddm-wynn = { url = github:m-wynn/sddm_wynn-theme; flake = false; };
 
-    zsh-vi-mode = { url = github:jeffreytse/zsh-vi-mode; flake = false; };
-
     homeage = { url = github:jordanisaacs/homeage; inputs.nixpkgs.follows = "nixpkgs"; };
-
-    impermanence = { url = github:nix-community/impermanence; };
-
     passage = { url = github:filosottile/passage; flake = false; };
 
     zsh-pure-prompt = { url = github:sindresorhus/pure; flake = false; };
+    zsh-vi-mode = { url = github:jeffreytse/zsh-vi-mode; flake = false; };
+
     picom-ibhagwan = { url = github:ibhagwan/picom; flake = false; };
     sway-launcher-desktop = { url = github:Biont/sway-launcher-desktop; flake = false; };
 

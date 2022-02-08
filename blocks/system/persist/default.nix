@@ -19,13 +19,11 @@ with lib.my;
       ncdu
     ];
 
-
     environment.persistence."${config.persist.path}/system" = {
       directories = [
         "/var/log"
         "/var/lib/systemd/coredump"
         "/var/db/sudo/lectured"
-        "/etc/nixos"
       ] ++ config.persist.directories;
 
       files = [
@@ -36,8 +34,10 @@ with lib.my;
 
     environment.persistence."${config.persist.path}" = {
       users = mapAttrs (n: v: {
-        files = map (f: { file = f; parentDirectory = { user = n; group = "users"; }; }) v.persist.files;
-        directories = map (f: { directory = f; user = n; group = "users"; }) v.persist.directories;
+        files = map (f: { file = f; parentDirectory = { user = n; group = "users"; }; }) 
+          (v.persist.files ++ config.persist.userFiles);
+        directories = map (f: { directory = f; user = n; group = "users"; }) 
+          (v.persist.directories ++ config.persist.userDirectories);
       }) config.home-manager.users;
     };
   };

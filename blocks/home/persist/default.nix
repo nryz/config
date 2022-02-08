@@ -12,11 +12,6 @@ with lib.my;
       "Videos"
       "Projects"
       "Config"
-      ".ssh"
-      ".gnupg"
-      ".cache/nix-index"
-      ".local/share/Trash"
-      ".local/share/nix"
     ];
   };
 }

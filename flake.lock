@@ -116,22 +116,6 @@
         "type": "github"
       }
     },
-    "base16Theme": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1559907786,
-        "narHash": "sha256-ahGQKFlDGWxRIPAn6h5t2zkl3tAE1EvNVmRBPjDceAs=",
-        "owner": "reyemxela",
-        "repo": "base16-helios-scheme",
-        "rev": "92a70341f710d7377327e792020a926e7822ec7a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "reyemxela",
-        "repo": "base16-helios-scheme",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -383,7 +367,6 @@
         "base16-qutebrowser": "base16-qutebrowser",
         "base16-vim": "base16-vim",
         "base16-zathura": "base16-zathura",
-        "base16Theme": "base16Theme",
         "fzf-lua": "fzf-lua",
         "home-manager": "home-manager",
         "homeage": "homeage",

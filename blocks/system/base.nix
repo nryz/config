@@ -1,5 +1,4 @@
-
-{ config, lib, pkgs, extraPkgs, inputs, blocks, ... }:
+{ config, lib, pkgs, extraPkgs, inputs, blocks, flakePath, ... }:
 
 with lib;
 with lib.my;
@@ -9,15 +8,21 @@ let
       v.system.programs) config.home-manager.users ));
 in
 {
-   imports = with blocks; [ 
-     boot
-     scripts 
-     nix
-   ];
+  imports = with blocks; [ 
+    boot
+    scripts 
+    nix
+  ];
+
+  options.theme = with types; {
+    colour = mkOpt' str;
+  };
 
   options.persist = with types; {
     directories = mkOpt (listOf str) [];
+    userDirectories = mkOpt (listOf str) [];
     files = mkOpt (listOf str) [];
+    userFiles = mkOpt (listOf str) [];
     path = mkOpt' str;
   };
 
@@ -27,7 +32,7 @@ in
 
     programs.steam.enable = (isFlagEnabled "steam");
 
-    scheme = extraPkgs.base16-colorscheme;
+    scheme = flakePath + /data/colourschemes + "/${config.theme.colour}.yaml";
 
     systemd.enableEmergencyMode = false;
 

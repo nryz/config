@@ -6,6 +6,8 @@ with lib.my;
   options.theme = with types; {
     background = mkOpt' str;
 
+    colour = mkOpt' str;
+
     wm.gap = mkOpt' int;
     wm.border = mkOpt' int;
     wm.bar.size = mkOpt' int;

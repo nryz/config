@@ -1,7 +1,8 @@
 { config, lib, pkgs, ... }:
 
 {
-  persist.directories = ["/var/lib/alsa"];
+ persist.directories = ["/var/lib/alsa"];
+ persist.userDirectories = [".config/pulse" ];
 
  #pulseaudio
  sound.enable = true;

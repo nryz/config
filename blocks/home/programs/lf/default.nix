@@ -56,10 +56,10 @@
 
     set ratios 1:1
 
-    cmd trash ''${{
-      trash $fx
+    cmd remove ''${{
+      rm $fx
     }}
-    map <delete> trash
+    map <delete> remove
   '';
 
   xdg.configFile."lf/lf_kitty_preview" = {
