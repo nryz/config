@@ -4,8 +4,17 @@
   persist.directories = [ "/etc/ssh" ];
   persist.userDirectories = [ ".ssh" ];
 
+  environment.systemPackages = with pkgs; [
+    (pkgs.writeShellScriptBin "ak" ''
+      eval $(ssh-agent) >/dev/null
+      ssh-add -K
+      $@
+      eval $(ssh-agent -k) >/dev/null
+    '')
+  ];
+
   programs.ssh = {
-    startAgent = true;
+    startAgent = false;
     askPassword = "${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
   };
 
