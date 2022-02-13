@@ -18,16 +18,20 @@ case $1 in
 
 "switch")
   sudo nixos-rebuild switch --flake .# ${@:2}
-   listChanges
+  if [ $? -eq 0 ]; then
+    listChanges
+  fi
 ;;
 
 "build")
   sudo nixos-rebuild build --flake .# ${@:2}
 
-  prev="$(find "/nix/var/nix/profiles" -name "system-*-link" | sort -V | tail --lines=2 | head -1)"
-  new="./result"
+  if [ $? -eq 0 ]; then
+    prev="$(find "/nix/var/nix/profiles" -name "system-*-link" | sort -V | tail --lines=2 | head -1)"
+    new="./result"
 
-  nvd diff ${prev} ${new}
+    nvd diff ${prev} ${new}
+  fi
 ;;
 
 "boot")

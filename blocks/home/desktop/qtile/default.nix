@@ -18,6 +18,7 @@ in
   };
 
   config = mkIf cfg.enable {
+    blocks.desktop.windowManager.name = "qtile";
     blocks.desktop.xserver.enable = true;
     blocks.desktop.xserver.wmCommand = ''
       exec ${pkgs.qtile}/bin/qtile start

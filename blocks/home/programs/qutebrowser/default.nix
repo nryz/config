@@ -11,6 +11,11 @@ in
   };
 
   config = mkIf cfg.enable {
+
+    home.packages = with pkgs; [
+      qt5.qtwayland
+    ];
+
     blocks.persist.directories = [ 
       ".local/share/qutebrowser" 
     ];

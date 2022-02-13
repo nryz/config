@@ -13,5 +13,9 @@ in
   config = mkIf cfg.enable {
     services.xserver.videoDrivers = ["nvidia"];
     hardware.opengl.enable = true;
+    hardware.nvidia.modesetting.enable = true;
+    environment.systemPackages = with pkgs; [
+      egl-wayland
+    ];
   };
 }

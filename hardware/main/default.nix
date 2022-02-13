@@ -7,6 +7,19 @@
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
   config = {
+    systemInfo.scalability = {
+      cpu = 2;
+      gpu = 2;
+      diskSpace = 2;
+    };
+
+    systemInfo.hardware = {
+      ssd = true;
+      nvidia = true;
+
+      primaryDisplay.name = "DVI-D-0";
+    };
+
     boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
     boot.initrd.kernelModules = [ ];
     boot.kernelModules = [ "kvm-intel" ];

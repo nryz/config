@@ -1,8 +1,9 @@
-{ config, lib, pkgs, inputs, systemInfo, ... }: 
+{ config, lib, pkgs, inputs, ... }: 
 
 with lib;
 with lib.my;
 let
+  systemInfo = config.systemInfo;
   sa = systemInfo.scalability;
 in {
   time.timeZone = "Europe/London";
@@ -13,10 +14,11 @@ in {
       user = "nr";
     };
 
+    displayServer.enable = true;
+
     theme.colour = "helios";
 
     persist.enable = true;
-    xserver.enable = true;
 
     network.enable = true;
     audio.enable = true;
@@ -33,7 +35,7 @@ in {
   })
   (mkIf (sa.diskSpace > 1 && sa.gpu > 1 && sa.cpu > 1) {
     virtualisation.enable = false;
-    virtualisation.users = [ "nr" ];
+    virtualisation.users = [ defaultUser ];
   })];
 }
 

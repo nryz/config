@@ -1,4 +1,4 @@
-{ config, lib, pkgs, extraPkgs, systemInfo, ... }:
+{ config, lib, pkgs, extraPkgs, ... }:
 
 with lib;
 with lib.my;
@@ -11,12 +11,21 @@ in
   };
 
   config = mkIf cfg.enable {
+    blocks.desktop.windowManager.name = "sway";
+    blocks.desktop.wayland.enable = true;
+    blocks.desktop.wayland.wmCommand = ''
+      exec sway > $HOME/.config/sway/sway.log 2>&1
+    '';
+
     wayland.windowManager.sway = {
       enable = true;
+
+      extraOptions = [ "--unsupported-gpu" ];
 
       systemdIntegration = true;
 
       extraSessionCommands = ''
+        export LIBSEAT_BACKEND=logind
         export SDL_VIDEODRIVER=wayland
         export _JAVA_AWT_WM_NONREPARENTING=1
         export XDG_SESSION_TYPE=wayland
@@ -24,6 +33,8 @@ in
         export MOZ_ENABLE_WAYLAND="1"
         export QT_QPA_PLATFORM=wayland
         export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+        export QT_SCALE_FACTOR=1
+        export GDK_BACKEND=wayland
       '';
 
       wrapperFeatures = {
@@ -125,7 +136,7 @@ in
           layer = "top";
           position = "top";
           height = config.blocks.theme.wm.bar.size;
-          output = [ systemInfo.hardware.primaryDisplay.name ];
+          output = [ config.systemInfo.hardware.primaryDisplay.name ];
 
           ipc = true;
 

@@ -20,13 +20,15 @@ in
   config = mkIf cfg.enable {
 
     blocks.desktop.picom.enable = true;
+    blocks.desktop.displayServer.enable = true;
+    blocks.desktop.displayServer.backend = "x";
 
     # https://konfou.xyz/posts/nixos-without-display-manager/
     xdg.configFile.".autostart" = {
       executable = true;
       text = ''
         if [ -z "$DISPLAY" ] && [ $TTY == "/dev/tty1" ]; then
-          exec startx
+          exec startx &> /dev/null
         fi
       '';
     };
@@ -41,12 +43,6 @@ in
       "XDG_SESSION_ID"
     ];
 
-    systemd.user.targets.graphical-session = {
-      UnitConfig = {
-        RefuseManualStart = false;
-        StopWhenUnneeded = false;
-      };
-    };
 
     home.file.".xinitrc".text = ''
       systemctl --user import-environment ${toString (unique cfg.importedVariables)} &

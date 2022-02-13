@@ -1,8 +1,9 @@
-{ config, lib, pkgs, extraPkgs, inputs, systemInfo, ... }: 
+{ config, lib, pkgs, extraPkgs, inputs, ... }: 
 
 with lib;
 with lib.my;
 let
+  systemInfo = config.systemInfo;
   sa = systemInfo.scalability;
 in {
 

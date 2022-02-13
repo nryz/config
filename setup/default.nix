@@ -5,37 +5,23 @@ args: let
   packages = import ./packages.nix { inherit (args) inputs system; };
   flakePath = ../.;
 
-in lib.mapAttrs (name: value: 
-let
-  systemInfo = {
-    scalability = {
-      cpu = 1;
-      gpu = 1;
-      diskSpace = 1;
-    };
-
-    hardware = {
-      ssd = false;
-      nvidia = false;
-      amd = false;
-
-      primaryDisplay.name = "";
-    };
-  } // (import (value.hardware + /settings.nix));
+  defaultUserName = "nr";
 
   specialArgs = {
-    inherit lib flakePath systemInfo;
+    defaultUser = defaultUserName;
+    inherit lib flakePath;
     inherit (packages) pkgs extraPkgs stablePkgs;
     inherit (args) inputs;
   };
 
-in lib.nixosSystem {
+in lib.mapAttrs (name: value: lib.nixosSystem {
   inherit (packages) pkgs;
   inherit (args) system;
   inherit specialArgs;
 
   modules = systemBlocks ++ [
     ../blocks/system/base.nix
+    ./hardware.nix
     value.hardware
     value.profile
     args.inputs.utils.nixosModules.autoGenFromInputs
@@ -51,12 +37,14 @@ in lib.nixosSystem {
       users = {
         mutableUsers = false;
         defaultUserShell = pkgs.zsh;
-        users = (lib.mapAttrs (n: v: {
-          shell = pkgs."${config.home-manager.users.${n}.defaults.shell}";
+        users.${defaultUserName} = {
+          shell = pkgs."${config.home-manager.users.${defaultUserName}.defaults.shell}";
           extraGroups = [ "wheel" ];
           isNormalUser = true;
-          passwordFile = "/etc/passwords/${n}";
-        }) value.sudoUsers) // { root.hashedPassword = "!"; };
+          passwordFile = "/etc/passwords/${defaultUserName}";
+        };
+
+        users.root.hashedPassword = "!";
       };
 
       home-manager = {
@@ -72,20 +60,16 @@ in lib.nixosSystem {
           args.inputs.base16.homeManagerModule
         ];
 
-        users = lib.mapAttrs (n: v: { 
-          home.username = n;
-          home.homeDirectory = "/home/${n}";
+        users.${defaultUserName} = {
+          home.username = defaultUserName;
+          home.homeDirectory = "/home/${defaultUserName}";
           home.stateVersion = args.stateVersion;
           programs.home-manager.enable = true;
-          imports = [ v ];  
-        }) value.sudoUsers;
+          imports = [ value.defaultUser ];
+        };
       };
 
       assertions = [
-        {
-          assertion = value.sudoUsers != {};
-          message = "no users are setup.";
-        }
         {
           assertion = lib.hasAttr "/etc/passwords" config.fileSystems;
           message = "no passwords dir in fileSystems";

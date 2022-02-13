@@ -44,17 +44,15 @@
   };
 
   outputs = inputs @ { self, ... }: {
-    inherit self;
-
     nixosConfigurations = import ./setup {
-      inherit inputs;
+      inherit inputs self;
       system = "x86_64-linux";
       stateVersion = "21.11";
 
       configs.main = {
         hardware = hardware/main;
         profile = profiles/system/desktop;
-        sudoUsers.nr = profiles/home/desktop;
+        defaultUser = profiles/home/desktop;
       };
     };
   };
