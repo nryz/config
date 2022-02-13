@@ -19,6 +19,9 @@ in
     hardware.pulseaudio = {
       enable = true;
       extraModules = [ pkgs.pulseaudio-modules-bt ];
+      extraConfig = ''
+        load-module module-switch-on-connect
+      '';
     };
 
    services.tlp = {
