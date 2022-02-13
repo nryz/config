@@ -1,13 +1,24 @@
 { config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
+let
+  cfg = config.blocks.programs.bash;
+in
 {
-  persist.files = [ ".bash_history" ];
+  options.blocks.programs.bash = with types; {
+    enable = mkOpt bool false;
+  };
 
-  programs.bash = {
-    enable = true;
+  config = mkIf cfg.enable {
+    blocks.persist.files = [ ".bash_history" ];
 
-    initExtra = ''
-      export MANPAGER="nvim +Man!"
-    '';
+    programs.bash = {
+      enable = true;
+
+      initExtra = ''
+        export MANPAGER="nvim +Man!"
+      '';
+    };
   };
 }

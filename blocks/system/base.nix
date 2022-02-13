@@ -1,4 +1,4 @@
-{ config, lib, pkgs, extraPkgs, inputs, blocks, flakePath, ... }:
+{ config, lib, pkgs, extraPkgs, inputs, flakePath, ... }:
 
 with lib;
 with lib.my;
@@ -8,31 +8,27 @@ let
       v.system.programs) config.home-manager.users ));
 in
 {
-  imports = with blocks; [ 
-    boot
-    scripts 
-    nix
-  ];
-
-  options.theme = with types; {
+  options.blocks.theme = with types; {
     colour = mkOpt' str;
   };
 
-  options.persist = with types; {
-    directories = mkOpt (listOf str) [];
-    userDirectories = mkOpt (listOf str) [];
-    files = mkOpt (listOf str) [];
-    userFiles = mkOpt (listOf str) [];
-    path = mkOpt' str;
-  };
-
   config = {
+    blocks.boot.enable = true;
+    blocks.scripts.enable = true;
+    blocks.nix.enable = true;
+
+    # TODO: fix this
+    # nscd fails due to start-limit-hit
+    systemd.services.nscd.serviceConfig = {
+      StartLimitBurst = 20;
+    };
+
     services.udev.packages = [] ++ (flatten (mapAttrsToList (n: v: 
       v.system.udevPackages ) config.home-manager.users));
 
     programs.steam.enable = (isFlagEnabled "steam");
 
-    scheme = flakePath + /data/colourschemes + "/${config.theme.colour}.yaml";
+    scheme = flakePath + /data/colourschemes + "/${config.blocks.theme.colour}.yaml";
 
     systemd.enableEmergencyMode = false;
 

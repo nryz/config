@@ -1,68 +1,75 @@
-{ config, lib, pkgs, extraPkgs, inputs, blocks, systemInfo, ... }: 
+{ config, lib, pkgs, extraPkgs, inputs, systemInfo, ... }: 
+
+with lib;
+with lib.my;
 let
   sa = systemInfo.scalability;
 in {
 
-  imports = with blocks; [
-    persist
+  blocks = mkMerge [({
+    theme = {
+      background =  "10";
+      colour = "solarized-dark";
 
-    desktop.qtile
-    #desktop.sway
+      wm.gap = 12;
+      wm.border = 2;
+      wm.bar.enable = true;
+      wm.bar.size  = 22;
 
-    sites.youtube
+      font.name = "System-ui regular"; 
+      font.size = 10;
 
-    programs.btop
-    programs.neovim
-    programs.kitty
-    programs.zsh
-    programs.fzf
-    programs.git
-    programs.mpv
-    programs.ncmpcpp
-    programs.qutebrowser
-    programs.lf
-    programs.imv
-    programs.spotify
-    programs.sway-launcher-desktop
-    programs.zathura
-    programs.nix-index
-    programs.passage {
-      passage.storeLocation = "/run/media/nr/FDP/passage";
-    }
+      gtk.theme.package = pkgs.vimix-gtk-themes; 
+      gtk.theme.name = "vimix-dark-laptop-ruby";
+      gtk.iconTheme.package = pkgs.vimix-icon-theme; 
+      gtk.iconTheme.name = "Vimix Ruby Dark";
+    };
 
-    services.dunst
-    services.udiskie
-    services.unclutter
-  ] ++ lib.optionals (sa.diskSpace > 1) [
-    projects.keyboard
-    programs.firefox
-    programs.helix
-    programs.kakoune
-  ] ++ lib.optionals (sa.gpu > 1 && sa.diskSpace > 1 && sa.cpu > 1) [
-    # games.minecraft
-    # games.dwarf-fortress
-    # games.steam
-    # games.lutris
-  ]; 
+    persist.enable = true;
 
-  theme = {
-    background =  "10";
-    colour = "solarized-dark";
+    desktop.qtile.enable = true;
+    desktop.sway.enable = false;
 
-    wm.gap = 12;
-    wm.border = 2;
-    wm.bar.enable = true;
-    wm.bar.size  = 22;
+    sites.youtube.enable = true;
 
+    programs.btop.enable = true;
+    programs.neovim.enable = true;
 
-    font.name = "System-ui regular"; 
-    font.size = 10;
+    programs.kitty.enable = true;
 
-    gtk.theme.package = pkgs.vimix-gtk-themes; 
-    gtk.theme.name = "vimix-dark-laptop-ruby";
-    gtk.iconTheme.package = pkgs.vimix-icon-theme; 
-    gtk.iconTheme.name = "Vimix Ruby Dark";
-  };
+    programs.zsh.enable = true;
+    programs.fzf.enable = true;
+    programs.git.enable = true;
+    programs.mpv.enable = true;
+    programs.ncmpcpp.enable = true;
+    programs.qutebrowser.enable = true;
+    programs.lf.enable = true;
+    programs.imv.enable = true;
+    programs.spotify.enable = true;
+    programs.sway-launcher-desktop.enable = true;
+    programs.zathura.enable = true;
+    programs.nix-index.enable = true;
+    programs.passage = {
+      enable = true;
+      storeLocation = "/run/media/nr/FDP/passage";
+    };
+
+    services.dunst.enable = true;
+    services.udiskie.enable = true;
+    services.unclutter.enable = true;
+  })
+  (mkIf (sa.diskSpace > 1) {
+    projects.keyboard.enable = true;
+    programs.firefox.enable = true;
+    programs.helix.enable = true;
+    programs.kakoune.enable = true;
+  }) 
+  (mkIf (sa.gpu > 1 && sa.diskSpace > 1 && sa.cpu > 1) {
+    games.minecraft.enable = false;
+    games.dwarf-fortress.enable = false;
+    games.steam.enable = false;
+    games.lutris.enable = false;
+  })];
 
   home.packages = with pkgs; [
     tree

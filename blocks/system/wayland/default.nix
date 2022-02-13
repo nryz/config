@@ -1,19 +1,23 @@
 { config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
 let
+  cfg = config.blocks.wayland;
   extraEnv = { WLR_NO_HARDWARE_CURSORS = "1"; };
 in
 {
-  environment.variables = extraEnv;
-  environment.sessionVariables = extraEnv;
-  environment.systemPackages = with pkgs; [
-    glxinfo
-    vulkan-tools
-    glmark2
-  ];
+  options.blocks.wayland = with types; {
+    enable = mkOpt bool false;
+  };
 
-  services.xserver = {
-    displayManager.gdm.wayland = true;
-    displayManager.gdm.nvidiaWayland = true;
+  config = mkIf cfg.enable {
+    environment.variables = extraEnv;
+    environment.sessionVariables = extraEnv;
+    environment.systemPackages = with pkgs; [
+      glxinfo
+      vulkan-tools
+      glmark2
+    ];
   };
 }

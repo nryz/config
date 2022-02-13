@@ -2,8 +2,13 @@
 
 with lib;
 with lib.my;
+let
+  cfg = config.blocks.theme;
+in
 {
-  options.theme = with types; {
+  options.blocks.theme = with types; {
+    enable = mkOpt bool false;
+
     background = mkOpt' str;
 
     colour = mkOpt' str;
@@ -26,35 +31,15 @@ with lib.my;
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     gtk = {
       enable = true;
 
-      theme = config.theme.gtk.theme;
-      iconTheme = config.theme.gtk.iconTheme;
-      font = config.theme.font;
-    };
+      theme = config.blocks.theme.gtk.theme;
+      iconTheme = config.blocks.theme.gtk.iconTheme;
+      font = config.blocks.theme.font;
 
-
-    home.file."${config.home.homeDirectory}/Pictures/backgrounds" = {
-      recursive = true;
-      source = flakePath + /data/backgrounds;
-    };
-
-    systemd.user.services.background = {
-      Unit = {
-        Description = "set background";
-        After = [ "graphical-session-pre.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${config.home.homeDirectory}/Pictures/backgrounds/${config.theme.background}";
-        IOSchedulingClass = "idle";
-      };
-
-      Install = { WantedBy = [ "graphical-session.target" ]; };
+      gtk2.configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
     };
   };
 }

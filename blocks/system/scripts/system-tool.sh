@@ -78,7 +78,18 @@ case $1 in
 tee -a "blocks/home/$3/default.nix" <<EOF
 { config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
+let
+  cfg = config.blocks.
+in
 {
+  options.blocks. = with types; {
+    enable = mkOpt bool false;
+  };
+
+  config = mkIf cfg.enable {
+  };
 }
 EOF
 
@@ -87,7 +98,18 @@ EOF
 tee -a "blocks/system/$3/default.nix" <<EOF
 { config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
+let
+  cfg = config.blocks.
+in
 {
+  options.blocks. = with types; {
+    enable = mkOpt bool false;
+  };
+
+  config = mkIf cfg.enable {
+  };
 }
 EOF
   fi
@@ -99,6 +121,34 @@ EOF
 
 "list-units")
   sudo journalctl --field _SYSTEMD_UNIT
+;;
+
+"errors")
+  sudo journalctl -p 3 -xb
+;;
+
+"status")
+  if [ $2 = "user" ]; then
+    systemctl status --user $3
+  else
+    sudo systemctl status $2
+  fi
+;;
+
+"unitErrors")
+  if [ $2 = "user" ]; then
+    journalctl --user -p 3 -xb -u $3
+  else
+    sudo journalctl -p 3 -xb -u $2
+  fi
+;;
+
+"log")
+  if [ $2 = "user" ]; then
+    journalctl --user -e -u $3
+  else
+    sudo journalctl -e -u $2
+  fi
 ;;
 
 *)

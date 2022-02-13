@@ -2,12 +2,24 @@
 
 with lib;
 with lib.my;
+let
+  cfg = config.blocks.persist;
+in
 {
   imports = [
     inputs.impermanence.nixosModules.impermanence
   ];
 
-  config = {
+  options.blocks.persist = with types; {
+    enable = mkOpt bool false;
+    directories = mkOpt (listOf str) [];
+    userDirectories = mkOpt (listOf str) [];
+    files = mkOpt (listOf str) [];
+    userFiles = mkOpt (listOf str) [];
+    path = mkOpt' str;
+  };
+
+  config = mkIf cfg.enable {
     assertions = [{
         assertion = config.fileSystems."/".fsType == "tmpfs"; 
         message = "no root tmpfs found";
@@ -19,25 +31,25 @@ with lib.my;
       ncdu
     ];
 
-    environment.persistence."${config.persist.path}/system" = {
+    environment.persistence."${cfg.path}/system" = {
       directories = [
         "/var/log"
         "/var/lib/systemd/coredump"
         "/var/db/sudo/lectured"
-      ] ++ config.persist.directories;
+      ] ++ cfg.directories;
 
       files = [
         "/etc/machine-id"
-      ] ++ config.persist.files;
+      ] ++ cfg.files;
 
     };
 
-    environment.persistence."${config.persist.path}" = {
+    environment.persistence."${cfg.path}" = {
       users = mapAttrs (n: v: {
         files = map (f: { file = f; parentDirectory = { user = n; group = "users"; }; }) 
-          (v.persist.files ++ config.persist.userFiles);
+          (v.blocks.persist.files ++ cfg.userFiles);
         directories = map (f: { directory = f; user = n; group = "users"; }) 
-          (v.persist.directories ++ config.persist.userDirectories);
+          (v.blocks.persist.directories ++ cfg.userDirectories);
       }) config.home-manager.users;
     };
   };

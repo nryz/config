@@ -1,34 +1,39 @@
-{ config, lib, pkgs, inputs, blocks, systemInfo, ... }: 
+{ config, lib, pkgs, inputs, systemInfo, ... }: 
+
+with lib;
+with lib.my;
 let
   sa = systemInfo.scalability;
 in {
-
-  imports = with blocks; [
-    persist
-    xserver
-
-    #todo
-    hardware.monitor
-
-    network
-    audio
-    bluetooth
-    services.ssh
-
-  ] ++ lib.optionals (systemInfo.hardware.nvidia) [ 
-    hardware.nvidia 
-  ] ++ lib.optionals (systemInfo.hardware.ssd) [ 
-    hardware.ssd 
-  ] ++ lib.optionals (sa.diskSpace > 1 && sa.gpu > 1 && sa.cpu > 1) [
-   # virtualisation { virtualisation.users = [ "nr" ]; }
-  ];
-
   time.timeZone = "Europe/London";
-  autoLoginUser = "nr";
 
-  theme = {
-    background = "8";
-    colour = "helios";
-  };
+  blocks = mkMerge [({
+    autologin = {
+      enable = true;
+      user = "nr";
+    };
+
+    theme.colour = "helios";
+
+    persist.enable = true;
+    xserver.enable = true;
+
+    network.enable = true;
+    audio.enable = true;
+    bluetooth.enable = true;
+
+    services.ssh.enable = true;
+
+  }) 
+  (mkIf systemInfo.hardware.nvidia { 
+    hardware.nvidia.enable = true; 
+  })
+  (mkIf systemInfo.hardware.ssd { 
+    hardware.ssd.enable = true; 
+  })
+  (mkIf (sa.diskSpace > 1 && sa.gpu > 1 && sa.cpu > 1) {
+    virtualisation.enable = false;
+    virtualisation.users = [ "nr" ];
+  })];
 }
 

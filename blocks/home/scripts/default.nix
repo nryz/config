@@ -3,6 +3,8 @@
 with lib;
 with lib.my;
 let
+  cfg = config.blocks.scripts;
+
   fzfSeedbox = pkgs.writeShellScriptBin "fzfSeedbox" ''
     #!/usr/bin/env bash
 
@@ -29,10 +31,16 @@ let
   '';
 in
 {
-  home.packages = with pkgs; [
-    fzfSeedbox
+  options.blocks.scripts = with types; {
+    enable = mkOpt bool false;
+  };
 
-    skim
-    sysz
-  ];
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      fzfSeedbox
+
+      skim
+      sysz
+    ];
+  };
 }

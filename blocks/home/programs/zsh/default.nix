@@ -1,39 +1,51 @@
 { config, lib, pkgs, extraPkgs, ... }:
 
+with lib;
+with lib.my;
+let 
+  cfg = config.blocks.programs.zsh;
+in
 {
-  persist.files = [ ".zsh_history" ];
+  options.blocks.programs.zsh = with types; {
+    enable = mkOpt bool false;
+  };
 
-  programs.zsh = {
-    enable = true;
-    enableAutosuggestions = true;
-    enableCompletion = true;
-    enableSyntaxHighlighting = true;
-    history.extended = true;
+  config = mkIf cfg.enable {
+    #blocks.persist.files = [ ".zsh_history" ];
 
-    plugins = with extraPkgs; [
-      zsh-pure-prompt
-    ];
-    
-    initExtra = ''
-      ZVM_INIT_MODE=sourcing
-      source ${extraPkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
+    programs.zsh = {
+      enable = true;
+      enableAutosuggestions = true;
+      enableCompletion = true;
+      enableSyntaxHighlighting = true;
+      history.extended = true;
+      history.path = "$HOME/.zsh/history";
 
-      export MANPAGER="nvim +Man!"
+      plugins = with extraPkgs; [
+        zsh-pure-prompt
+      ];
+      
+      initExtra = ''
+        ZVM_INIT_MODE=sourcing
+        source ${extraPkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
 
-      #KEYTIMEOUT=1
+        export MANPAGER="nvim +Man!"
 
-      bindkey "^[[1;5C" forward-word #ctrl-right
-      bindkey "^[[1;5D" backward-word #ctrl-left
+        #KEYTIMEOUT=1
 
-      chpwd() lsd
+        bindkey "^[[1;5C" forward-word #ctrl-right
+        bindkey "^[[1;5D" backward-word #ctrl-left
 
-      source "''$(fzf-share)/key-bindings.zsh"
-      source "''$(fzf-share)/completion.zsh"
+        chpwd() lsd
 
-      export FZF_DEFAULT_COMMAND="fd --hidden --follow --exclude '.git' --exclude '.cache'"
-      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-      export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
-      export FZF_DEFAULT_OPTS="--layout=reverse --info=inline --height=80% --multi --preview-window=:hidden --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200' --bind '?:toggle-preview'"
-    '';
+        source "''$(fzf-share)/key-bindings.zsh"
+        source "''$(fzf-share)/completion.zsh"
+
+        export FZF_DEFAULT_COMMAND="fd --hidden --follow --exclude '.git' --exclude '.cache'"
+        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+        export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
+        export FZF_DEFAULT_OPTS="--layout=reverse --info=inline --height=80% --multi --preview-window=:hidden --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200' --bind '?:toggle-preview'"
+      '';
+    };
   };
 }

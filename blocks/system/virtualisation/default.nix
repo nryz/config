@@ -2,10 +2,16 @@
 
 with lib;
 with lib.my;
+let
+  cfg = config.blocks.virtualisation;
+in
 {
-  options.virtualisation.users = with types; mkOpt (listOf str) [];
+  options.blocks.virtualisation = with types; {
+    enable = mkOpt bool false;
+    users = with types; mkOpt (listOf str) [];
+  };
 
-  config = {
+  config = mkIf cfg.enable {
     virtualisation = {
       libvirtd.enable = true;
       virtualbox.host.enable = true;

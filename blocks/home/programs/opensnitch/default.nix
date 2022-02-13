@@ -1,5 +1,16 @@
 { config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
+let
+  cfg = config.blocks.programs.opensnitch;
+in
 {
-  services.opensnitch-ui.enable = true;
+  options.blocks.programs.opensnitch = with types; {
+    enable = mkOpt bool false;
+  };
+
+  config = mkIf cfg.enable {
+    services.opensnitch-ui.enable = true;
+  };
 }

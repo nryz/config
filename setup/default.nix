@@ -1,7 +1,7 @@
 args: let
   lib = import ../lib { inherit (args) inputs; };
-  systemBlocks = lib.my.collectBlocks ../blocks/system;
-  homeBlocks = lib.my.collectBlocks ../blocks/home;
+  systemBlocks = lib.my.collectBlocksToList ../blocks/system;
+  homeBlocks = lib.my.collectBlocksToList ../blocks/home;
   packages = import ./packages.nix { inherit (args) inputs system; };
   flakePath = ../.;
 
@@ -22,19 +22,22 @@ let
       primaryDisplay.name = "";
     };
   } // (import (value.hardware + /settings.nix));
-in lib.nixosSystem {
-  inherit (packages) pkgs;
-  inherit (args) system;
 
   specialArgs = {
     inherit lib flakePath systemInfo;
-    inherit (packages) pkgs extraPkgs;
+    inherit (packages) pkgs extraPkgs stablePkgs;
     inherit (args) inputs;
-    blocks = systemBlocks;
   };
 
-  modules = [
+in lib.nixosSystem {
+  inherit (packages) pkgs;
+  inherit (args) system;
+  inherit specialArgs;
+
+  modules = systemBlocks ++ [
     ../blocks/system/base.nix
+    value.hardware
+    value.profile
     args.inputs.utils.nixosModules.autoGenFromInputs
     args.inputs.base16.nixosModule
     args.inputs.home-manager.nixosModules.home-manager 
@@ -57,22 +60,17 @@ in lib.nixosSystem {
       };
 
       home-manager = {
+        extraSpecialArgs = specialArgs;
+
         useGlobalPkgs = true;
         useUserPackages = true;
         backupFileExtension = "HMBACKUP";
 
-        sharedModules = [
+        sharedModules = homeBlocks ++ [
           ../blocks/home/base.nix
           args.inputs.homeage.homeManagerModules.homeage
           args.inputs.base16.homeManagerModule
         ];
-
-        extraSpecialArgs = {
-          inherit lib flakePath systemInfo;
-          inherit (packages) pkgs extraPkgs;
-          inherit (args) inputs;
-          blocks = homeBlocks;
-        };
 
         users = lib.mapAttrs (n: v: { 
           home.username = n;
@@ -94,7 +92,5 @@ in lib.nixosSystem {
         }
       ];
     })
-    value.hardware
-    value.profile
   ];
 }) args.configs

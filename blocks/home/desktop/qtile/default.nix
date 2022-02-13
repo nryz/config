@@ -1,8 +1,10 @@
-{ config, lib, pkgs, inputs, blocks, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 with lib;
 with lib.my;
 let
+  cfg = config.blocks.desktop.qtile;
+
   qtile-python-packages = pkgs.python3.withPackages (p: with p; [
       python
       mypy
@@ -11,56 +13,61 @@ let
   ]);
 in
 {
-  imports = with blocks; [
-    desktop.x11
-  ];
-
-  persist.directories = [ ".local/share/qtile" ];
-
-  home.packages = [
-    pkgs.qtile
-  ];
-
-  home.sessionVariables = {
-    PYTHONPATH = "${qtile-python-packages}/${qtile-python-packages.sitePackages}";
+  options.blocks.desktop.qtile = with types; {
+    enable = mkOpt bool false;
   };
 
-  xsession.windowManager.command = "${pkgs.qtile}/bin/qtile start";
+  config = mkIf cfg.enable {
+    blocks.desktop.xserver.enable = true;
+    blocks.desktop.xserver.wmCommand = ''
+      exec ${pkgs.qtile}/bin/qtile start
+    '';
 
-  xdg.configFile."qtile/defaults.py".text = ''
-    terminal = '${config.defaults.terminal}'
-  '';
+    blocks.persist.directories = [ ".local/share/qtile" ];
 
-  xdg.configFile."qtile/theme.py".text = with config.scheme.withHashtag; 
-  ''
-    gapSize = ${toString config.theme.wm.gap}
-    borderSize = ${toString config.theme.wm.border}
-    barSize = ${toString config.theme.wm.bar.size}
-    enableBar = ${toString config.theme.wm.bar.enable}
+    home.packages = [
+      pkgs.qtile
+    ];
 
-    base00 = "${base00}"
-    base01 = "${base01}"
-    base02 = "${base02}"
-    base03 = "${base03}"
-    base04 = "${base04}"
-    base05 = "${base05}"
-    base06 = "${base06}"
-    base07 = "${base07}"
-    base08 = "${base08}"
-    base09 = "${base09}"
-    base0A = "${base0A}"
-    base0B = "${base0B}"
-    base0C = "${base0C}"
-    base0D = "${base0D}"
-    base0E = "${base0E}"
-    base0F = "${base0F}"
+    home.sessionVariables = {
+      PYTHONPATH = "${qtile-python-packages}/${qtile-python-packages.sitePackages}";
+    };
 
-    barBg = "${base01 + toHexString 200}"
-    barBorderBg = "${base00 + toHexString 200}"
-  '';
+    xdg.configFile."qtile/defaults.py".text = ''
+      terminal = '${config.defaults.terminal}'
+    '';
 
-  xdg.configFile."qtile" = {
-    recursive = true;
-    source = ./files;
+    xdg.configFile."qtile/theme.py".text = with config.scheme.withHashtag; 
+    ''
+      gapSize = ${toString config.blocks.theme.wm.gap}
+      borderSize = ${toString config.blocks.theme.wm.border}
+      barSize = ${toString config.blocks.theme.wm.bar.size}
+      enableBar = ${toString config.blocks.theme.wm.bar.enable}
+
+      base00 = "${base00}"
+      base01 = "${base01}"
+      base02 = "${base02}"
+      base03 = "${base03}"
+      base04 = "${base04}"
+      base05 = "${base05}"
+      base06 = "${base06}"
+      base07 = "${base07}"
+      base08 = "${base08}"
+      base09 = "${base09}"
+      base0A = "${base0A}"
+      base0B = "${base0B}"
+      base0C = "${base0C}"
+      base0D = "${base0D}"
+      base0E = "${base0E}"
+      base0F = "${base0F}"
+
+      barBg = "${base01 + toHexString 200}"
+      barBorderBg = "${base00 + toHexString 200}"
+    '';
+
+    xdg.configFile."qtile" = {
+      recursive = true;
+      source = ./files;
+    };
   };
 }

@@ -1,14 +1,25 @@
 { config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
+let
+  cfg = config.blocks.programs.git;
+in
 {
-  programs.git = {
-    enable = true;
-
-    userEmail = "mail@nryz.xyz";
-    userName = "nryz";
+  options.blocks.programs.git = with types; {
+    enable = mkOpt bool false;
   };
 
-  home.packages = with pkgs; [
-    gitui
-  ];
+  config = mkIf cfg.enable {
+    programs.git = {
+      enable = true;
+
+      userEmail = "mail@nryz.xyz";
+      userName = "nryz";
+    };
+
+    home.packages = with pkgs; [
+      gitui
+    ];
+  };
 }

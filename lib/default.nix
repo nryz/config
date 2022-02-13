@@ -9,7 +9,7 @@ let
     inherit (options) mkOpt mkOpt' mkOptColour mkOptColour';
 
     blocks = import ./blocks.nix { inherit lib; };
-    inherit (blocks) collectBlocks;
+    inherit (blocks) collectBlocks collectBlocksToList;
   };
 in
   inputs.nixpkgs.lib.extend (final: prev: {

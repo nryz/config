@@ -1,30 +1,41 @@
 { config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
+let
+  cfg = config.blocks.services.ssh;
+in
 {
-  persist.directories = [ "/etc/ssh" ];
-  persist.userDirectories = [ ".ssh" ];
-
-  environment.systemPackages = with pkgs; [
-    (pkgs.writeShellScriptBin "ak" ''
-      eval $(ssh-agent) >/dev/null
-      ssh-add -K
-      $@
-      eval $(ssh-agent -k) >/dev/null
-    '')
-  ];
-
-  programs.ssh = {
-    startAgent = false;
-    askPassword = "${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
+  options.blocks.services.ssh = with types; {
+    enable = mkOpt bool false;
   };
 
-  services = {
-    pcscd.enable = true;
+  config = mkIf cfg.enable {
+    blocks.persist.directories = [ "/etc/ssh" ];
+    blocks.persist.userDirectories = [ ".ssh" ];
 
-    openssh = {
-      enable = true;
-      logLevel = "VERBOSE";
-      passwordAuthentication = false;
+    environment.systemPackages = with pkgs; [
+      (pkgs.writeShellScriptBin "ak" ''
+        eval $(ssh-agent) >/dev/null
+        ssh-add -K
+        $@
+        eval $(ssh-agent -k) >/dev/null
+      '')
+    ];
+
+    programs.ssh = {
+      startAgent = false;
+      askPassword = "${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
+    };
+
+    services = {
+      pcscd.enable = true;
+
+      openssh = {
+        enable = true;
+        logLevel = "VERBOSE";
+        passwordAuthentication = false;
+      };
     };
   };
 }

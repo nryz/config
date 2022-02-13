@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, blocks, flakePath, ... }:
+{ config, lib, pkgs, inputs, flakePath, ... }:
 
 with lib;
 with lib.my;
@@ -7,11 +7,6 @@ let
     app + ".desktop";
 in
 {
-  imports = with blocks; [ 
-     scripts 
-     theme
-  ];
-
   options = with types; {
     defaults = {
       editor = mkOpt str "vim";
@@ -26,15 +21,15 @@ in
 
     system.udevPackages = mkOpt (listOf package) [];
     system.programs = mkOpt (listOf str) [];
-
-    persist.directories = mkOpt (listOf str) [];
-    persist.files = mkOpt (listOf str) [];
   };
 
   config = {
+    blocks.scripts.enable = true;
+    blocks.theme.enable = true;
+
     systemd.user.startServices = "sd-switch";
 
-    scheme = flakePath + /data/colourschemes + "/${config.theme.colour}.yaml";
+    scheme = flakePath + /data/colourschemes + "/${config.blocks.theme.colour}.yaml";
 
     home.shellAliases = {
       cat = "bat";

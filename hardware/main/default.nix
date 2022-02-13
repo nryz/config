@@ -12,7 +12,7 @@
     boot.kernelModules = [ "kvm-intel" ];
     boot.extraModulePackages = [ ];
 
-    persist.path = "/nix/persist";
+    blocks.persist.path = "/nix/persist";
   
     fileSystems."/" = { 
       device = "none";

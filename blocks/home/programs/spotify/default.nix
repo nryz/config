@@ -1,6 +1,10 @@
 { config, lib, pkgs, ... }:
 
+with lib;
+with lib.my;
 let
+  cfg = config.blocks.programs.spotify;
+
   spotifyDesktop = pkgs.makeDesktopItem {
     name = "spotify";
     desktopName = "spotify";
@@ -8,7 +12,13 @@ let
   };
 in
 {
-  home.packages = with pkgs; [
-    spotifyDesktop
-  ];
+  options.blocks.programs.spotify = with types; {
+    enable = mkOpt bool false;
+  };
+
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [
+      spotifyDesktop
+    ];
+  };
 }

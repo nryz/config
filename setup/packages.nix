@@ -10,6 +10,11 @@
     ];
   };
 
+  stablePkgs = import inputs.nixpkgs-stable {
+    inherit system;
+    config.allowUnfree = true;
+  };
+
   extraPkgs = {
     poly-dark-grub = inputs.poly-dark-grub;
 
@@ -18,8 +23,6 @@
       src = inputs.zsh-pure-prompt;
       file = "pure.zsh";
     };
-
-    base16-colorscheme = "${inputs.base16Theme}/helios.yaml" ;
 
     sddm-theme = pkgs.callPackage ../pkgs/sddm-theme { src = inputs.sddm-wynn; };
     passage = pkgs.callPackage ../pkgs/passage { src = inputs.passage; };

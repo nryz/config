@@ -1,5 +1,16 @@
 { config, lib, pkgs, inputs, ... }:
 
+with lib;
+with lib.my;
+let
+  cfg = config.blocks.games.lutris;
+in
 {
-  home.packages = with pkgs; [ lutris ];
+  options.blocks.games.lutris = with types; {
+    enable = mkOpt bool false;
+  };
+
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [ lutris ];
+  };
 }

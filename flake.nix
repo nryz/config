@@ -3,6 +3,9 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
+
+    nixpkgs-stable.url = github:nixos/nixpkgs;
+
     nur.url = github:nix-community/NUR;
     utils.url = github:gytis-ivaskevicius/flake-utils-plus;
 
@@ -15,7 +18,6 @@
 
     base16 = { url = github:SenchoPens/base16.nix; inputs.nixpkgs.follows = "nixpkgs"; };
     base16-vim = { url = github:chriskempson/base16-vim; flake = false; };
-    base16-kitty = { url = github:kdrag0n/base16-kitty; flake = false; };
     base16-qutebrowser = { url = github:theova/base16-qutebrowser; flake = false; };
     base16-zathura = { url = github:haozeke/base16-zathura; flake = false; };
     base16-kakoune = { url = github:AprilArcus/base16-kakoune; flake = false; };
@@ -42,6 +44,8 @@
   };
 
   outputs = inputs @ { self, ... }: {
+    inherit self;
+
     nixosConfigurations = import ./setup {
       inherit inputs;
       system = "x86_64-linux";
