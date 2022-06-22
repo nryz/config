@@ -74,7 +74,7 @@ in
 
       plugins = with pkgs.vimPlugins; [
         extraPkgs.vimPlugins.which-key-nvim
-        extraPkgs.vimPlugins.fzf-lua
+        #extraPkgs.vimPlugins.fzf-lua
         lualine-nvim
         hop-nvim
         nvim-web-devicons

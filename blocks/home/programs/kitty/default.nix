@@ -14,7 +14,7 @@ in
     programs.kitty = {
       enable = true;
 
-      package = stablePkgs.kitty;
+      #package = stablePkgs.kitty;
 
       font = {
         package = pkgs.fira-code;
@@ -61,6 +61,7 @@ in
 
       extraConfig = with config.scheme.withHashtag; ''
         enable_audio_bell no
+        confirm_os_window_close 0
 
         open_url_with ${config.defaults.browser}
 

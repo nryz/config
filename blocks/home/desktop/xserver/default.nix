@@ -60,11 +60,12 @@ in
 
     xresources.path = "${config.home.homeDirectory}/.config/.Xresources";
 
-    xsession.pointerCursor = {
+    home.pointerCursor = {
       name = "Vanilla-DMZ";
       package = pkgs.vanilla-dmz;
-      defaultCursor = "left_ptr";
       size = 24;
+      x11.enable = true;
+      x11.defaultCursor = "left_ptr";
     };
   };
 }

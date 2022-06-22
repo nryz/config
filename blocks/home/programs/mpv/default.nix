@@ -11,23 +11,29 @@ in
   };
 
   config = mkIf cfg.enable {
+
+    home.packages = with pkgs; [
+      haruna
+    ];
+
     programs.mpv = {
       enable = true;
 
       scripts = with pkgs.mpvScripts; [
-        autoload
         mpris
         mpv-playlistmanager
         sponsorblock
-        thumbnail
+        #thumbnail
         youtube-quality
       ];
-
-      config = {
-        osc = "no";
-        "keepaspect-window" = "no";
-        "keepaspect" = "yes";
-      };
     };
+
+    xdg.configFile."mpv/mpv.conf".text = ''
+      keepaspect-window=no
+      keepaspect=yes
+      alang=Japanese,jpn,ja,English,eng,en
+      slang=English,eng,en
+
+    '';
   };
 }

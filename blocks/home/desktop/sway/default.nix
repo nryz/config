@@ -25,16 +25,7 @@ in
       systemdIntegration = true;
 
       extraSessionCommands = ''
-        export LIBSEAT_BACKEND=logind
-        export SDL_VIDEODRIVER=wayland
-        export _JAVA_AWT_WM_NONREPARENTING=1
-        export XDG_SESSION_TYPE=wayland
-        export XDG_CURRENT_DESKTOP=sway
-        export MOZ_ENABLE_WAYLAND="1"
-        export QT_QPA_PLATFORM=wayland
-        export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-        export QT_SCALE_FACTOR=1
-        export GDK_BACKEND=wayland
+         export XDG_CURRENT_DESKTOP=sway
       '';
 
       wrapperFeatures = {
@@ -57,8 +48,6 @@ in
           "XF86AudioRaiseVolume" = "exec IncreaseVolume";
           "${modifier}+w" = "kill";
         };
-
-        menu = "${extraPkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
 
         window = {
           border = config.blocks.theme.wm.border;

@@ -53,7 +53,7 @@ in
 
       keyBindings = {
         normal = {
-          ",m" = "hint links spawn mpv {hint-url} --title='youtube' --pause --no-sub-visibility";
+          ",m" = "hint links spawn mpv {hint-url} --title='youtube' --pause --no-sub-visibility ytdl-format=bestvideo[height<=?1080]+bestaudio/best";
           ",M" = "spawn mpv {url} --title='youtube' --pause --no-sub-visibility";
           ";m" = "hint --rapid links spawn umpv {hint-url} --title='youtube' --pause --no-sub-visibility";
           #no point in my most used commands being behind a ctrl keymap

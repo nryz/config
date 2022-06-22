@@ -34,7 +34,7 @@ in
 
     environment.systemPackages = with pkgs; [
       networkmanager
-      sshfsFuse
+      sshfs-fuse
       lftp
       ncftp
       inetutils

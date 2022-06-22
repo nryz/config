@@ -28,6 +28,8 @@
     passage = pkgs.callPackage ../pkgs/passage { src = inputs.passage; };
     zsh-vi-mode = pkgs.callPackage ../pkgs/zsh-vi-mode { src = inputs.zsh-vi-mode; };
 
+    swhkd = pkgs.callPackage ../pkgs/swhkd { };
+
     sway-launcher-desktop = pkgs.writeShellScriptBin "sway-launcher-desktop"
       (builtins.readFile "${inputs.sway-launcher-desktop}/sway-launcher-desktop.sh");
 

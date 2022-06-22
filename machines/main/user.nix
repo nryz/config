@@ -1,15 +1,11 @@
-{ config, lib, pkgs, extraPkgs, inputs, ... }: 
+{ config, lib, pkgs, extraPkgs, inputs, defaultUser, ... }: 
 
 with lib;
 with lib.my;
-let
-  systemInfo = config.systemInfo;
-  sa = systemInfo.scalability;
-in {
-
-  blocks = mkMerge [({
+{
+  blocks = {
     theme = {
-      background =  "10";
+      background =  "11";
       colour = "solarized-dark";
 
       wm.gap = 12;
@@ -30,6 +26,7 @@ in {
 
     desktop.qtile.enable = true;
     desktop.sway.enable = false;
+    desktop.riverwm.enable = false;
 
     sites.youtube.enable = true;
 
@@ -39,6 +36,7 @@ in {
     programs.kitty.enable = true;
 
     programs.zsh.enable = true;
+    programs.direnv.enable = true;
     programs.fzf.enable = true;
     programs.git.enable = true;
     programs.mpv.enable = true;
@@ -50,6 +48,7 @@ in {
     programs.sway-launcher-desktop.enable = true;
     programs.zathura.enable = true;
     programs.nix-index.enable = true;
+    programs.filezilla.enable = true;
     programs.passage = {
       enable = true;
       storeLocation = "/run/media/nr/FDP/passage";
@@ -58,19 +57,17 @@ in {
     services.dunst.enable = true;
     services.udiskie.enable = true;
     services.unclutter.enable = true;
-  })
-  (mkIf (sa.diskSpace > 1) {
+
     projects.keyboard.enable = true;
     programs.firefox.enable = true;
     programs.helix.enable = true;
-    programs.kakoune.enable = true;
-  }) 
-  (mkIf (sa.gpu > 1 && sa.diskSpace > 1 && sa.cpu > 1) {
+    programs.kakoune.enable = false;
+
     games.minecraft.enable = false;
     games.dwarf-fortress.enable = false;
-    games.steam.enable = false;
+    games.steam.enable = true;
     games.lutris.enable = false;
-  })];
+  };
 
   home.packages = with pkgs; [
     tree
@@ -79,7 +76,6 @@ in {
     fd
     ripgrep
     unzip
-  ] ++ lib.optionals (sa.diskSpace > 1) [
     lxappearance
     xplr
     xfce.thunar

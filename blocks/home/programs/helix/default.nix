@@ -19,10 +19,11 @@ in
       theme = "custom"
 
       [editor]
-      auto-pairs = false
+      mouse = false
       line-number = "relative"
-
-      [lsp]
+      auto-pairs = false
+            
+      [editor.lsp]
       display-messages = true
     '';
 

@@ -21,6 +21,8 @@ in
         experimental-features = nix-command flakes
         warn-dirty = false
         allow-dirty = true
+        keep-outputs = true
+        keep-derivations = true
       '';
 
       gc = {

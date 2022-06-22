@@ -2,7 +2,8 @@
   description = "NixOS config";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-unstable";
+    #nixpkgs.url = "nixpkgs/nixos-unstable";
+    nixpkgs.url = github:nixos/nixpkgs/nixos-unstable;
 
     nixpkgs-stable.url = github:nixos/nixpkgs;
 
@@ -48,12 +49,7 @@
       inherit inputs self;
       system = "x86_64-linux";
       stateVersion = "21.11";
-
-      configs.main = {
-        hardware = hardware/main;
-        profile = profiles/system/desktop;
-        defaultUser = profiles/home/desktop;
-      };
+      defaultUserName = "nr";
     };
   };
 }

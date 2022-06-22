@@ -32,6 +32,8 @@ in
     ];
 
     environment.persistence."${cfg.path}/system" = {
+      hideMounts = true;
+
       directories = [
         "/var/log"
         "/var/lib/systemd/coredump"

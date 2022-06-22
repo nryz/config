@@ -11,9 +11,23 @@ let
     stty -echo
     trap 'stty echo' EXIT
 
-    server="''$(passage show root/servers/seedbox/url)"
-    user="''$(passage show root/servers/seedbox/username)"
-    password="''$(passage show root/servers/seedbox/password)"
+    secretsFolder="''${HOME}/.secrets"
+
+    if test -f "''${secretsFolder}/seedbox"; then
+      readarray -t lines < "''${secretsFolder}/seedbox"
+      server="''${lines[0]}"
+      user="''${lines[1]}"
+      password="''${lines[2]}"
+    else
+      server="''$(passage show root/servers/seedbox/url)"
+      user="''$(passage show root/servers/seedbox/username)"
+      password="''$(passage show root/servers/seedbox/password)"
+
+      mkdir ''${secretsFolder}
+
+      printf '%s\n' $server $user $password > "''${secretsFolder}/seedbox"
+    fi
+
 
     ret="$(ncftpls -1 -x "R" -i "*" ftp://$user:$password@$server/files/ | grep ".\.mkv" | sort | fzf)"
 
@@ -23,6 +37,7 @@ let
       do
         umpv "sftp://$user:$password@$server/files/$p" &
         sleep .5
+        echo "''${p}" >> "''${secretsFolder}/history"
       done
     fi
 
@@ -36,6 +51,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    blocks.persist.files = [ ".secrets/history"];
+
     home.packages = with pkgs; [
       fzfSeedbox
 

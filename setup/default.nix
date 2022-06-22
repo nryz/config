@@ -4,8 +4,10 @@ args: let
   homeBlocks = lib.my.collectBlocksToList ../blocks/home;
   packages = import ./packages.nix { inherit (args) inputs system; };
   flakePath = ../.;
+  
+  machines = lib.my.collectMachines ../machines;
 
-  defaultUserName = "nr";
+  defaultUserName = args.defaultUserName;
 
   specialArgs = {
     defaultUser = defaultUserName;
@@ -14,16 +16,15 @@ args: let
     inherit (args) inputs;
   };
 
-in lib.mapAttrs (name: value: lib.nixosSystem {
+in lib.mapAttrs (name: machineFolder: lib.nixosSystem {
   inherit (packages) pkgs;
   inherit (args) system;
   inherit specialArgs;
 
   modules = systemBlocks ++ [
     ../blocks/system/base.nix
-    ./hardware.nix
-    value.hardware
-    value.profile
+    (machineFolder + "/hardware.nix")
+    (machineFolder + "/system.nix")
     args.inputs.utils.nixosModules.autoGenFromInputs
     args.inputs.base16.nixosModule
     args.inputs.home-manager.nixosModules.home-manager 
@@ -65,7 +66,7 @@ in lib.mapAttrs (name: value: lib.nixosSystem {
           home.homeDirectory = "/home/${defaultUserName}";
           home.stateVersion = args.stateVersion;
           programs.home-manager.enable = true;
-          imports = [ value.defaultUser ];
+          imports = [ (machineFolder + "/user.nix") ];
         };
       };
 
@@ -77,4 +78,4 @@ in lib.mapAttrs (name: value: lib.nixosSystem {
       ];
     })
   ];
-}) args.configs
+}) machines

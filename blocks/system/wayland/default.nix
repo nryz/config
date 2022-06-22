@@ -12,6 +12,7 @@ in
   };
 
   config = mkIf cfg.enable {
+    programs.xwayland.enable = true;
     environment.variables = extraEnv;
     environment.sessionVariables = extraEnv;
     environment.systemPackages = with pkgs; [

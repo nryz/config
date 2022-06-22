@@ -17,6 +17,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    blocks.persist.directories = [ ".config/spotify" ];
+
     home.packages = with pkgs; [
       spotifyDesktop
     ];

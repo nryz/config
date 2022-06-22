@@ -16,13 +16,13 @@ in
 
    #pulseaudio
    sound.enable = true;
-    hardware.pulseaudio = {
-      enable = true;
-      extraModules = [ pkgs.pulseaudio-modules-bt ];
-      extraConfig = ''
-        load-module module-switch-on-connect
-      '';
-    };
+   hardware.pulseaudio = {
+     enable = true;
+
+     extraConfig = ''
+       load-module module-switch-on-connect
+     '';
+   };
 
    services.tlp = {
      enable = true;
