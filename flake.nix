@@ -20,41 +20,47 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
-    xremap = {
-      url = "github:xremap/nix-flake";
+    packages = {
+      url = "path:./packages";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     base16 = { url = "github:SenchoPens/base16.nix"; inputs.nixpkgs.follows = "nixpkgs"; };
     base16-qutebrowser = { url = "github:theova/base16-qutebrowser"; flake = false; };
     base16-zathura = { url = "github:haozeke/base16-zathura"; flake = false; };
-    base16-dunst = { url = "github:khamer/base16-dunst"; flake = false; };
 
-    zsh-pure-prompt = { url = "github:sindresorhus/pure"; flake = false; };
-    zsh-vi-mode = { url = "github:jeffreytse/zsh-vi-mode"; flake = false; };
-
-    picom-ibhagwan = { url = "github:ibhagwan/picom"; flake = false; };
-    sway-launcher-desktop = { url = "github:Biont/sway-launcher-desktop"; flake = false; };
   };
 
-  outputs = inputs @ { self, ... }: let
-    stateVersion = "21.11";
+  outputs = inputs @ { self, ... }: let args = rec {
+    inherit inputs;
     system = "x86_64-linux";
-    defaultUserName = "nr";
-    configPath = "/home/${defaultUserName}/config";
+    user = "nr";
+    configPath = "/home/${user}/config";
 
-    packages = import ./setup/packages.nix { 
-      inherit inputs system; 
+    pkgs = import inputs.nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+
+      overlays = [
+        inputs.nur.overlay
+        inputs.utils.overlay
+      ];
     };
+
+    pkgsStable = import inputs.nixpkgs-stable {
+      inherit system;
+      config.allowUnfree = true;
+    };
+
+    packages = inputs.packages.packages.${system};
+  
+    base16 = {
+      qutebrowser = inputs.base16-qutebrowser;
+      zathura = inputs.base16-zathura;
+    };
+  };
   in {
-    nixosConfigurations = import ./setup/nixos.nix {
-      inherit inputs self system packages;
-      inherit stateVersion defaultUserName configPath;
-    };
-    
-    apps = import ./setup/apps.nix { 
-      inherit system packages configPath; 
-    };
-    
+    nixosConfigurations = import ./nixos args;
+    apps = import ./nixos/apps.nix args;
   };
 }

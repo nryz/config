@@ -2,14 +2,14 @@
 
 let
   mkLib = lib: rec {
-    configurations = import ./configurations.nix { inherit lib inputs; };
-    inherit (configurations) mkNixoses mkHomes collectMachines;
+    configurations = import ./configurations.nix { inherit lib; };
+    inherit (configurations) collectMachines;
 
     options = import ./options.nix { inherit lib; };
     inherit (options) mkOpt mkOpt' mkOptColour mkOptColour';
 
     blocks = import ./blocks.nix { inherit lib; };
-    inherit (blocks) collectBlocks collectBlocksToList;
+    inherit (blocks) collectBlocks;
   };
 in
   inputs.nixpkgs.lib.extend (final: prev: {

@@ -1,0 +1,99 @@
+{
+  "nodes": {
+    "naersk": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1662220400,
+        "narHash": "sha256-9o2OGQqu4xyLZP9K6kNe1pTHnyPz0Wr3raGYnr9AIgY=",
+        "owner": "nix-community",
+        "repo": "naersk",
+        "rev": "6944160c19cb591eb85bbf9b2f2768a935623ed3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "master",
+        "repo": "naersk",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1664525607,
+        "narHash": "sha256-yb1HvHGcf05HrzX6KK4HTfNhF/lvCwFnd7cBaGg7roE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "c6b3881520feb0c837cf5ae16d95d32277f41f60",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "naersk": "naersk",
+        "nixpkgs": "nixpkgs",
+        "swhkd": "swhkd",
+        "utils": "utils",
+        "zsh-vi-mode": "zsh-vi-mode"
+      }
+    },
+    "swhkd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1662914974,
+        "narHash": "sha256-p4OU8tyd4pGr5PstuTu22wPzGvmftLBSsU7VB2Ix3Mk=",
+        "owner": "waycrate",
+        "repo": "swhkd",
+        "rev": "022466ec0bcca881d5034a2b23aab934cfd4578a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "waycrate",
+        "repo": "swhkd",
+        "type": "github"
+      }
+    },
+    "utils": {
+      "locked": {
+        "lastModified": 1659877975,
+        "narHash": "sha256-zllb8aq3YO3h8B/U0/J1WBgAL8EX5yWf5pMj3G0NAmc=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "c0e246b9b83f637f4681389ecabcb2681b4f3af0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "zsh-vi-mode": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1663820279,
+        "narHash": "sha256-KQ7UKudrpqUwI6gMluDTVN0qKpB15PI5P1YHHCBIlpg=",
+        "owner": "jeffreytse",
+        "repo": "zsh-vi-mode",
+        "rev": "0b1381bd2b23b966881e2bca426216a47f7f3403",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jeffreytse",
+        "repo": "zsh-vi-mode",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
