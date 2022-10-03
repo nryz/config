@@ -7,9 +7,10 @@
     
     swhkd = { url = "github:waycrate/swhkd"; flake = false; };
     zsh-vi-mode = { url = "github:jeffreytse/zsh-vi-mode"; flake = false; };
-    zsh-pure-prompt = { url = "github:sindresorhus/pure"; flake = false; };
 
     picom-ibhagwan = { url = "github:ibhagwan/picom"; flake = false; };
+    
+    xremap = { url = "github:k0kubun/xremap"; flake = false; };
   };
 
   outputs = inputs @ { self, nixpkgs, utils, naersk, ... }:
@@ -19,18 +20,18 @@
         naersk-lib = pkgs.callPackage naersk { };
       in
       {
+        
         packages = {
           swhkd = naersk-lib.buildPackage { name = "swhkd"; src = inputs.swhkd; };
+          
+          xremap = naersk-lib.buildPackage { name = "xremap"; src = inputs.xremap; };
 
           picom-ibhagwan = pkgs.picom.overrideAttrs(o: { src = inputs.picom-ibhagwan; });
           
-          zsh-pure-prompt = {
-            name = "pure-prompt";
-            src = inputs.zsh-pure-prompt;
-            file = "pure.zsh";
-          };
-
           zsh-vi-mode = pkgs.callPackage ./zsh-vi-mode.nix { src = inputs.zsh-vi-mode; };
+        };
+        
+        apps = {
         };
       });
 }

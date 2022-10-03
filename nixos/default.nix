@@ -13,13 +13,14 @@ in lib.mapAttrs (name: machineFolder: let
   };
   
   extraModules = {
+    kmonad = args.inputs.kmonad.nixosModules.default;
     impermanence = args.inputs.impermanence.nixosModules.impermanence;
   };
 
   specialArgs = {
-    inputs = args.inputs; #why is this needed??
+    inputs = args.inputs;
     inherit lib info extraModules;
-    inherit (args) pkgs packages pkgsStable base16;
+    inherit (args) pkgs packages base16;
   };
 in lib.nixosSystem {
   inherit (args) system pkgs;

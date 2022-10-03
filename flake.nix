@@ -29,9 +29,10 @@
     base16-qutebrowser = { url = "github:theova/base16-qutebrowser"; flake = false; };
     base16-zathura = { url = "github:haozeke/base16-zathura"; flake = false; };
 
+    zsh-pure-prompt = { url = "github:sindresorhus/pure"; flake = false; };
   };
 
-  outputs = inputs @ { self, ... }: let args = rec {
+  outputs = inputs @ { self, utils, ... }: let args = rec {
     inherit inputs;
     system = "x86_64-linux";
     user = "nr";
@@ -47,11 +48,6 @@
       ];
     };
 
-    pkgsStable = import inputs.nixpkgs-stable {
-      inherit system;
-      config.allowUnfree = true;
-    };
-
     packages = inputs.packages.packages.${system};
   
     base16 = {
@@ -60,7 +56,19 @@
     };
   };
   in {
+
     nixosConfigurations = import ./nixos args;
-    apps = import ./nixos/apps.nix args;
-  };
+    
+    templates = import ./templates;
+
+  } // utils.lib.eachDefaultSystem (system: {
+
+    apps = inputs.packages.apps.${system} // { 
+      default = import ./nixos/st args; 
+    };
+
+    packages = inputs.packages.packages.${system} // {
+    };
+
+  });
 }

@@ -11,6 +11,10 @@ in
   };
   
   config = mkIf cfg.enable {
+    environment.systemPackages = with pkgs; [
+      nix-tree
+    ];
+    
     nix = {
       generateRegistryFromInputs = true;
       generateNixPathFromInputs = true;

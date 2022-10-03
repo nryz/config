@@ -181,11 +181,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1664638638,
-        "narHash": "sha256-NoGJ2gxvKu575FixK85rUwN4FG/y74rBipcfZHeoN8w=",
+        "lastModified": 1664739150,
+        "narHash": "sha256-vIduaNXDAxiUMOkACL/rg8DRyzq9IHztyCcRUl2DXtg=",
         "owner": "helix-editor",
         "repo": "helix",
-        "rev": "5b5f1bd39ae46fdf68ba758b29bdb29200394c86",
+        "rev": "9d1793c45b22a6dce0a08937717887189b46c492",
         "type": "github"
       },
       "original": {
@@ -314,11 +314,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1664708158,
-        "narHash": "sha256-i0mG1u+tUHWL9wMO4UhbbN8H5aWA5vy8P742cnHZ2TE=",
+        "lastModified": 1664718272,
+        "narHash": "sha256-BNnUks1BKzBr8HzoKBFQ8a7/avQhDkKCu0DSgW1ulcY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "eac6d0a95c42884ad6cc5292dd1be2bf59519607",
+        "rev": "392b26288ad1cdebd03eac17adb70491f9f392d3",
         "type": "github"
       },
       "original": {
@@ -336,12 +336,12 @@
         "picom-ibhagwan": "picom-ibhagwan",
         "swhkd": "swhkd",
         "utils": "utils_2",
-        "zsh-pure-prompt": "zsh-pure-prompt",
+        "xremap": "xremap",
         "zsh-vi-mode": "zsh-vi-mode"
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-Tb3PebY8huA7iL2p3u7jVlfn92hSovmhoJXu8UHtRTc=",
+        "narHash": "sha256-mQWOKuwqNUREpT8DWlTq7jw2YcMhiVP2IZmFZ+6rteo=",
         "path": "./packages",
         "type": "path"
       },
@@ -378,7 +378,8 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "nur": "nur",
         "packages": "packages",
-        "utils": "utils_3"
+        "utils": "utils_3",
+        "zsh-pure-prompt": "zsh-pure-prompt"
       }
     },
     "rust-overlay": {
@@ -406,11 +407,11 @@
     "swhkd": {
       "flake": false,
       "locked": {
-        "lastModified": 1662914974,
-        "narHash": "sha256-p4OU8tyd4pGr5PstuTu22wPzGvmftLBSsU7VB2Ix3Mk=",
+        "lastModified": 1664703291,
+        "narHash": "sha256-DaatMopuqK5JAmm/yvoV+tAHZortTUxAj15eN8/ort0=",
         "owner": "waycrate",
         "repo": "swhkd",
-        "rev": "022466ec0bcca881d5034a2b23aab934cfd4578a",
+        "rev": "ad687efbefe71054d0278a31f6fd80c7fc4ae0ec",
         "type": "github"
       },
       "original": {
@@ -464,6 +465,22 @@
       "original": {
         "owner": "gytis-ivaskevicius",
         "repo": "flake-utils-plus",
+        "type": "github"
+      }
+    },
+    "xremap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1664682481,
+        "narHash": "sha256-CgPOo8Yvy0EMXIoNVIjTG3lrbfjtmqOxOHcm+RT7CZw=",
+        "owner": "k0kubun",
+        "repo": "xremap",
+        "rev": "32011d6a5f4794d3c89c7701c688588fb29ed380",
+        "type": "github"
+      },
+      "original": {
+        "owner": "k0kubun",
+        "repo": "xremap",
         "type": "github"
       }
     },

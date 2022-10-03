@@ -1,4 +1,4 @@
-{ config, lib, pkgs, packages, ... }:
+{ config, lib, pkgs, packages, inputs, ... }:
 
 with lib;
 with lib.my;
@@ -22,7 +22,11 @@ in
       history.path = "$HOME/.zsh/history";
 
       plugins = with packages; [
-        zsh-pure-prompt
+        {
+          name = "pure-prompt";
+          file = "pure.zsh";
+          src = inputs.zsh-pure-prompt;
+        }
       ];
       
       initExtra = ''
