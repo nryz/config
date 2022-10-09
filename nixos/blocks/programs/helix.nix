@@ -1,7 +1,7 @@
-{ config, lib, pkgs, packages, ... }:
+{ config, lib, pkgs, libs, packages, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.programs.helix;
 in

@@ -1,8 +1,7 @@
-
-{ config, lib, pkgs, ... }:
+{ config, lib, libs, pkgs, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.programs.nix-index;
 in

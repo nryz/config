@@ -1,6 +1,5 @@
-args: let
-  pkgs = args.pkgs;
-  configPath = args.configPath;
+{ pkgs, info } : let
+  configPath = "/home/${info.user}/config";
  
 in {
   type = "app";

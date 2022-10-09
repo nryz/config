@@ -1,36 +1,34 @@
-args: let
-  lib = import ../lib { inherit (args) inputs; };
-  machines = lib.my.collectMachines ./machines;
-  blocks = lib.my.collectBlocks ./blocks;
+input : let
+  inherit (input) info pkgs libs inputs packages theme;
+
+  lib = libs.lib;
+  
+  machines = libs.flake.collectMachines ./machines;
+  blocks = libs.flake.collectBlocks ./blocks;
 
 in lib.mapAttrs (name: machineFolder: let
 
-  info = {
-    inherit (args) user configPath;
-    stateVersion = "21.11";
-    flakePath = ../.;
-    hostName = name;
-  };
-  
-  extraModules = {
-    kmonad = args.inputs.kmonad.nixosModules.default;
-    impermanence = args.inputs.impermanence.nixosModules.impermanence;
-  };
-
   specialArgs = {
-    inputs = args.inputs;
-    inherit lib info extraModules;
-    inherit (args) pkgs packages base16;
+    inherit pkgs packages libs;
+    inherit theme lib inputs;
+    
+    info = {
+      user = info.user;
+      stateVersion = "21.11";
+      flakePath = ../.;
+      hostName = name;
+    };
   };
 in lib.nixosSystem {
-  inherit (args) system pkgs;
-  inherit specialArgs;
+  inherit (info) system;
+  inherit pkgs specialArgs;
 
   modules = blocks ++ [
     (machineFolder + "/hardware.nix")
     (machineFolder + "/config.nix")
-    args.inputs.utils.nixosModules.autoGenFromInputs
-    args.inputs.base16.nixosModule
-    args.inputs.home-manager.nixosModules.home-manager 
+    inputs.utils.nixosModules.autoGenFromInputs
+    inputs.base16.nixosModule
+    inputs.home-manager.nixosModules.home-manager
+    inputs.impermanence.nixosModules.impermanence
   ];
 }) machines

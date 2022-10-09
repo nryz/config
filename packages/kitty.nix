@@ -1,8 +1,8 @@
-{ pkgs, myLib, theme,  ... }:
+{ pkgs, libs, theme,  ... }:
 
 let
   lib = pkgs.lib;
-
+  
   settings = ''
     enable_audio_bell no
     confirm_os_window_close 0
@@ -98,7 +98,7 @@ let
   
   configFile = settings + themeSettings;
 
-in myLib.wrapPackage {
+in libs.flake.wrapPackage {
   pkg = pkgs.kitty;
   name = "kitty";
 

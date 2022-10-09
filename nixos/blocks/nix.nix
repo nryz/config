@@ -1,7 +1,7 @@
-{ config, lib, pkgs, info, ... }:
+{ config, lib, libs, pkgs, info, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.nix;
 in
@@ -25,12 +25,6 @@ in
        from = { id = "init"; type = "indirect"; };
        to = { owner = "nryz"; repo = "flakeTemplates"; type = "github"; };
       };
-      
-      registry.system = {
-        from = { id = "system"; type = "indirect"; };
-        to = { path = "${info.configPath}"; type = "path"; };
-      };
-      
       
       # package = pkgs.nixFlakes;
       package = pkgs.nixUnstable;

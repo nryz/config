@@ -1,7 +1,7 @@
-{ config, options, lib, pkgs, ... }:
+{ config, options, libs, lib, pkgs, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.programs.rofi;
 in

@@ -1,7 +1,6 @@
 { config, lib, pkgs, info, ... }: 
 
 with lib;
-with lib.my;
 {
   time.timeZone = "Europe/London";
 
@@ -11,7 +10,7 @@ with lib.my;
     herbstluftwm.enable = true;
     riverwm.enable = false;
 
-    background =  "24";
+    background =  "4";
     colourscheme = "solarized-dark";
 
     font.package = pkgs.source-code-pro;
@@ -46,13 +45,6 @@ with lib.my;
     filezilla.enable = true;
     firefox.enable = true;
     helix.enable = true;
-  };
-
-  blocks.games = {
-    minecraft.enable = false;
-    dwarf-fortress.enable = false;
-    steam.enable = false;
-    lutris.enable = false;
   };
 
   hm.home.packages = with pkgs; [

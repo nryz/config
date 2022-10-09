@@ -1,7 +1,7 @@
-{ config, lib, pkgs, packages, inputs, ... }:
+{ config, lib, libs, pkgs, packages, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let 
   cfg = config.blocks.shell.zsh;
 in
@@ -25,13 +25,13 @@ in
         {
           name = "pure-prompt";
           file = "pure.zsh";
-          src = inputs.zsh-pure-prompt;
+          src = packages.extra.zsh-prompt;
         }
       ];
       
       initExtra = ''
         ZVM_INIT_MODE=sourcing
-        source ${packages.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
+        source ${packages.flake.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
 
         #KEYTIMEOUT=1
 

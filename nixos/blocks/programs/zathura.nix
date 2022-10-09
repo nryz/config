@@ -1,7 +1,7 @@
-{ config, lib, pkgs, base16, ... }:
+{ config, lib, libs, pkgs, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.programs.zathura;
 in
@@ -14,7 +14,6 @@ in
     hm.programs.zathura = {
       enable = true;
 
-      extraConfig = '' '' + builtins.readFile (config.scheme base16.zathura);
     };
   };
 }

@@ -1,7 +1,7 @@
-{ config, options, lib, pkgs, info, ... }:
+{ config, options, lib, libs, pkgs, info, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.desktop.xserver;
 in

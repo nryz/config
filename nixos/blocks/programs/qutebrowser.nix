@@ -1,7 +1,7 @@
-{ config, lib, pkgs, base16, ... }:
+{ config, lib, pkgs, libs, theme, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.programs.qutebrowser;
 in
@@ -114,8 +114,6 @@ in
         };
       };
 
-      extraConfig = builtins.readFile (config.scheme base16.qutebrowser) + ''
-      '' ;
     };
   };
 }

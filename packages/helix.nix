@@ -1,11 +1,11 @@
-{ pkgs, myLib, theme,  ... }:
+{ pkgs, libs, theme,  ... }:
 
 let
   lib = pkgs.lib;
   
   tomlFormat = pkgs.formats.toml {};
 
-  languages.language = [ 
+  languagesSettings.language = [ 
   { name = "rust"; 
     config = {
       checkOnSave = { command = "clippy"; };
@@ -44,7 +44,7 @@ let
     };
   };
   
-  theme = with theme.base16.withHashtag; {
+  themeSettings = with theme.base16.withHashtag; {
     "ui.background" = { bg = base00; };
     "ui.virtual.whitespace" = base03;
 
@@ -113,14 +113,14 @@ let
     "error" = base08;
   };
   
-in myLib.wrapPackage {
+in libs.flake.wrapPackage {
   pkg = pkgs.helix;
   name = "hx";
   vars = { 
     "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
   };
   
-  prefix = with pkgs; [ rnix-lsp ];
+  path = with pkgs; [ rnix-lsp ];
 
   files = {
     "config.toml" = {
@@ -130,12 +130,12 @@ in myLib.wrapPackage {
     
     "languages.toml" = {
       path = "config/helix";
-      src = tomlFormat.generate "helix-config" languages;
+      src = tomlFormat.generate "helix-config" languagesSettings;
     };
     
     "custom.toml" = {
       path = "config/helix/themes";
-      src = tomlFormat.generate "helix-theme" theme;
+      src = tomlFormat.generate "helix-theme" themeSettings;
     };
   };
 }

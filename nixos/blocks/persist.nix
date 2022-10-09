@@ -1,12 +1,11 @@
-{ config, lib, pkgs, extraModules, ... }:
+{ config, lib, libs, pkgs, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.persist;
 in
 {
-  imports = [ extraModules.impermanence ];
 
   options.blocks.persist = with types; {
     enable = mkOpt bool false;

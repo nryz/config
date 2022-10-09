@@ -1,7 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, libs, pkgs, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.desktop;
 in
@@ -19,7 +19,7 @@ in
 
     colourscheme = mkOpt' str;
 
-    font = mkOpt' (nullOr hm.types.fontType);
+    font = mkOpt' (nullOr libs.hm.types.fontType);
 
     gtk = {
       package = mkOpt' (nullOr package);

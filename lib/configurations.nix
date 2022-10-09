@@ -1,7 +1,6 @@
-{ lib }:
+{ pkgs, lib }:
 
 with lib;
-with lib.my;
 rec {
     
   collectMachines = dir:

@@ -1,8 +1,8 @@
-{ pkgs, myLib, theme,  ... }:
+{ pkgs, libs, theme,  ... }:
 
 let
   lib = pkgs.lib;
-  
+
   fontName = "${toString theme.font.size}pt ${theme.font.name}";
 
   quickmarks = ''
@@ -354,11 +354,11 @@ let
   configFile = pkgs.writeText "qutebrowser-configfile" (settings + themeSettings);
   quickmarksFile = pkgs.writeText "qutebrowser-quickmarks" quickmarks;
   
-in myLib.wrapPackage {
+in libs.flake.wrapPackage {
   pkg = pkgs.qutebrowser;
   name = "qutebrowser";
   
-  prefix = [ pkgs.qt5.qtwayland ];
+  path = [ pkgs.qt5.qtwayland ];
 
   vars = { 
     "XDG_CONFIG_HOME" = "${placeholder "out"}/config";

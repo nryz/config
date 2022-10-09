@@ -1,18 +1,13 @@
-{ inputs }:
+{ pkgs, lib }:
 
 let
-  mkLib = lib: rec {
-    configurations = import ./configurations.nix { inherit lib; };
-    inherit (configurations) collectMachines;
-
-    options = import ./options.nix { inherit lib; };
-    inherit (options) mkOpt mkOpt' mkOptColour mkOptColour';
-
-    blocks = import ./blocks.nix { inherit lib; };
-    inherit (blocks) collectBlocks;
-  };
-in
-  inputs.nixpkgs.lib.extend (final: prev: {
-    my = mkLib final;
-    hm = inputs.home-manager.lib.hm;
-  })
+  configurations = import ./configurations.nix { inherit pkgs lib; };
+  options = import ./options.nix { inherit pkgs lib; };
+  blocks = import ./blocks.nix { inherit pkgs lib; };
+  packages = import ./packages.nix { inherit pkgs lib; };
+in {
+  inherit (configurations) collectMachines;
+  inherit (blocks) collectBlocks;
+  inherit (options) mkOpt mkOpt' mkOptColour mkOptColour';
+  inherit (packages) wrapPackage wrapPackageJoin;
+}

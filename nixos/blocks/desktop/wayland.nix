@@ -1,7 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, libs, pkgs, ... }:
 
 with lib;
-with lib.my;
+with libs.flake;
 let
   cfg = config.blocks.desktop.wayland;
   extraEnv = { WLR_NO_HARDWARE_CURSORS = "1"; };

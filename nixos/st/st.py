@@ -25,12 +25,8 @@ def list_changes(new_override=''):
 
 def update(options):
     if options.i:
-        if options.i == 'packages':
-            subprocess.run(["nix", "flake", "update", "./packages"])
-
         subprocess.run(["nix", "flake", "lock", "--update-input", options.i])
     else:
-        subprocess.run(["nix", "flake", "update", "./packages"])
         subprocess.run(["nix", "flake", "update"])
 
 
