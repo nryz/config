@@ -75,6 +75,38 @@ def show(options):
 
 def install(options):
     print('TODO')
+    
+def backup(options):
+    today = date.today()
+    id = today.strftime("%d-%m-%Y")
+    
+    result = subprocess.run(["mountpoint", "-q", "/media/backup"])
+
+    if result.returncode != 0:
+        subprocess.run(["sudo", "mkdir", "-p", "/media/backup"])
+        result = subprocess.run(["sudo", "mount", "/dev/disk/by-label/backup", "/media/backup"])
+    
+
+    if result.returncode == 0:
+        match options.arg:
+            case 'media':
+                subprocess.run(["sudo", borg, "create", 
+                        "-e", "/nix/persist/home/*/config",
+                        "-e", "/nix/persist/home/*/projects",
+                        "/media/backup::media-" + id,
+                        "/nix/persist/home"])
+            case 'projects':
+                subprocess.run(["sudo", borg, "create", 
+                        "-e", "/nix/persist/home/*/videos",
+                        "-e", "/nix/persist/home/*/music",
+                        "-e", "/nix/persist/home/*/downloads",
+                        "-e", "/nix/persist/home/*/pictures",
+                        "-e", "/nix/persist/home/*/documents",
+                        "/media/backup::projects-" + id,
+                        "/nix/persist/home"])
+    else:
+        print(result.stderr)
+    
 
 
 def main():
@@ -102,6 +134,11 @@ def main():
 
     parser_install = subparsers.add_parser('install', help='TODO: install the nixos system')
     parser_install.set_defaults(func=install)
+
+    parser_install = subparsers.add_parser('backup', help='backup')
+    parser_install.add_argument('arg', type=str, help='either media/projects', 
+                            nargs='?', default='projects', choices=["projects", "media"])
+    parser_install.set_defaults(func=backup)
 
     if len(sys.argv) <= 1:
         sys.argv.append('--help')

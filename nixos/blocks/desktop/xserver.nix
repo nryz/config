@@ -67,7 +67,7 @@ in
 
       export XDG_SESSION_TYPE=x11
 
-      ${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${info.flakePath + /nixos/data/backgrounds + "/${config.blocks.desktop.background}"} &
+      ${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${info.flakePath + /content/backgrounds + "/${config.blocks.desktop.background}"} &
 
       ${config.hm-read-only.xsession.initExtra}
       

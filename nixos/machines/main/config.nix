@@ -91,7 +91,6 @@ with lib.my;
 
     services = {
       dunst.enable = true;
-      udiskie.enable = true;
       unclutter.enable = true;
     };
 

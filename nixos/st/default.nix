@@ -7,8 +7,9 @@ in {
   program = "${pkgs.writers.writePython3 "st" {
     libraries = [ ];
     #just let me write shit ffs
-    flakeIgnore = [ "E501" "E302" "E126" "W293" "E303"];
+    flakeIgnore = [ "E501" "E302" "E126" "W293" "E303" "E128" "W291"];
   }(''
+    from datetime import date
     import subprocess
     import argparse
     import glob
@@ -18,5 +19,6 @@ in {
 
     config_path = '${configPath}'
     nvd = '${pkgs.nvd}/bin/nvd'
+    borg = '${pkgs.borgbackup}/bin/borg'
   '' + builtins.readFile ./st.py)}";
 }

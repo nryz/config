@@ -13,7 +13,7 @@ in
   config = mkIf cfg.enable {
 
     hm.home.packages = with pkgs; [
-      rnix-lsp
+      #rnix-lsp
     ];
     
     hm.programs.helix = {

@@ -21,10 +21,6 @@
         options = [ "defaults" "size=3G" "mode=755" ];
       };
     
-      "/media" = {
-        device = "/dev/sdc1";
-      };
-  
       "/etc/passwords" = { 
         device = "/nix/persist/system/etc/passwords";
         fsType = "none";

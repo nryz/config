@@ -64,7 +64,7 @@ with lib.my;
       StartLimitBurst = 20;
     };
 
-    scheme = info.flakePath + /nixos/data/colourschemes + "/${config.blocks.desktop.colourscheme}.yaml";
+    scheme = info.flakePath + /content/base16 + "/${config.blocks.desktop.colourscheme}.yaml";
 
     systemd.enableEmergencyMode = false;
 

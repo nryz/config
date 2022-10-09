@@ -35,7 +35,6 @@ in
   config = mkIf cfg.enable {
   
     blocks.programs.rofi.enable = true;
-    blocks.desktop.eww.enable = true;
   
     hm.systemd.user.targets.graphical-session = {
       UnitConfig = {
