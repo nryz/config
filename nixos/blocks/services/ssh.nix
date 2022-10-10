@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.services.ssh;
 in
@@ -11,8 +11,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    blocks.persist.directories = [ "/etc/ssh" ];
-    blocks.persist.userDirectories = [ ".ssh" ];
+    my.state.directories = [ "/etc/ssh" ];
+    my.state.user.directories = [ ".ssh" ];
 
     environment.systemPackages = with pkgs; [
       (pkgs.writeShellScriptBin "ak" ''

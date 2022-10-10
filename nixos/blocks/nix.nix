@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, info, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.nix;
 in
@@ -19,12 +19,6 @@ in
       generateRegistryFromInputs = true;
       generateNixPathFromInputs = true;
       linkInputs = true;
-      
-      #custom templates
-      registry.init = {
-       from = { id = "init"; type = "indirect"; };
-       to = { owner = "nryz"; repo = "flakeTemplates"; type = "github"; };
-      };
       
       # package = pkgs.nixFlakes;
       package = pkgs.nixUnstable;

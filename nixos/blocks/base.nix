@@ -1,7 +1,10 @@
-{ config, options, lib, libs, pkgs, info, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
+let
+  stateVersion = "21.11";
+in
 {
   options = with types; {
     hm = mkOpt attrs {};
@@ -10,8 +13,8 @@ with libs.flake;
   };
 
   config = {
-    system.stateVersion = info.stateVersion;
-    networking.hostName = info.hostName;
+    system.stateVersion = stateVersion;
+    networking.hostName = my.hostName;
 
     nixpkgs.config = pkgs.config;
     nixpkgs.pkgs = pkgs;
@@ -20,11 +23,11 @@ with libs.flake;
       mutableUsers = false;
       defaultUserShell = pkgs.zsh;
       
-      users.${info.user} = {
+      users.${my.user} = {
         shell = pkgs."${config.defaults.shell}";
         extraGroups = [ "wheel" ];
         isNormalUser = true;
-        passwordFile = "/etc/passwords/${info.user}";
+        passwordFile = "/etc/passwords/${my.user}";
         uid = 1000;
       };
 
@@ -36,17 +39,17 @@ with libs.flake;
       useUserPackages = true;
       backupFileExtension = "HMBACKUP";
 
-      users.${info.user} = mkAliasDefinitions options.hm;
+      users.${my.user} = mkAliasDefinitions options.hm;
     };
 
-    hm-read-only = config.home-manager.users.${info.user};
+    hm-read-only = config.home-manager.users.${my.user};
    
     blocks.desktop.enable = true;
 
     hm = {
-      home.username = info.user;
-      home.homeDirectory = "/home/${info.user}";
-      home.stateVersion = info.stateVersion;
+      home.username = my.user;
+      home.homeDirectory = "/home/${my.user}";
+      home.stateVersion = stateVersion;
       programs.home-manager.enable = true;
 
       systemd.user.startServices = "sd-switch";
@@ -64,7 +67,7 @@ with libs.flake;
       StartLimitBurst = 20;
     };
 
-    scheme = info.flakePath + /content/base16 + "/${config.blocks.desktop.colourscheme}.yaml";
+    scheme = my.flakePath + /content/base16 + "/${config.blocks.desktop.colourscheme}.yaml";
 
     systemd.enableEmergencyMode = false;
 

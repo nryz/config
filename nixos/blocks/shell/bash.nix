@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.shell.bash;
 in
@@ -11,7 +11,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    blocks.persist.userFiles = [ ".bash_history" ];
+    my.state.user.files = [ ".bash_history" ];
 
     hm.programs.bash.enable = true;
   };

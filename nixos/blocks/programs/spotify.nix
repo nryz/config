@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.programs.spotify;
 
@@ -17,7 +17,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    blocks.persist.userDirectories = [ ".config/spotify" ];
+    my.state.user.directories = [ ".config/spotify" ];
 
     hm.home.packages = with pkgs; [
       spotifyDesktop

@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, info, packages, ... }: 
+{ config, options, pkgs, lib, my, ... }: 
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.input;
   

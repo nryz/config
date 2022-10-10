@@ -1,6 +1,8 @@
-{ pkgs, lib }:
+{ pkgs }:
 
 let
+  lib = pkgs.lib;
+  
   configurations = import ./configurations.nix { inherit pkgs lib; };
   options = import ./options.nix { inherit pkgs lib; };
   blocks = import ./blocks.nix { inherit pkgs lib; };

@@ -1,7 +1,7 @@
-{ config, pkgs, libs, lib, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.programs.firefox;
 in
@@ -11,7 +11,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    blocks.persist.userDirectories = [ ".mozilla/firefox/default" ];
+    my.state.user.directories = [ ".mozilla/firefox/default" ];
 
     hm.programs.firefox = {
       enable = true;

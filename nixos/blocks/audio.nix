@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.audio;
 in
@@ -11,8 +11,8 @@ in
   };
 
   config = mkIf cfg.enable {
-   blocks.persist.directories = ["/var/lib/alsa"];
-   blocks.persist.userDirectories = [".config/pulse" ];
+   my.state.directories = ["/var/lib/alsa"];
+   my.state.user.directories = [".config/pulse" ];
 
    #pulseaudio
    sound.enable = true;

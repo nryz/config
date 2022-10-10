@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.shell.fish;
 in
@@ -11,7 +11,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    blocks.persist.userFiles = [ ".local/share/fish" ];
+    my.state.user.files = [ ".local/share/fish" ];
 
     hm.programs.fish = {
       enable = true;

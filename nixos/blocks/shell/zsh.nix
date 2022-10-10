@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, packages, ... }:
+{ inputs, config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let 
   cfg = config.blocks.shell.zsh;
 in
@@ -11,7 +11,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    blocks.persist.userFiles = [ ".zsh_history" ];
+    my.state.user.files = [ ".zsh_history" ];
 
     hm.programs.zsh = {
       enable = true;
@@ -25,13 +25,13 @@ in
         {
           name = "pure-prompt";
           file = "pure.zsh";
-          src = packages.extra.zsh-prompt;
+          src = inputs.zsh-pure-prompt;
         }
       ];
       
       initExtra = ''
         ZVM_INIT_MODE=sourcing
-        source ${packages.flake.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
+        source ${my.pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
 
         #KEYTIMEOUT=1
 

@@ -34,32 +34,10 @@
     naersk.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ { self, utils, ... }: let input = rec {
-    inherit inputs;
-    
-    info.system = "x86_64-linux";
-    info.user = "nr";
-
-    libs = {
-      lib = inputs.nixpkgs.lib;
-      flake = import ./lib { inherit pkgs;
-      inherit (pkgs) lib; };
-      hm = inputs.home-manager.lib.hm;
-      naersk = pkgs.callPackage inputs.naersk { };
-      base16 = pkgs.callPackage inputs.base16 {};
-    };
-
-    theme = {
-      base16 = libs.base16.mkSchemeAttrs ./content/base16/dracula.yaml;
-      font = {
-        package = pkgs.source-code-pro;
-        name = "Source Code Pro";
-        size = 9;
-      };
-    };
+  outputs = inputs @ { self, utils, ... }: let 
 
     pkgs = import inputs.nixpkgs {
-      inherit (info) system;
+      system = "x86_64-linux";
       config.allowUnfree = true;
 
       overlays = [ 
@@ -67,27 +45,41 @@
         inputs.nur.overlay 
       ];
     };
+
+    lib = inputs.nixpkgs.lib;
+
+    my.user = "nr";
     
-    packages = {
-      flake = import ./packages {
-          inherit inputs pkgs libs theme;
-      };
-      
-      extra = {
-        zsh-prompt = inputs.zsh-pure-prompt;
-      };
+    my.libs = {
+      hm = inputs.home-manager.lib.hm;
+      naersk = pkgs.callPackage inputs.naersk { };
+      base16 = pkgs.callPackage inputs.base16 {};
     };
-  };
+
+    my.theme = {
+      base16 = my.libs.base16.mkSchemeAttrs ./content/base16/dracula.yaml;
+      font.package = pkgs.source-code-pro;
+      font.name = "Source Code Pro";
+      font.size = 9;
+    };
+
+    my.pkgs = import ./packages {
+        inherit inputs pkgs;
+        inherit (my) libs theme;
+    };
+
+    my.lib = import ./lib { inherit pkgs; };
+
   in {
 
-    nixosConfigurations = import ./nixos input;
+    nixosConfigurations = import ./nixos { inherit inputs pkgs lib my; };
     
     templates = import ./templates;
 
   } // utils.lib.eachDefaultSystem (system: {
 
-    apps.default = import ./nixos/st { inherit (input) pkgs info; }; 
+    apps.default = import ./nixos/st { inherit pkgs my; }; 
 
-    packages = input.packages.flake;
+    packages = my.pkgs;
   });
 }

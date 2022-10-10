@@ -1,4 +1,4 @@
-{ config, lib, pkgs, info, ... }: 
+{ config, lib, pkgs, my, ... }: 
 
 with lib;
 {
@@ -63,9 +63,7 @@ with lib;
     neofetch
   ];
   
-  blocks.persist = {
-    enable = true;
-  };
+  my.persist.enable = true;
 
   blocks = {
     autologin.enable = true;
@@ -79,7 +77,7 @@ with lib;
     hardware.nvidia.enable = true; 
     hardware.ssd.enable = true; 
     virtualisation.enable = false;
-    virtualisation.users = [ info.user ];
+    virtualisation.users = [ my.user ];
 
     services = {
       dunst.enable = true;

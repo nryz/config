@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.network;
 in
@@ -11,7 +11,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    blocks.persist.directories = [ "/etc/NetworkManager" ];
+    my.state.directories = [ "/etc/NetworkManager" ];
 
     # The global useDHCP flag is deprecated, therefore explicitly set to false here.
     # Per-interface useDHCP will be mandatory in the future, so this generated config

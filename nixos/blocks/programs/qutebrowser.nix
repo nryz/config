@@ -1,7 +1,7 @@
-{ config, lib, pkgs, libs, theme, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.programs.qutebrowser;
 in
@@ -16,7 +16,7 @@ in
       qt5.qtwayland
     ];
 
-    blocks.persist.userDirectories = [ 
+    my.state.user.directories = [ 
       ".local/share/qutebrowser" 
     ];
 

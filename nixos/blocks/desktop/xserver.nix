@@ -1,7 +1,7 @@
-{ config, options, lib, libs, pkgs, info, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.desktop.xserver;
 in
@@ -67,7 +67,7 @@ in
 
       export XDG_SESSION_TYPE=x11
 
-      ${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${info.flakePath + /content/backgrounds + "/${config.blocks.desktop.background}"} &
+      ${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${my.flakePath + /content/backgrounds + "/${config.blocks.desktop.background}"} &
 
       ${config.hm-read-only.xsession.initExtra}
       

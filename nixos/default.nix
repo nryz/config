@@ -1,27 +1,22 @@
-input : let
-  inherit (input) info pkgs libs inputs packages theme;
-
-  lib = libs.lib;
+{ inputs, pkgs, lib, my } : let
   
-  machines = libs.flake.collectMachines ./machines;
-  blocks = libs.flake.collectBlocks ./blocks;
+  machines = my.lib.collectMachines ./machines;
+  blocks = my.lib.collectBlocks ./blocks;
 
 in lib.mapAttrs (name: machineFolder: let
 
   specialArgs = {
-    inherit pkgs packages libs;
-    inherit theme lib inputs;
+    inherit inputs pkgs lib;
     
-    info = {
-      user = info.user;
-      stateVersion = "21.11";
+    my = my // {
       flakePath = ../.;
       hostName = name;
     };
   };
+
 in lib.nixosSystem {
-  inherit (info) system;
   inherit pkgs specialArgs;
+  system = pkgs.system;
 
   modules = blocks ++ [
     (machineFolder + "/hardware.nix")

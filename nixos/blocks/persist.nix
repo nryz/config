@@ -1,21 +1,35 @@
-{ config, lib, libs, pkgs, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
-  cfg = config.blocks.persist;
+  cfg = config.my.persist;
+  
+  stateCfg = config.my.state;
 in
 {
 
-  options.blocks.persist = with types; {
-    enable = mkOpt bool false;
-    directories = mkOpt (listOf str) [];
-    userDirectories = mkOpt (listOf str) [];
-    files = mkOpt (listOf str) [];
-    userFiles = mkOpt (listOf str) [];
-    path = mkOpt' str;
-  };
+  options.my = with types; {
+    persist.enable = mkOpt bool false;
+    persist.path = mkOpt' str;
+    
+    state = {
+      directories = mkOpt (listOf str) [];
+      files = mkOpt (listOf str) [];
 
+      user.directories = mkOpt (listOf str) [];
+      user.files = mkOpt (listOf str) [];
+    };
+    
+    backup = {
+      directories = mkOpt (listOf str) [];
+      files = mkOpt (listOf str) [];
+
+      user.directories = mkOpt (listOf str) [];
+      user.files = mkOpt (listOf str) [];
+    };
+  };
+  
   config = mkIf cfg.enable {
     assertions = [{
         assertion = config.fileSystems."/".fsType == "tmpfs"; 
@@ -35,20 +49,19 @@ in
         "/var/log"
         "/var/lib/systemd/coredump"
         "/var/db/sudo/lectured"
-      ] ++ cfg.directories;
+      ] ++ stateCfg.directories;
 
       files = [
         "/etc/machine-id"
-      ] ++ cfg.files;
+      ] ++ stateCfg.files;
 
     };
 
-    blocks.persist.directories = [
-    ];
     environment.persistence."${cfg.path}" = {
+      hideMounts = true;
       users = mapAttrs (n: v: {
         files = map (f: { file = f; parentDirectory = { user = n; group = "users"; }; }) 
-          cfg.userFiles;
+          stateCfg.user.files;
 
         directories = [
           "downloads"
@@ -59,7 +72,7 @@ in
           "projects"
           "config"
         ] ++ map (f: { directory = f; user = n; group = "users"; }) 
-          cfg.userDirectories;
+          stateCfg.user.directories;
       }) config.home-manager.users;
     };
   };

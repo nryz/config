@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, packages, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.desktop.picom;
 in
@@ -31,7 +31,7 @@ in
       shadow = false;
       shadowOpacity = 0.8;
 
-      package = packages.flake.picom-ibhagwan;
+      package = my.pkgs.picom-ibhagwan;
     };
   };
 }

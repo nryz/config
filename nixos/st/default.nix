@@ -1,5 +1,5 @@
-{ pkgs, info } : let
-  configPath = "/home/${info.user}/config";
+{ pkgs, my } : let
+  configPath = "/home/${my.user}/config";
  
 in {
   type = "app";

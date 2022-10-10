@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, info, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   addDesktop = app:
     app + ".desktop";

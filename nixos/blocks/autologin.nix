@@ -1,7 +1,7 @@
-{ config, lib, libs, pkgs, info, ... }:
+{ config, options, pkgs, lib, my, ... }:
 
 with lib;
-with libs.flake;
+with my.lib;
 let
   cfg = config.blocks.autologin;
 
@@ -20,7 +20,7 @@ in
   options.blocks.autologin = with types; {
     enable = mkOpt bool false;
 
-    user = mkOpt str "${info.user}";
+    user = mkOpt str "${my.user}";
   };
 
   config = mkIf cfg.enable {
