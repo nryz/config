@@ -11,7 +11,6 @@ with lib;
     riverwm.enable = false;
 
     background =  "4";
-    colourscheme = "solarized-dark";
 
     font.package = pkgs.source-code-pro;
     font.name = "Source Code Pro";

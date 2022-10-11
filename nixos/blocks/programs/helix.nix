@@ -58,7 +58,7 @@ in
         };
       };
       
-      themes.custom = with config.scheme.withHashtag; {
+      themes.custom = with my.theme.base16.withHashtag; {
         "ui.background" = { bg = base00; };
         "ui.virtual.whitespace" = base03;
 

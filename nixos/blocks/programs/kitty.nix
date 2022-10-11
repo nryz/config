@@ -59,7 +59,7 @@ in
         "kitty_mod+p>y" = "kitten hints --type hyperlink --program -";
       };
 
-      extraConfig = with config.scheme.withHashtag; ''
+      extraConfig = with my.theme.base16.withHashtag; ''
         enable_audio_bell no
         confirm_os_window_close 0
         

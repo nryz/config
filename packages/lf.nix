@@ -1,4 +1,4 @@
-{ pkgs, libs, theme,  ... }:
+{ pkgs, my, ... }:
 
 let
   lib = pkgs.lib;
@@ -94,7 +94,7 @@ let
     map <delete> remove
   '';
   
-  pistol = libs.flake.wrapPackageJoin {
+  pistol = my.lib.wrapPackageJoin {
     pkg = pkgs.pistol;
     name = "pistol";
     
@@ -110,7 +110,7 @@ let
     };
   };
 
-in libs.flake.wrapPackageJoin {
+in my.lib.wrapPackageJoin {
   pkg = pkgs.lf;
   name = "lf";
   

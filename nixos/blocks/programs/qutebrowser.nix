@@ -80,7 +80,7 @@ in
         };
 
         colors.webpage = {
-          bg = "${config.scheme.withHashtag.base00}";
+          bg = "${my.theme.base16.withHashtag.base00}";
           darkmode.enabled = false;
         };
 

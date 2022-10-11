@@ -67,8 +67,6 @@ in
       StartLimitBurst = 20;
     };
 
-    scheme = my.flakePath + /content/base16 + "/${config.blocks.desktop.colourscheme}.yaml";
-
     systemd.enableEmergencyMode = false;
 
     environment = {

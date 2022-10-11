@@ -1,7 +1,8 @@
-{ pkgs, libs, theme,  ... }:
+{ pkgs, my, ... }:
 
 let
   lib = pkgs.lib;
+  theme = my.theme;
   
   tomlFormat = pkgs.formats.toml {};
 
@@ -113,7 +114,7 @@ let
     "error" = base08;
   };
   
-in libs.flake.wrapPackage {
+in my.lib.wrapPackage {
   pkg = pkgs.helix;
   name = "hx";
   vars = { 

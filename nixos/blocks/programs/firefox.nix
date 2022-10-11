@@ -35,7 +35,7 @@ in
         name = "default";
         path = "default";
 
-        userChrome = with config.scheme.withHashtag; ''
+        userChrome = with my.theme.base16.withHashtag; ''
           /* hides the native tabs*/
           #TabsToolbar {
             visibility: collapse !important;
@@ -111,7 +111,7 @@ in
         userContent = ''
         '';
 
-        settings = with config.scheme.withHashtag; {
+        settings = with my.theme.base16.withHashtag; {
           "browser.urlbar.suggest.history" = true;
           "general.smoothscroll" = false;
           "layers.acceleration.force-enabled" = true;

@@ -67,7 +67,7 @@ in
       '';
     };
       
-    hm.xdg.configFile."rofi/custom.rasi" = with config.scheme.withHashtag; {
+    hm.xdg.configFile."rofi/custom.rasi" = with my.theme.base16.withHashtag; {
       text = ''
        * {
         font: "${config.blocks.desktop.font.name + " " + toString config.blocks.desktop.font.size}";

@@ -44,7 +44,7 @@ in
       };
     };
     
-    hm.xdg.configFile."herbstluftwm/autostart" = with config.scheme.withHashtag; {
+    hm.xdg.configFile."herbstluftwm/autostart" = with my.theme.base16.withHashtag; {
       executable = true;
       onChange = '' ${hc} reload '';      
 

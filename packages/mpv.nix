@@ -1,4 +1,4 @@
-{ pkgs, libs, theme,  ... }:
+{ pkgs, my, ... }:
 
 let
   lib = pkgs.lib;
@@ -22,7 +22,7 @@ let
   luaEnv = pkgs.mpv-unwrapped.luaEnv;
   luaVersion = pkgs.mpv-unwrapped.lua.luaversion;
   
-in libs.flake.wrapPackageJoin {
+in my.lib.wrapPackageJoin {
   pkg = pkgs.mpv;
   name = "mpv";
   

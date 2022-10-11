@@ -14,7 +14,7 @@ in
     hm.services.dunst = {
       enable = true;
 
-      settings = with config.scheme.withHashtag; {
+      settings = with my.theme.base16.withHashtag; {
         global = {
           font = "Fira Code 9";
           geometry = "300x5-30+50";

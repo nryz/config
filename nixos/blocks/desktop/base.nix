@@ -17,8 +17,6 @@ in
 
     background = mkOpt' str;
 
-    colourscheme = mkOpt' str;
-
     font = mkOpt' (nullOr my.libs.hm.types.fontType);
 
     gtk = {

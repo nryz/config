@@ -115,7 +115,7 @@ def main():
 
     parser_switch = subparsers.add_parser('switch', help='nixos-rebuild switch/build/boot')
     parser_switch.add_argument('-t', '-type', type=str, help='switch/build/boot defaults to switch')
-    parser_switch.add_argument('-d', '-debug', action='store_false', help='enable debug log')
+    parser_switch.add_argument('-d', '-debug', action='store_true', help='enable debug log')
     parser_switch.set_defaults(func=switch)
 
     parser_clean = subparsers.add_parser('clean', help='clean the nix store')

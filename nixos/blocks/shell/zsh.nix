@@ -11,7 +11,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    my.state.user.files = [ ".zsh_history" ];
+    my.state.user.files = [ ".zsh/history" ];
 
     hm.programs.zsh = {
       enable = true;

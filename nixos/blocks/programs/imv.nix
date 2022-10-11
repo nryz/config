@@ -15,7 +15,7 @@ in
       imv
     ];
 
-    hm.xdg.configFile."imv/config".text = with config.scheme; ''
+    hm.xdg.configFile."imv/config".text = with my.theme.base16; ''
       [options]
       background = ${base00}
       loop_input = true

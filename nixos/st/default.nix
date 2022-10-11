@@ -1,5 +1,7 @@
-{ pkgs, my } : let
-  configPath = "/home/${my.user}/config";
+{ system, inputs, user } : let
+  configPath = "/home/${user}/config";
+  
+  pkgs = import inputs.nixpkgs { inherit system; };
  
 in {
   type = "app";

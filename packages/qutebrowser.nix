@@ -1,7 +1,8 @@
-{ pkgs, libs, theme,  ... }:
+{ pkgs, my,  ... }:
 
 let
   lib = pkgs.lib;
+  theme = my.theme;
 
   fontName = "${toString theme.font.size}pt ${theme.font.name}";
 
@@ -354,7 +355,7 @@ let
   configFile = pkgs.writeText "qutebrowser-configfile" (settings + themeSettings);
   quickmarksFile = pkgs.writeText "qutebrowser-quickmarks" quickmarks;
   
-in libs.flake.wrapPackage {
+in my.lib.wrapPackage {
   pkg = pkgs.qutebrowser;
   name = "qutebrowser";
   
