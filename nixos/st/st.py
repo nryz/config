@@ -14,7 +14,7 @@ def list_changes(new_override=''):
         prev = dir_path + names[-2]
         
     elif new_override:
-        new = dir_path + new_override
+        new = new_override
         prev = dir_path + names[-1]
 
     if new and prev:
@@ -102,7 +102,10 @@ def backup(options):
                         "/nix/persist/home"])
     else:
         print(result.stderr)
-    
+        
+
+def doc(options):
+    subprocess.run([doc_cmd, "search", options.string, doc_source])
 
 
 def main():
@@ -131,10 +134,16 @@ def main():
     parser_install = subparsers.add_parser('install', help='TODO: install the nixos system')
     parser_install.set_defaults(func=install)
 
-    parser_install = subparsers.add_parser('backup', help='backup')
-    parser_install.add_argument('arg', type=str, help='either media/projects', 
+    parser_backup = subparsers.add_parser('backup', help='backup')
+    parser_backup.add_argument('arg', type=str, help='either media/projects', 
                             nargs='?', default='projects', choices=["projects", "media"])
-    parser_install.set_defaults(func=backup)
+    parser_backup.set_defaults(func=backup)
+    
+    parser_doc = subparsers.add_parser('doc', help='search fo functions in nixpkgs')
+    parser_doc.add_argument('string', type=str)
+    parser_doc.set_defaults(func=doc)
+    
+    
 
     if len(sys.argv) <= 1:
         sys.argv.append('--help')

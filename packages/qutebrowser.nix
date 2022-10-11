@@ -355,7 +355,7 @@ let
   configFile = pkgs.writeText "qutebrowser-configfile" (settings + themeSettings);
   quickmarksFile = pkgs.writeText "qutebrowser-quickmarks" quickmarks;
   
-in my.lib.wrapPackage {
+in my.lib.wrapPackageJoin {
   pkg = pkgs.qutebrowser;
   name = "qutebrowser";
   

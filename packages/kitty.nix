@@ -99,7 +99,7 @@ let
   
   configFile = settings + themeSettings;
 
-in my.lib.wrapPackage {
+in my.lib.wrapPackageJoin {
   pkg = pkgs.kitty;
   name = "kitty";
 

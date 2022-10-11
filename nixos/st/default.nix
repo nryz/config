@@ -21,5 +21,7 @@ in {
     config_path = '${configPath}'
     nvd = '${pkgs.nvd}/bin/nvd'
     borg = '${pkgs.borgbackup}/bin/borg'
+    doc_cmd = '${pkgs.nix-doc}/bin/nix-doc'
+    doc_source = '${inputs.nixpkgs.sourceInfo.outPath}'
   '' + builtins.readFile ./st.py)}";
 }

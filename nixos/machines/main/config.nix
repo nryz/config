@@ -22,47 +22,58 @@ with lib;
     gtkIcon.name = "Vimix Ruby Dark";
   };
   
+  my.persist.enable = true;
+  my.state.user.directories = [
+    ".config/Bitwarden"
+    ".config/spotify"
+    ".local/share/direnv"
+    ".local/share/qutebrowser"
+    ".mozilla/firefox/default"
+  ];
+  
+  #TODO: Add this to the zsh shell my.pkg
+  hm.programs.zsh.initExtra = ''
+     eval "$(${my.pkgs.direnv}/bin/direnv hook zsh)"
+  '';
+  
   blocks.shell = {
     aliases.enable = true;
     zsh.enable = true;
   };
   
   blocks.programs = {
-    btop.enable = true;
-    kitty.enable = true;
-    direnv.enable = true;
     fzf.enable = true;
-    git.enable = true;
-    mpv.enable = true;
-    qutebrowser.enable = true;
-    lf.enable = true;
-    bitwarden.enable = true;
-    imv.enable = true;
-    spotify.enable = true;
-    zathura.enable = true;
-    nix-index.enable = true;
-    filezilla.enable = true;
-    firefox.enable = true;
-    helix.enable = true;
   };
 
-  hm.home.packages = with pkgs; [
+  hm.home.packages = with my.pkgs; [
+    firefox
+    git
+    kitty
+    helix
+    qutebrowser
+    zathura
+    btop
+    mpv
+    lf
+    imv
+  ] ++ (with pkgs; [
+    gitui
+    spotify
+    bitwarden
+    filezilla
     unzip
     lxappearance
     xplr
     xfce.thunar
-    tmpmail
     ueberzug
-    st
     libqalculate
     android-tools
     gnome.gucharmap
     imagemagick
     fontpreview
     neofetch
-  ];
+  ]);
   
-  my.persist.enable = true;
 
   blocks = {
     autologin.enable = true;

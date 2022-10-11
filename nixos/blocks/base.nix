@@ -106,7 +106,6 @@ in
       usbutils
       xclip
       wget
-      fup-repl
       moreutils
     ];
 

@@ -7,7 +7,6 @@
     config.allowUnfree = true;
 
     overlays = [ 
-      inputs.utils.overlay
       inputs.nur.overlay 
     ];
   };

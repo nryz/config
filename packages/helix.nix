@@ -52,18 +52,21 @@ let
     "ui.linenr" = { fg = base03; bg = base00; };
     "ui.linenr.selected" = { fg = base04; bg = base01; modifiers = ["bold"]; };
 
-    "ui.menu" = base04;
+    "ui.menu" = { fg = base04; bg = base01;};
     "ui.menu.selected" = { fg = base01; bg = base04; };
 
-    "ui.popup" = { bg = base00; };
-    "ui.popup.info" = base04;
+    "ui.popup" = { bg = base00;  fg = base00; };
+    "ui.popup.info" = { bg = base01; fg = base04; };
 
-    "ui.window" = { bg = base01; };
+    "ui.window" = { fg = base01; bg = base01; };
     "ui.statusline" = { fg = base04; bg = base01; };
+    "ui.statusline.normal" = { fg = base04; bg = base01; };
+    "ui.statusline.select" = { fg = base00; bg = base09; };
+    "ui.statusline.insert" = { fg = base04; bg = base01; };
 
-    "ui.cursor" = { fg = base04; bg = base0A; };
-    "ui.cursor.primary" = { fg = base05; modifiers = ["reversed"]; };
-    "ui.cursor.match" = { fg = base0A; modifiers = ["underlined"]; };
+    "ui.cursor" = { fg = base04; bg = base09; modifiers = ["reversed"]; };
+    "ui.cursor.primary" = { fg = base04; modifiers = ["bold" "reversed"]; };
+    "ui.cursor.match" = { fg = base09; modifiers = [ "underlined"]; };
 
     "ui.selection" = { bg = base02; };
 
@@ -114,7 +117,7 @@ let
     "error" = base08;
   };
   
-in my.lib.wrapPackage {
+in my.lib.wrapPackageJoin {
   pkg = pkgs.helix;
   name = "hx";
   vars = { 

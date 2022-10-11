@@ -13,6 +13,10 @@ in
   config = mkIf cfg.enable {
     my.state.user.files = [ ".zsh/history" ];
 
+    # TODO:
+    # APPEND_HISTORY
+    # https://zsh.sourceforge.io/Doc/Release/Options.html
+    # hisotry section
     hm.programs.zsh = {
       enable = true;
       enableAutosuggestions = true;
