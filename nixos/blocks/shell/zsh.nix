@@ -11,7 +11,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    my.state.user.files = [ ".zsh/history" ];
+    # my.state.user.files = [ ".zsh/history" ];
 
     # TODO:
     # APPEND_HISTORY
@@ -23,7 +23,7 @@ in
       enableCompletion = true;
       enableSyntaxHighlighting = true;
       history.extended = true;
-      history.path = "$HOME/.zsh/history";
+      history.path = "$HOME/.zsh/history/historyfile";
 
       plugins = with packages; [
         {
@@ -43,9 +43,6 @@ in
         bindkey "^[[1;5D" backward-word #ctrl-left
 
         chpwd() lsd
-
-        source "''$(fzf-share)/key-bindings.zsh"
-        source "''$(fzf-share)/completion.zsh"
 
         export FZF_DEFAULT_COMMAND="fd --hidden --follow --exclude '.git' --exclude '.cache'"
         export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"

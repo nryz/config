@@ -41,15 +41,9 @@ in my.lib.wrapPackageJoin {
   };
   
   files = builtins.listToAttrs (map (x:  { 
-    name = x.scriptName; 
-    value = {
-      path = "config/scripts";
-      src = "${x}/share/mpv/scripts/${x.scriptName}";
-    };
+    name = "config/scripts/${x.scriptName}"; 
+    value = "${x}/share/mpv/scripts/${x.scriptName}";
   } ) scripts) // {
-    "mpv.conf" = {
-      path = "config";
-      src = pkgs.writeText "mpv.conf" configFile;
-    };
+    "config/mpv.conf" = pkgs.writeText "mpv.conf" configFile;
   };
 }

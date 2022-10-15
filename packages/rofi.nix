@@ -1,76 +1,55 @@
-{ config, options, pkgs, lib, my, ... }:
+{ pkgs, my, base16, font, ... }:
 
-with lib;
-with my.lib;
 let
-  cfg = config.blocks.programs.rofi;
-in
-{
-  options.blocks.programs.rofi = with types; {
-    enable = mkOpt bool false;
+    # TODO:
+    # ''
+    # #!/usr/bin/env bash
+
+    # arg="$*"
+
+    # list_entry() {
+    #   if [[ -z "$arg" ]]; then
+    #     echo "$1"
+    #   elif [ "$arg" = "$1" ]; then
+    #     $2
+    #     exit 0
+    #   fi
+    # }
+
+    # list() {
+    #   for tag in $(herbstclient complete 1 move); do
+    #   list_entry "Move window to tag $tag" "herbstclient move $tag"
+    # done
+
+  
+    #   list_entry 'floating' 'herbstclient set_attr clients.focus.floating toggle'
+    # list_entry 'fullscreen' 'herbstclient fullscreen toggle'
+    # }
+
+    # list
+    # '';
     
-    scripts = mkOption {
-      type = attrsOf (submodule {
-        options = {
-          entry = mkOpt attrs {}; 
-          scriptEntry = mkOpt lines '''';
-        };
-      });
-
-      default = {};
-      example = "foo";
-    };
-  };
-
-  config = mkMerge [
-  (mkIf cfg.enable {
-    hm.xdg.configFile = mapAttrs' (n: v: nameValuePair ("rofi/scripts/${n}.sh") ({
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-
-        arg="$*"
-
-        list_entry() {
-          if [[ -z "$arg" ]]; then
-            echo "$1"
-          elif [ "$arg" = "$1" ]; then
-            $2
-            exit 0
-          fi
-        }
-
-        list() {
-          ${v.scriptEntry}
-          
-          ${concatStringsSep "\n" (mapAttrsToList (n: v: "list_entry '${n}' '${v}'") v.entry)}
-        }
-
-        list
-      '';
-    })) cfg.scripts;
-  })
-  (mkIf cfg.enable {
-    hm.home.packages = with pkgs; [
-      rofi-wayland
-    ];
     
-
-    hm.xdg.configFile."rofi/config.rasi" = {
-      text = ''
+    # ''
+    #   for tag in $(/nix/store/cp8i6lhxkgccgm37x0jzi5gf02dlqqq8-herbstluftwm-0.9.5/bin/herbstclient complete 1 use); do
+    #     list_entry "Go to tag $tag" "/nix/store/cp8i6lhxkgccgm37x0jzi5gf02dlqqq8-herbstluftwm-0.9.5/bin/herbstclient use $tag"
+    #   done
+    # '';
+    
+    
+    
+    
+    configFile = ''
         configuration {
-        	modes: [drun,run,window,keys,${concatStringsSep "," (mapAttrsToList (n: v: "\"${n}:~/.config/rofi/scripts/${n}.sh\"") cfg.scripts)}];
+        	modes: [drun,run,window,keys];
         }
         
         @theme "custom"
-       
-      '';
-    };
-      
-    hm.xdg.configFile."rofi/custom.rasi" = with my.theme.base16.withHashtag; {
-      text = ''
+    '';
+
+    themeFile = with base16.withHashtag; ''
        * {
-        font: "${config.blocks.desktop.font.name + " " + toString config.blocks.desktop.font.size}";
+        font: "${font.name + " " + toString font.size}";
        }
       
        window {
@@ -210,7 +189,18 @@ in
           text-color: ${base05};
           background-color: ${base00};
         }      
-      '';
-    };
-  })];
+    '';
+
+in my.lib.wrapPackageJoin {
+  pkg = pkgs.rofi;
+  name = "rofi";
+
+  vars = { 
+    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
+  };
+
+  files = {
+    "config/rofi/config.rasi" = pkgs.writeText "config.rasi" configFile;
+    "config/rofi/custom.rasi" = pkgs.writeText "config.rasi" themeFile;
+  };
 }

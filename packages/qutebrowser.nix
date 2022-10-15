@@ -1,10 +1,9 @@
-{ pkgs, my,  ... }:
+{ pkgs, my, base16, font, editor, ... }:
 
 let
   lib = pkgs.lib;
-  theme = my.theme;
 
-  fontName = "${toString theme.font.size}pt ${theme.font.name}";
+  fontName = "${toString font.size}pt ${font.name}";
 
   quickmarks = ''
     home-manager https://github.com/nix-community/home-manager
@@ -45,7 +44,7 @@ let
 
     c.downloads.position = "bottom"
 
-    c.editor.command = ["hx", "-f", "{file}", "-c", "normal {line}G{column0}l"]
+    c.editor.command = ["${editor.bin}", "-f", "{file}", "-c", "normal {line}G{column0}l"]
 
     c.scrolling.bar = "never"
     c.statusbar.show = "always"
@@ -70,7 +69,7 @@ let
     config.bind("u", "scroll-page 0 -0.5", mode="normal")
   '';
   
-  themeSettings = with theme.base16.withHashtag; ''
+  themeSettings = with base16.withHashtag; ''
     c.fonts.default_family = "${fontName}"
 
     c.colors.webpage.darkmode.enabled = False
@@ -352,9 +351,6 @@ let
     # c.colors.webpage.bg ="${base00}"
   '';
 
-  configFile = pkgs.writeText "qutebrowser-configfile" (settings + themeSettings);
-  quickmarksFile = pkgs.writeText "qutebrowser-quickmarks" quickmarks;
-  
 in my.lib.wrapPackageJoin {
   pkg = pkgs.qutebrowser;
   name = "qutebrowser";
@@ -366,25 +362,13 @@ in my.lib.wrapPackageJoin {
   };
   
   files = {
-    "config.py" = {
-      path = "config/qutebrowser";
-      src = configFile;
-    };
+    "config/qutebrowser/config.py" = pkgs.writeText "qutebrowser-configfile" (settings + themeSettings);
     
-    "quickmarks" = {
-      path = "config/qutebrowser";
-      src = quickmarksFile;
-    };
+    "config/qutebrowser/quickmarks" = pkgs.writeText "qutebrowser-quickmarks" quickmarks;
     
     # So qutebrowser doesn't complain about read-only
-    "urls" = {
-      path = "config/qutebrowser/bookmarks";
-      src = pkgs.emptyFile;
-    };
+    "config/qutebrowser/bookmarks/urls" = pkgs.emptyFile;
     
-    "greasemonkey" = {
-      path = "config/qutebrowser/greasemonkey";
-      src = pkgs.emptyFile;
-    };
+    "config/qutebrowser/greasemonkey/greasemonkey" = pkgs.emptyFile;
   };
 }

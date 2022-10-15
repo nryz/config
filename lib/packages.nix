@@ -2,41 +2,12 @@
 
 with lib;
 {
-  wrapPackage = {
-    pkg,
-    name,
-    prefix ? {},
-    path ? [],
-    vars ? {},
-    flags ? [],
-    files ? {}
-  }: let
-    wrapperArgs = strings.escapeShellArgs ([
-          "--inherit-argv0" 
-      ] ++ optionals (prefix != {}) (flatten (mapAttrsToList (n: v:
-          [ "--prefix" "${n}" ] ++ v
-        ) prefix)
-      ) ++ optionals (path != []) [
-          "--prefix" "PATH" ":" (makeBinPath path)
-      ] ++ optionals (vars != {}) (concatMap (x: 
-          ["--set"] ++ [x.name] ++ [x.value]) 
-              (mapAttrsToList (n: v: { name = n;  value = v; }) vars)
-      ) ++ optionals (flags != []) (concatMap (x: ["--add-flags"] ++ [x]) flags)
-    );
-    
-    fileCmds = mapAttrsToList (n: v:  
-              "mkdir -p $out/${v.path}\n ln -s ${v.src} $out/${v.path}/${n}\n"
-            ) files;
+	mkDefPkg = pkg: rec {
+		inherit pkg;
+		name = pkg.meta.mainProgram;
+		bin = "${pkg}/bin/${name}";
+	};
 
-  in pkgs.runCommand name {nativeBuildInputs = [pkgs.makeBinaryWrapper];} (''
-      mkdir -p $out/bin
-    '' + concatStrings fileCmds
-    + ''
-      makeWrapper "${pkg}/bin/${name}" "$out/bin/${name}" ${wrapperArgs}
-    '');
-    
-    
-    
   wrapPackageJoin = {
     pkg,
     name,
@@ -44,13 +15,14 @@ with lib;
     path ? [],
     vars ? {},
     flags ? [],
-    files ? {}
+    files ? {},
+    outputs ? {},
+    extraPkgs  ? [],
   }: let
     wrapperArgs = strings.escapeShellArgs ([
           "--inherit-argv0" 
       ] ++ optionals (prefix != {}) (flatten (mapAttrsToList (n: v:
-          [ "--prefix" "${n}" ] ++ v
-        ) prefix)
+          [ "--prefix" "${n}" ] ++ v ) prefix)
       ) ++ optionals (path != []) [
           "--prefix" "PATH" ":" (makeBinPath path)
       ] ++ optionals (vars != {}) (concatMap (x: 
@@ -59,26 +31,42 @@ with lib;
       ) ++ optionals (flags != []) (concatMap (x: ["--add-flags"] ++ [x]) flags)
     );
     
-    fileCmds = mapAttrsToList (n: v:  
-              "mkdir -p $out/${v.path}\n ln -s ${v.src} $out/${v.path}/${n}\n"
-            ) files;
+    filesCmd = concatStrings (mapAttrsToList (n: v: ''
+        mkdir -p $(dirname $out/${n})
+        ln -s ${v} $out/${n} 
+      '') files);
+      
+    outputsCmd = if (outputs != {}) then ( concatStrings (mapAttrsToList (n: v: let
+        output = "$" + "${n}";
+      in concatStrings (mapAttrsToList (n: v: ''
+        mkdir -p ${output}/$(dirname ${n})
+      '' + (if isStorePath v then ''
+        ln -s ${v} ${output}/${n}
+      '' else ''
+        echo "${v}" >> ${output}/${n}
+      '' )) v )) outputs )) else "";
 
   in pkgs.symlinkJoin {
     inherit name;
 
     nativeBuildInputs = [ pkgs.makeBinaryWrapper ];
     
-    paths = [ pkg ];
+    outputs = ["out"] ++ (mapAttrsToList (n: v: "${n}") outputs);
+    
+    paths = [ pkg ] ++ extraPkgs ++ optional (builtins.elem "man" pkg.outputs) [ pkg.man ];
 
     postBuild = ''
-      mkdir -p $out/bin
-    '' + concatStrings fileCmds + ''
-      makeWrapper "${pkg}/bin/${name}" "$out/bin/${name}" ${wrapperArgs}
-    '';
+        mkdir -p $out/bin
+      ''
+      + filesCmd  
+      + outputsCmd
+      + ''
+        makeWrapper "${pkg}/bin/${name}" "$out/bin/${name}" ${wrapperArgs}
+      '' ;
     
     meta = {
-      inherit (pkg.meta) homepage description longDescription maintainers;
       mainProgram = name;
+      outputsToInstall = ["out"];
     };
   };
 }

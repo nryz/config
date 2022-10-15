@@ -1,8 +1,7 @@
-{ pkgs, my, ... }:
+{ pkgs, my, base16, ... }:
 
 let
   lib = pkgs.lib;
-  theme = my.theme;
   
   tomlFormat = pkgs.formats.toml {};
 
@@ -45,7 +44,7 @@ let
     };
   };
   
-  themeSettings = with theme.base16.withHashtag; {
+  themeSettings = with base16.withHashtag; {
     "ui.background" = { bg = base00; };
     "ui.virtual.whitespace" = base03;
 
@@ -127,19 +126,8 @@ in my.lib.wrapPackageJoin {
   path = with pkgs; [ rnix-lsp ];
 
   files = {
-    "config.toml" = {
-      path = "config/helix";
-      src = tomlFormat.generate "helix-config" settings;
-    };
-    
-    "languages.toml" = {
-      path = "config/helix";
-      src = tomlFormat.generate "helix-config" languagesSettings;
-    };
-    
-    "custom.toml" = {
-      path = "config/helix/themes";
-      src = tomlFormat.generate "helix-theme" themeSettings;
-    };
+    "config/helix/config.toml" = tomlFormat.generate "helix-config" settings;
+    "config/helix/languages.toml" = tomlFormat.generate "helix-config" languagesSettings;
+    "config/helix/themes/custom.toml" = tomlFormat.generate "helix-theme" themeSettings;
   };
 }

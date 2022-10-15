@@ -8,8 +8,6 @@ in
 {
   options.blocks.desktop.xserver = with types; {
     enable = mkOpt bool false;
-
-    wmCommand = mkOpt lines "";
   };
 
   # https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/x11/display-managers/default.nix
@@ -73,7 +71,7 @@ in
       
       ${config.blocks.desktop.extraInit}
 
-      ${cfg.wmCommand}
+      ${config.blocks.desktop.windowManager.command}
     '';
 
     hm.xresources.path = "${config.hm.home.homeDirectory}/.config/.Xresources";

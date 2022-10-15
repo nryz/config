@@ -34,8 +34,9 @@
     user = "nr";
     colour = ./content/base16/solarized-dark.yaml;
   in {
+    inherit self;
 
-    nixosConfigurations = import ./nixos { inherit self inputs user colour; };
+    nixosConfigurations = import ./nixos { inherit self user colour; };
     
     templates = import ./templates;
 
@@ -43,6 +44,6 @@
 
     apps.default = import ./nixos/st { inherit system inputs user; }; 
 
-    packages = import ./packages { inherit system inputs colour; };
+    packages = import ./packages { inherit self system colour; };
   });
 }

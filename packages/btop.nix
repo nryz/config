@@ -1,7 +1,7 @@
 { pkgs, my, ... }:
 
 let
-    configFile = pkgs.writeText "btop.conf" ''
+    configFile = ''
       color_theme = "TTY"
       theme_background = False
       rounded_corners = True
@@ -21,14 +21,13 @@ in my.lib.wrapPackageJoin {
   pkg = pkgs.btop;
   name = "btop";
 
+  # Currently doesn't work
+  # Presumably btop doesn't like XDG_CONFIG_HOME in read only dir
   vars = { 
     "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
   };
 
   files = {
-    "btop.conf" = {
-      path = "config/btop";
-      src = configFile;
-    };
+    "config/btop/btop.conf" = pkgs.writeText "btop.conf" configFile;
   };
 }

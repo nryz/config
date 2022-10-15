@@ -12,26 +12,21 @@ in
 
   config = mkIf cfg.enable {
 
-    hm.services.picom = {
-      enable = true;
-      backend = "glx";
-      vSync = true;
-      experimentalBackends = true;
+    # hm.systemd.user.services.picom = {
+    #   Unit = {
+    #     Description = "Picom X11 compositor";
+    #     After = [ "graphical-session-pre.target" ];
+    #     PartOf = [ "graphical-session.target" ];
+    #   };
 
-      settings = {
-        blur = false;
-        unredir-if-possible = true;
-        corner-radius = 0;
-        blur-method = "dual_kawase";
-        blur-strength = 8;
-        xinerama-shadow-crop = true;
-      };
+    #   Install = { WantedBy = [ "graphical-session.target" ]; };
 
-      #blur = true; 
-      shadow = false;
-      shadowOpacity = 0.8;
+    #   Service = {
+    #     ExecStart = "${my.pkgs.picom}/bin/picom";
+    #     Restart = "always";
+    #     RestartSec = 3;
+    #   };
+    # };
 
-      package = my.pkgs.picom-ibhagwan;
-    };
   };
 }

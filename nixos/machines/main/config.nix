@@ -6,9 +6,9 @@ with lib;
 
   blocks.desktop = {
     enable = true;
-
-    herbstluftwm.enable = true;
-    riverwm.enable = false;
+    
+    windowManager.pkg = my.pkgs.herbstluftwm;
+    windowManager.backend = "x";
 
     background =  "4";
 
@@ -23,13 +23,21 @@ with lib;
   };
   
   my.persist.enable = true;
-  my.state.user.directories = [
-    ".config/Bitwarden"
-    ".config/spotify"
-    ".local/share/direnv"
-    ".local/share/qutebrowser"
-    ".mozilla/firefox/default"
-  ];
+  my.state = {
+    user.directories = [
+      ".config/Bitwarden"
+      ".config/spotify"
+      ".local/share/direnv"
+      ".local/share/qutebrowser"
+      ".mozilla/firefox/default"
+      ".zsh/history"
+      ".ssh"
+    ];
+
+    directories = [ 
+      "/etc/ssh" 
+    ];
+  };
   
   #TODO: Add this to the zsh shell my.pkg
   hm.programs.zsh.initExtra = ''
@@ -41,11 +49,25 @@ with lib;
     zsh.enable = true;
   };
   
-  blocks.programs = {
-    fzf.enable = true;
+  
+  blocks.services = {
+    ssh.enable = false;
+    dunst.enable = false;
+    unclutter.enable = false;
   };
+  
+  systemd.packages = with my.pkgs; [
+    picom.service
+    unclutter.service
+    dunst.service
+  ];
+  
+  systemd.user.services."picom".wantedBy = [ "graphical-session.target" ];
+  systemd.user.services."unclutter".wantedBy = [ "graphical-session.target" ];
+  systemd.user.services."dunst".wantedBy = [ "graphical-session.target" ];
 
   hm.home.packages = with my.pkgs; [
+    rofi
     firefox
     git
     kitty
@@ -53,6 +75,7 @@ with lib;
     qutebrowser
     zathura
     btop
+    ssh
     mpv
     lf
     imv
@@ -82,17 +105,12 @@ with lib;
     audio.enable = true;
     bluetooth.enable = true;
 
-    services.ssh.enable = true;
 
     hardware.nvidia.enable = true; 
     hardware.ssd.enable = true; 
     virtualisation.enable = false;
     virtualisation.users = [ my.user ];
 
-    services = {
-      dunst.enable = true;
-      unclutter.enable = true;
-    };
 
     keyboard.enable = true;
   };

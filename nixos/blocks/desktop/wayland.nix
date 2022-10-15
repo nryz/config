@@ -9,8 +9,6 @@ in
 {
   options.blocks.desktop.wayland = with types; {
     enable = mkOpt bool false;
-
-    wmCommand = mkOpt lines "";
   };
 
   config = mkIf cfg.enable {
@@ -44,7 +42,7 @@ in
       text = ''
         if [ -z "$DISPLAY" ] && [ $TTY == "/dev/tty1" ]; then
           ${config.blocks.desktop.extraInit}
-          ${cfg.wmCommand}
+          ${config.blocks.desktop.windowManager.command}
         fi
       '';
     };

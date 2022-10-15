@@ -1,4 +1,6 @@
-{ self, inputs, user, colour } : let
+{ self, user, colour } : let
+
+  inputs = self.inputs;
 
   system = "x86_64-linux";
   

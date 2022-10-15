@@ -103,10 +103,7 @@ let
     ];
     
     files = {
-      "pistol.conf" = {
-        path = "config";
-        src = pkgs.writeText "pistol.conf" pistolFile;
-      };
+      "config/pistol.conf" = pkgs.writeText "pistol.conf" pistolFile;
     };
   };
 
@@ -126,9 +123,6 @@ in my.lib.wrapPackageJoin {
   ];
 
   files = {
-    "lfrc" = {
-      path = "config";
-      src = pkgs.writeText "lfrc" configFile;
-    };
+    "config/lfrc" = pkgs.writeText "lfrc" configFile;
   };
 }

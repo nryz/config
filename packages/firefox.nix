@@ -1,4 +1,4 @@
-{ pkgs, my, ... }:
+{ pkgs, my, base16, ... }:
 
 let
 	lib = pkgs.lib;
@@ -15,7 +15,7 @@ let
 	 	privacy-badger
 	 ];
 	
-	settings = with my.theme.base16.withHashtag; ''
+	settings = with base16.withHashtag; ''
 
 		// IMPORTANT: Start your code on the 2nd line
 		pref("browser.aboutwelcome.enabled", false);

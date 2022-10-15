@@ -1,4 +1,4 @@
-{ pkgs, my,  ... }:
+{ pkgs, my, base16, font,  ... }:
 
 let
   lib = pkgs.lib;
@@ -48,7 +48,7 @@ let
   '' ;
 
   # kitty_mod == ctrl-shift
-  themeSettings = with theme.base16.withHashtag; ''
+  themeSettings = with base16.withHashtag; ''
 
     tab_bar_style fade
     tab_powerline_style angled
@@ -56,11 +56,11 @@ let
     dynamic_background_opacity false
     background_opacity ${toString (255.0 / 255.0)}
 
-    font_size ${toString theme.font.size}
-    font_family ${theme.font.name}
-    italic_font ${theme.font.name}
-    bold_font ${theme.font.name}
-    bold_italic_font ${theme.font.name}
+    font_size ${toString font.size}
+    font_family ${font.name}
+    italic_font ${font.name}
+    bold_font ${font.name}
+    bold_italic_font ${font.name}
 
     background ${base00}
     foreground ${base05}
@@ -108,9 +108,6 @@ in my.lib.wrapPackageJoin {
   };
 
   files = {
-    "kitty.conf" = {
-      path = "config";
-      src = pkgs.writeText "kitty.conf" configFile;
-    };
+    "config/kitty.conf" = pkgs.writeText "kitty.conf" configFile;
   };
 }

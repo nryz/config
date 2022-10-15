@@ -12,7 +12,9 @@ in
     extraInit = mkOpt lines "";
 
     windowManager = {
-      name = mkOpt (uniq str) "";
+      pkg = mkOpt' package;
+      backend = mkOpt (enum ["wayland" "x"]) "x";
+      command = mkOpt lines "";
     };
 
     background = mkOpt' str;
@@ -32,8 +34,17 @@ in
 
   config = mkIf cfg.enable {
   
-    blocks.programs.rofi.enable = true;
-  
+    blocks.desktop = let
+      x = cfg.windowManager.backend == "x";
+      wmPkg = cfg.windowManager.pkg;
+      pkgBin = "${wmPkg}/bin/${wmPkg.meta.mainProgram}";
+    in {
+      xserver.enable = x;
+      wayland.enable = !x;
+
+      windowManager.command = mkIf x ''exec ${pkgBin}'';
+    };
+
     hm.systemd.user.targets.graphical-session = {
       UnitConfig = {
         RefuseManualStart = false;
@@ -46,7 +57,7 @@ in
       message = "no display server set, did you forget to set a window manager?";
     }
     {
-      assertion = cfg.windowManager.name != "";
+      assertion = cfg.windowManager.pkg != {};
       message = "no window manager set";
     }];
 

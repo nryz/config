@@ -1,7 +1,7 @@
 { pkgs, my, ... }:
 
 let
-    configFile = pkgs.writeText "direnvrc" ''
+    configFile = ''
 			 source ${pkgs.nix-direnv}/share/nix-direnv/direnvrc
     '';
 
@@ -14,9 +14,6 @@ in my.lib.wrapPackageJoin {
   };
 
   files = {
-    "direnvrc" = {
-      path = "config/direnv";
-      src = configFile;
-    };
+    "config/direnv/direnvrc" = pkgs.writeText "direnvrc" configFile;
   };
 }

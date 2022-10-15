@@ -1,8 +1,8 @@
-{ pkgs, my, ... }:
+{ pkgs, my, base16, font, ... }:
 
 let
-    configFile = with my.theme.base16.withHashtag; pkgs.writeText "zathura-config" ''
-			set font                        "${my.theme.font.name} ${toString my.theme.font.size}"
+    configFile = with base16.withHashtag; ''
+			set font                        "${font.name} ${toString font.size}"
 			set default-bg                  "${base00}"
 			set default-fg                  "${base01}"
 
@@ -45,9 +45,6 @@ in my.lib.wrapPackageJoin {
 	];
 
   files = {
-    "zathurarc" = {
-      path = "config";
-      src = configFile;
-    };
+    "config/zathurarc" =  pkgs.writeText "zathura-config" configFile;
   };
 }

@@ -1,7 +1,7 @@
-{ pkgs, my, ... }:
+{ pkgs, my, base16, ... }:
 
 let
-    configFile = with my.theme.base16; pkgs.writeText "imv-config" ''
+    configFile = with base16; ''
       [options]
       background = ${base00}
       loop_input = true
@@ -61,13 +61,10 @@ in my.lib.wrapPackageJoin {
   name = "imv";
 
   vars = { 
-    "IMV_CONFIG" = "${placeholder "out"}/config/config";
+    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
   };
 
   files = {
-    "config" = {
-      path = "config";
-      src = configFile;
-    };
+    "config/imv/config" = pkgs.writeText "imv-config" configFile;
   };
 }

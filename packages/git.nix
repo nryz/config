@@ -10,7 +10,7 @@ let
           "--display side-by-side"
         ];		
 
-		in pkgs.writeText "git-config" ''
+		in ''
 			[diff]
 				external = ${difftCommand}
         tool = difftastic
@@ -34,9 +34,6 @@ in my.lib.wrapPackageJoin {
   };
 
   files = {
-    "config" = {
-      path = "config/git";
-      src = configFile;
-    };
+    "config/git/config" = pkgs.writeText "git-config" configFile;
   };
 }
