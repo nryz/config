@@ -1,4 +1,4 @@
-{ pkgs, my, ... }:
+{ pkgs, my, wrapPackage, ... }:
 
 let
     configFile = ''
@@ -17,7 +17,7 @@ let
       disks_filter = "/ /nix /boot"
     '';
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.btop;
   name = "btop";
 
@@ -28,6 +28,6 @@ in my.lib.wrapPackageJoin {
   };
 
   files = {
-    "config/btop/btop.conf" = pkgs.writeText "btop.conf" configFile;
+    "config/btop/btop.conf" = configFile;
   };
 }

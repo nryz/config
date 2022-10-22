@@ -3,10 +3,10 @@
 with lib;
 with my.lib;
 let
-  cfg = config.blocks.virtualisation;
+  cfg = config.virtualisation;
 in
 {
-  options.blocks.virtualisation = with types; {
+  options.virtualisation = with types; {
     enable = mkOpt bool false;
     users = with types; mkOpt (listOf str) [];
   };

@@ -8,7 +8,7 @@ with lib;
 		bin = "${pkg}/bin/${name}";
 	};
 
-  wrapPackageJoin = {
+  wrapPackage = {
     pkg,
     name,
     prefix ? {},
@@ -16,8 +16,10 @@ with lib;
     vars ? {},
     flags ? [],
     files ? {},
+    scripts ? {}, # executable files
     outputs ? {},
     extraPkgs  ? [],
+    extraAttrs ? {},
   }: let
     wrapperArgs = strings.escapeShellArgs ([
           "--inherit-argv0" 
@@ -31,42 +33,65 @@ with lib;
       ) ++ optionals (flags != []) (concatMap (x: ["--add-flags"] ++ [x]) flags)
     );
     
-    filesCmd = concatStrings (mapAttrsToList (n: v: ''
-        mkdir -p $(dirname $out/${n})
-        ln -s ${v} $out/${n} 
-      '') files);
-      
-    outputsCmd = if (outputs != {}) then ( concatStrings (mapAttrsToList (n: v: let
-        output = "$" + "${n}";
-      in concatStrings (mapAttrsToList (n: v: ''
-        mkdir -p ${output}/$(dirname ${n})
-      '' + (if isStorePath v then ''
-        ln -s ${v} ${output}/${n}
-      '' else ''
-        echo "${v}" >> ${output}/${n}
-      '' )) v )) outputs )) else "";
+    finalOutputs = mapAttrs (n: v: {
+      install = false;
+      files = {};
+    } // v ) outputs;
 
   in pkgs.symlinkJoin {
     inherit name;
 
     nativeBuildInputs = [ pkgs.makeBinaryWrapper ];
     
-    outputs = ["out"] ++ (mapAttrsToList (n: v: "${n}") outputs);
+    outputs = ["out"] ++ (mapAttrsToList (n: v: "${n}") finalOutputs);
     
-    paths = [ pkg ] ++ extraPkgs ++ optional (builtins.elem "man" pkg.outputs) [ pkg.man ];
+
+    paths = let 
+      allPkgs = [ pkg ] ++ extraPkgs;
+    in map (x: [x] ++ (optional (builtins.elem "man" x.outputs) [x.man])) allPkgs;
 
     postBuild = ''
-        mkdir -p $out/bin
-      ''
-      + filesCmd  
-      + outputsCmd
-      + ''
-        makeWrapper "${pkg}/bin/${name}" "$out/bin/${name}" ${wrapperArgs}
-      '' ;
+      mkdir -p $out/bin
+      
+      ${concatStrings (mapAttrsToList (n: v: ''
+            mkdir -p $(dirname $out/${n})
+          '' +
+          (if isStorePath v then ''
+            ln -s ${v} $out/${n} 
+          '' else ''
+            echo ""${strings.escapeShellArg v}"" >> $out/${n}
+          '')) files)}
+          
+      ${concatStrings (mapAttrsToList (n: v: ''
+            mkdir -p $(dirname $out/${n})
+          '' +
+          (if isStorePath v then ''
+            ln -s ${v} $out/${n} 
+          '' else ''
+            echo ""${strings.escapeShellArg v}"" >> $out/${n}
+          '') + ''
+            chmod +x $out/${n}
+          '') scripts)}
+          
+      ${concatStrings (mapAttrsToList (oName: oValue: let
+          output = "$" + "${oName}";
+        in if isStorePath oValue.files then ''
+          ln -s ${oValue.files} ${output}
+        '' else (concatStrings (mapAttrsToList (n: v: ''
+            mkdir -p ${output}/$(dirname ${n})
+          '' + (if isStorePath v then ''
+            ln -s ${v} ${output}/${n}
+          '' else ''
+            echo "${v}" >> ${output}/${n}
+        '' )) oValue.files ))) finalOutputs )}
+        
+        
+      makeWrapper "${pkg}/bin/${name}" "$out/bin/${name}" ${wrapperArgs}
+    '' ;
     
     meta = {
       mainProgram = name;
-      outputsToInstall = ["out"];
+      outputsToInstall = ["out"] ++ (mapAttrsToList (n: v: if v.install then "${n}" else "")) finalOutputs;
     };
-  };
+  } // extraAttrs;
 }

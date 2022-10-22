@@ -1,4 +1,4 @@
-{ pkgs, my, base16, font, editor, ... }:
+{ pkgs, my, base16, font, editor, wrapPackage, ... }:
 
 let
   lib = pkgs.lib;
@@ -6,7 +6,6 @@ let
   fontName = "${toString font.size}pt ${font.name}";
 
   quickmarks = ''
-    home-manager https://github.com/nix-community/home-manager
     libgen libgen.li
     nixMan nixos.org/manual/nix/unstable/
     nixOptions search.nixos.org/options
@@ -57,7 +56,6 @@ let
 
     c.url.searchengines['DEFAULT'] = "https://google.com/search?q={}"
     c.url.searchengines['ddg'] = "https://duckduckgo.com/?q={}"
-    c.url.searchengines['hm'] = "https://github.com/nix-community/home-manager/search?q={}"
     c.url.searchengines['n'] = "https://search.nix.gsc.io/?q={}"
     c.url.searchengines['qt'] = "https://github.com/qtile/qtile/search?q={}"
     c.url.searchengines['r'] = "https://reddit.com/r/{}"
@@ -351,7 +349,7 @@ let
     # c.colors.webpage.bg ="${base00}"
   '';
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.qutebrowser;
   name = "qutebrowser";
   
@@ -362,13 +360,13 @@ in my.lib.wrapPackageJoin {
   };
   
   files = {
-    "config/qutebrowser/config.py" = pkgs.writeText "qutebrowser-configfile" (settings + themeSettings);
+    "config/qutebrowser/config.py" = (settings + themeSettings);
     
-    "config/qutebrowser/quickmarks" = pkgs.writeText "qutebrowser-quickmarks" quickmarks;
+    "config/qutebrowser/quickmarks" = quickmarks;
     
     # So qutebrowser doesn't complain about read-only
-    "config/qutebrowser/bookmarks/urls" = pkgs.emptyFile;
+    "config/qutebrowser/bookmarks/urls" = "";
     
-    "config/qutebrowser/greasemonkey/greasemonkey" = pkgs.emptyFile;
+    "config/qutebrowser/greasemonkey/greasemonkey" = "";
   };
 }

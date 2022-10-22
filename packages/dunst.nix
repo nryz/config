@@ -1,4 +1,4 @@
-{ pkgs, my, base16, font, ... }:
+{ pkgs, my, base16, font, wrapPackage, ... }:
 
 let
     configFile = with base16.withHashtag; ''
@@ -36,13 +36,14 @@ let
 			PartOf=graphical-session.target
 		'';
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.dunst;
   name = "dunst";
 
   outputs.service = {
-    # "etc/systemd/user/dunst.service" = pkgs.writeText "dunst-service" serviceFile;
-    "etc/systemd/user/dunst.service" = serviceFile;
+    files = {
+      "etc/systemd/user/dunst.service" = serviceFile;
+    };
   };
 
   flags = [ 
@@ -50,6 +51,6 @@ in my.lib.wrapPackageJoin {
   ];
 
   files = {
-    "config/dunstrc" = pkgs.writeText "dunstrc" configFile;
+    "config/dunstrc" = configFile;
   };
 }

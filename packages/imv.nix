@@ -1,4 +1,4 @@
-{ pkgs, my, base16, ... }:
+{ pkgs, my, base16, wrapPackage, ... }:
 
 let
     configFile = with base16; ''
@@ -56,7 +56,7 @@ let
       t = slideshow +1
       <Shift+T> = slideshow -1
     '';
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.imv;
   name = "imv";
 
@@ -65,6 +65,6 @@ in my.lib.wrapPackageJoin {
   };
 
   files = {
-    "config/imv/config" = pkgs.writeText "imv-config" configFile;
+    "config/imv/config" = configFile;
   };
 }

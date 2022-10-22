@@ -1,45 +1,25 @@
-{ inputs, pkgs, my, ... }:
+{ inputs, pkgs, my, xdg, stdenvNoCC, ... }:
 
 let
   lib = pkgs.lib;
  
-  # todo
-  # XCURSOR_PATH="$XCURSOR_PATH${XCURSOR_PATH:+:}/etc/profiles/per-user/nr/share/icons";
-  
-  # do I need to set ?
-  # export XDG_CACHE_HOME="/home/hm-user/.cache"
-  # export XDG_CONFIG_HOME="/home/hm-user/.config"
-  # export XDG_DATA_HOME="/home/hm-user/.local/share"
-  # export XDG_STATE_HOME="/home/hm-user/.local/state"
-  
-  common = import ./common.nix { inherit pkgs; };
-  
-  fzfrc = ''
-    source "${pkgs.fzf}/share/fzf/completion.zsh"
-    source "${pkgs.fzf}/share/fzf/key-bindings.zsh"
+  zsh-vi-mode = stdenvNoCC.mkDerivation rec {
+    src = inputs.zsh-vi-mode;
 
-    export FZF_DEFAULT_COMMAND="fd --hidden --follow --exclude '.git' --exclude '.cache'"
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-    export FZF_CTRL_R_COMMAND="$FZF_DEFAULT_COMMAND"
-    export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
-    export FZF_DEFAULT_OPTS="--layout=reverse --info=inline --height=80% --multi --preview-window=:hidden --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200' --bind '?:toggle-preview'"
-  '';
+    pname = "zsh-vi-mode";
+    version = "latest";
   
-  zshvmrc = ''
-    ZVM_INIT_MODE=sourcing
-    source ${my.pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
-  '';
+    dontBuild = true;
+
+    installPhase = ''
+      mkdir -p $out/share/zsh-vi-mode
+      cp zsh-vi-mode.zsh $out/share/zsh-vi-mode
+    '';
+
+    installFlags = [ "PREFIX=$(out)" ];
+  };
   
-  zshpromptrc = ''
-    fpath+=(${inputs.zsh-pure-prompt})
-    
-    autoload -U promptinit; promptinit
-    prompt pure
-  '';
-  
-  direnvrc = ''
-    source "${pkgs.nix-direnv}/share/nix-direnv/direnvrc"
-  '';
+  common = import ./common.nix { inherit pkgs xdg; };
   
   zshrc = ''
     typeset -U path cdpath fpath manpath
@@ -68,42 +48,65 @@ let
 
     HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
         
-    bindkey "^[[1;5C" forward-word #ctrl-right
-    bindkey "^[[1;5D" backward-word #ctrl-left
-
-    chpwd() lsd
+    chpwd() ${pkgs.lsd}/bin/lsd
     
     # Aliases
     ${lib.concatStrings (lib.mapAttrsToList (n: v: ''
       alias ${n}='${v}'
     '') common.aliases)}
 
-  ''  + zshvmrc
-      + zshpromptrc
-      + fzfrc 
-      + direnvrc;
+
+    # Prompt
+    fpath+=(${inputs.zsh-pure-prompt})
+    
+    autoload -U promptinit; promptinit
+    prompt pure
+    
+
+    ZVM_INIT_MODE=sourcing
+    source ${zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.zsh
+
+    bindkey "^[[1;5C" forward-word #ctrl-right
+    bindkey "^[[1;5D" backward-word #ctrl-left
+
+    eval "$(${my.pkgs.direnv}/bin/direnv hook zsh)"
+
+    source "${pkgs.fzf}/share/fzf/completion.zsh"
+    source "${pkgs.fzf}/share/fzf/key-bindings.zsh"
+
+    export FZF_DEFAULT_COMMAND="${pkgs.fd}/bin/fd --hidden --follow --exclude '.git' --exclude '.cache'"
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_CTRL_R_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
+    export FZF_DEFAULT_OPTS="--layout=reverse --info=inline --height=80% --multi --preview-window=:hidden --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200' --bind '?:toggle-preview'"
+  '';
       
   zshenv = ''
     ${lib.concatStrings (lib.mapAttrsToList (n: v: ''
       export ${n}="${v}"
     '') common.variables)}
-    
-     export LOCALE_ARCHIVE_2_27="${pkgs.glibcLocales}/lib/locale/locale-archive"
-  '';
+  '' + common.defaultVariables;
 
-in my.lib.wrapPackageJoin {
+in my.lib.wrapPackage {
   pkg = pkgs.zsh;
   name = "zsh";
+
+  outputs.extraPkgs = {
+    install = true;
+    files = common.pkgs;
+  };
   
   vars = {
     "ZDOTDIR" = "${placeholder "out"}/config";
   };
   
   files = {
-    "config/.zshrc" = pkgs.writeText "zshrc" zshrc;
-    "config/.zshenv" = pkgs.writeText "zshenv" zshenv;
-    "config/.zprofile" = pkgs.emptyFile;
-    "config/.zlogin" = pkgs.emptyFile;
-    "config/.zlogout" = pkgs.emptyFile;
+    "config/.zshrc" = zshrc;
+    "config/.zshenv" = zshenv;
+    "config/.zprofile" = "";
+    "config/.zlogin" = "";
+    "config/.zlogout" = "";
   };
+  
+  extraAttrs.shellPath = "/bin/zsh";
 }

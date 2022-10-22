@@ -1,4 +1,4 @@
-{ pkgs, my, ... }:
+{ pkgs, my, wrapPackage, ... }:
 
 let
   lib = pkgs.lib;
@@ -46,7 +46,7 @@ let
     image/* kitty +kitten icat %s
   '';
 
-  kittyPreviewFile = pkgs.writeScript "kittyPreviewFile" ''
+  kittyPreviewFile = ''
     #! /usr/bin/env bash
     file=$1
     w=$2
@@ -77,14 +77,14 @@ let
       pistol "$file"
   '';
 
-  kittyCleanFile = pkgs.writeScript "kittyCleanFile" ''
+  kittyCleanFile = ''
     #! /usr/bin/env bash
     kitty +icat --clear --silent --transfer-mode file
   '';
   
   configFile = ''
-    set previewer ${kittyPreviewFile}
-    set cleaner ${kittyCleanFile}
+    set previewer ${placeholder "out"}/config/kittyPreview
+    set cleaner ${placeholder "out"}/config/kittyClean
 
     set ratios 1:1
 
@@ -94,7 +94,7 @@ let
     map <delete> remove
   '';
   
-  pistol = my.lib.wrapPackageJoin {
+  pistol = my.lib.wrapPackage {
     pkg = pkgs.pistol;
     name = "pistol";
     
@@ -103,11 +103,11 @@ let
     ];
     
     files = {
-      "config/pistol.conf" = pkgs.writeText "pistol.conf" pistolFile;
+      "config/pistol.conf" = pistolFile;
     };
   };
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.lf;
   name = "lf";
   
@@ -123,6 +123,11 @@ in my.lib.wrapPackageJoin {
   ];
 
   files = {
-    "config/lfrc" = pkgs.writeText "lfrc" configFile;
+    "config/lfrc" = configFile;
+  };
+  
+  scripts = {
+    "config/kittyClean" = kittyCleanFile;
+    "config/kittyPreview" = kittyPreviewFile;
   };
 }

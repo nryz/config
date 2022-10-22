@@ -6,11 +6,7 @@
     nur.url = "github:nix-community/NUR";
     utils.url = "github:gytis-ivaskevicius/flake-utils-plus";
     impermanence.url = "github:nix-community/impermanence";
-
-    home-manager.url = "github:nix-community/home-manager/master";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager.inputs.utils.follows = "utils";
-    
+   
     zsh-pure-prompt.url = "github:sindresorhus/pure"; 
     zsh-pure-prompt.flake = false;
     
@@ -19,7 +15,7 @@
     
     picom-ibhagwan.url = "github:ibhagwan/picom";
     picom-ibhagwan.flake = false;
-
+    
     helix.url = "github:helix-editor/helix";
     helix.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -30,20 +26,17 @@
     naersk.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ { self, utils, ... }: let 
-    user = "nr";
-    colour = ./content/base16/solarized-dark.yaml;
-  in {
+  outputs = inputs @ { self, utils, ... }: {
     inherit self;
 
-    nixosConfigurations = import ./nixos { inherit self user colour; };
+    nixosConfigurations = import ./nixos { inherit self; };
     
     templates = import ./templates;
 
   } // utils.lib.eachDefaultSystem (system: {
 
-    apps.default = import ./nixos/st { inherit system inputs user; }; 
+    apps.default = import ./nixos/st { inherit system inputs; }; 
 
-    packages = import ./packages { inherit self system colour; };
+    packages = import ./packages { inherit self system; };
   });
 }

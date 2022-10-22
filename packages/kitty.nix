@@ -1,4 +1,4 @@
-{ pkgs, my, base16, font,  ... }:
+{ pkgs, my, base16, font, wrapPackage,  ... }:
 
 let
   lib = pkgs.lib;
@@ -54,7 +54,7 @@ let
     tab_powerline_style angled
 
     dynamic_background_opacity false
-    background_opacity ${toString (255.0 / 255.0)}
+    background_opacity 1.0
 
     font_size ${toString font.size}
     font_family ${font.name}
@@ -99,7 +99,7 @@ let
   
   configFile = settings + themeSettings;
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.kitty;
   name = "kitty";
 
@@ -108,6 +108,6 @@ in my.lib.wrapPackageJoin {
   };
 
   files = {
-    "config/kitty.conf" = pkgs.writeText "kitty.conf" configFile;
+    "config/kitty.conf" = configFile;
   };
 }

@@ -1,4 +1,4 @@
-{ pkgs, my, base16, font, ... }:
+{ pkgs, my, base16, font, wrapPackage, ... }:
 
 let
     configFile = with base16.withHashtag; ''
@@ -36,7 +36,7 @@ let
 
 			set recolor-keephue             "true"   
 		'';
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.zathura;
   name = "zathura";
 	
@@ -45,6 +45,6 @@ in my.lib.wrapPackageJoin {
 	];
 
   files = {
-    "config/zathurarc" =  pkgs.writeText "zathura-config" configFile;
+    "config/zathurarc" = configFile;
   };
 }

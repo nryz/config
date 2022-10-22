@@ -31,22 +31,35 @@ def update(options):
 
 
 def switch(options):
-    cmd = []
-    if options.t:
-        cmd += ["sudo", "nixos-rebuild", options.t, "--flake", "."]
-    else:
-        cmd += ["sudo", "nixos-rebuild", "switch", "--flake", "."]
+    cmd = ["sudo", "nixos-rebuild", "switch", "--flake", "."]
         
     if options.d:
         cmd += ["--show-trace"]
     
-    subprocess.run(cmd)
+    result = subprocess.run(cmd)
 
-    if options.t == 'build':
-        list_changes('./result')
-    else:
+    if result.returncode == 0:
         list_changes()
-
+        
+def build(options):
+    cmd = []
+    
+    if options.type:
+        cmd += ["sudo", "nixos-rebuild", options.type, "--flake", "."]
+    else:
+        cmd += ["sudo", "nixos-rebuild", "build", "--flake", "."]
+        
+    if options.d:
+        cmd += ["--show-trace"]
+        
+    result = subprocess.run(cmd)
+    
+    if result.returncode == 0:
+        if options.type:
+            list_changes('.result')
+        else:
+            list_changes()
+    
 
 def clean(options):
     subprocess.run(["sudo", "nix-collect-garbage", "-d"])
@@ -117,9 +130,13 @@ def main():
     parser_update.set_defaults(func=update)
 
     parser_switch = subparsers.add_parser('switch', help='nixos-rebuild switch/build/boot')
-    parser_switch.add_argument('-t', '-type', type=str, help='switch/build/boot defaults to switch')
     parser_switch.add_argument('-d', '-debug', action='store_true', help='enable debug log')
     parser_switch.set_defaults(func=switch)
+
+    parser_build = subparsers.add_parser('build', help='nixos-rebuild build')
+    parser_build.add_argument('type', type=str, help='build/boot/dry-run', nargs='?', default='build')
+    parser_build.add_argument('-d', '-debug', action='store_true', help='enable debug log')
+    parser_build.set_defaults(func=build)
 
     parser_clean = subparsers.add_parser('clean', help='clean the nix store')
     parser_clean.set_defaults(func=clean)

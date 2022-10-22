@@ -1,5 +1,5 @@
-{ system, inputs, user } : let
-  configPath = "/home/${user}/config";
+{ system, inputs } : let
+  configPath = "/home/nr/config";
   
   pkgs = import inputs.nixpkgs { inherit system; };
  

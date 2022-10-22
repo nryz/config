@@ -1,122 +1,117 @@
-{ pkgs, my, base16, ... }:
+{ pkgs, my, base16, wrapPackage, ... }:
 
 let
   lib = pkgs.lib;
   
-  tomlFormat = pkgs.formats.toml {};
+  languagesFile = ''
+    [[language]]
+    name = "rust"
 
-  languagesSettings.language = [ 
-  { name = "rust"; 
-    config = {
-      checkOnSave = { command = "clippy"; };
-      cargo = { allFeatures = true; };
-      procMacro = { enable = true; };
-  };}
-  ];
+    [language.config]
+    checkOnSave = {command = "clippy"}
+    cargo = {allFeatures = true}
+    procMacro = {enable = true}
+  '';
   
-  settings = {
-    theme = "custom";
-    
-    editor = {
-      mouse = false;
-      line-number = "relative";
-      auto-pairs = false;
-      cursorline = true;
-      auto-completion = true;
-      auto-format = true;
-      color-modes = true;
-      
-      statusline = {
-        left = [ "mode" "selections" "spinner" ];
-        center = [ "file-name" ];
-        right = [ "diagnostics" "position-percentage" "file-type" ];
-      };
-      
-      lsp = {
-        display-messages = true;
-      };
-      
-      cursor-shape = {
-        normal = "block";
-        insert = "bar";
-        select = "block";
-      };
-    };
-  };
+  themeFile = with base16.withHashtag; ''
+    "ui.background" = { bg = "${base00}" }
+    "ui.virtual.whitespace" = "${base03}"
+
+    "ui.linenr" = { fg = "${base03}", bg = "${base00}" }
+    "ui.linenr.selected" = { fg = "${base04}", bg = "${base01}", modifiers = ["bold"] }
+
+    "ui.menu" = { fg = "${base04}", bg = "${base01}"}
+    "ui.menu.selected" = { fg = "${base01}", bg = "${base04}" }
+
+    "ui.popup" = { bg = "${base00}", fg = "${base00}" }
+    "ui.popup.info" = { bg = "${base01}", fg = "${base04}" }
+
+    "ui.window" = { fg = "${base01}", bg = "${base01}" }
+    "ui.statusline" = { fg = "${base04}", bg = "${base01}" }
+    "ui.statusline.normal" = { fg = "${base04}", bg = "${base01}" }
+    "ui.statusline.select" = { fg = "${base00}", bg = "${base09}" }
+    "ui.statusline.insert" = { fg = "${base04}", bg = "${base01}" }
+
+    "ui.cursor" = { fg = "${base04}", bg = "${base09}", modifiers = ["reversed"] }
+    "ui.cursor.primary" = { fg = "${base04}", modifiers = ["bold", "reversed"] }
+    "ui.cursor.match" = { fg = "${base09}", modifiers = [ "underlined"] }
+
+    "ui.selection" = { bg = "${base02}" }
+
+    "ui.cursorline.primary" = { bg = "${base01}" }
+
+    "ui.text" = "${base05}"
+    "ui.text.focus" = "${base05}"
+    "ui.text.info" = "${base04}"
+
+    "ui.help" = { fg = "${base04}", bg = "${base01}" }
+    "ui.gutter" = { bg = "${base01}" }
+
+    "comment" = { fg = "${base03}", modifiers = ["italic"] }
+    "operator" = "${base09}"
+    "variable" = "${base08}"
+    "constant.numeric" = "${base09}"
+    "constant" = "${base09}"
+    "attribute" = "${base09}"
+    "type" = "${base0A}"
+    "string"  = "${base0B}"
+    "variable.other.member" = "${base08}"
+    "constant.character.escape" = "${base0C}"
+    "function" = "${base0D}"
+    "constructor" = "${base0D}"
+    "special" = "${base0D}"
+    "keyword" = "${base0E}"
+    "label" = "${base0E}"
+    "namespace" = "${base0E}"
+
+    "markup.heading" = "${base0D}"
+    "markup.list" = "${base08}"
+    "markup.bold" = { fg = "${base0A}", modifiers = ["bold"] }
+    "markup.italic" = { fg = "${base0E}", modifiers = ["italic"] }
+    "markup.link.url" = { fg = "${base09}", modifiers = ["underlined"] }
+    "markup.link.text" = "${base08}"
+    "markup.quote" = "${base0C}"
+    "markup.raw" = "${base0B}"
+
+    "diff.plus" = "${base0B}"
+    "diff.delta" = "${base09}"
+    "diff.minus" = "${base08}"
+
+    "diagnostic" = { modifiers = ["underlined"] }
+    "info" = "${base0D}"
+    "hint" = "${base03}"
+    "debug" = "${base03}"
+    "warning" = "${base09}"
+    "error" = "${base08}"
+  '';
   
-  themeSettings = with base16.withHashtag; {
-    "ui.background" = { bg = base00; };
-    "ui.virtual.whitespace" = base03;
+  configFile = ''
+    theme = "custom"
 
-    "ui.linenr" = { fg = base03; bg = base00; };
-    "ui.linenr.selected" = { fg = base04; bg = base01; modifiers = ["bold"]; };
+    [editor]
+    auto-completion = true
+    auto-format = true
+    auto-pairs = false
+    color-modes = true
+    cursorline = true
+    line-number = "relative"
+    mouse = false
 
-    "ui.menu" = { fg = base04; bg = base01;};
-    "ui.menu.selected" = { fg = base01; bg = base04; };
+    [editor.cursor-shape]
+    insert = "bar"
+    normal = "block"
+    select = "block"
 
-    "ui.popup" = { bg = base00;  fg = base00; };
-    "ui.popup.info" = { bg = base01; fg = base04; };
+    [editor.lsp]
+    display-messages = true
 
-    "ui.window" = { fg = base01; bg = base01; };
-    "ui.statusline" = { fg = base04; bg = base01; };
-    "ui.statusline.normal" = { fg = base04; bg = base01; };
-    "ui.statusline.select" = { fg = base00; bg = base09; };
-    "ui.statusline.insert" = { fg = base04; bg = base01; };
-
-    "ui.cursor" = { fg = base04; bg = base09; modifiers = ["reversed"]; };
-    "ui.cursor.primary" = { fg = base04; modifiers = ["bold" "reversed"]; };
-    "ui.cursor.match" = { fg = base09; modifiers = [ "underlined"]; };
-
-    "ui.selection" = { bg = base02; };
-
-    "ui.cursorline.primary" = { bg = base01; };
-
-    "ui.text" = base05;
-    "ui.text.focus" = base05;
-    "ui.text.info" = base04;
-
-    "ui.help" = { fg = base04; bg = base01; };
-    "ui.gutter" = { bg = base01; };
-
-    "comment" = { fg = base03; modifiers = ["italic"]; };
-    "operator" = base09;
-    "variable" = base08;
-    "constant.numeric" = base09;
-    "constant" = base09;
-    "attribute" = base09;
-    "type" = base0A;
-    "string"  = base0B;
-    "variable.other.member" = base08;
-    "constant.character.escape" = base0C;
-    "function" = base0D;
-    "constructor" = base0D;
-    "special" = base0D;
-    "keyword" = base0E;
-    "label" = base0E;
-    "namespace" = base0E;
-
-    "markup.heading" = base0D;
-    "markup.list" = base08;
-    "markup.bold" = { fg = base0A; modifiers = ["bold"]; };
-    "markup.italic" = { fg = base0E; modifiers = ["italic"]; };
-    "markup.link.url" = { fg = base09; modifiers = ["underlined"]; };
-    "markup.link.text" = base08;
-    "markup.quote" = base0C;
-    "markup.raw" = base0B;
-
-    "diff.plus" = base0B;
-    "diff.delta" = base09;
-    "diff.minus" = base08;
-
-    "diagnostic" = { modifiers = ["underlined"]; };
-    "info" = base0D;
-    "hint" = base03;
-    "debug" = base03;
-    "warning" = base09;
-    "error" = base08;
-  };
+    [editor.statusline]
+    center = ["file-name"]
+    left = ["mode", "selections", "spinner"]
+    right = ["diagnostics", "position-percentage", "file-type"]
+  '';
   
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.helix;
   name = "hx";
   vars = { 
@@ -126,8 +121,8 @@ in my.lib.wrapPackageJoin {
   path = with pkgs; [ rnix-lsp ];
 
   files = {
-    "config/helix/config.toml" = tomlFormat.generate "helix-config" settings;
-    "config/helix/languages.toml" = tomlFormat.generate "helix-config" languagesSettings;
-    "config/helix/themes/custom.toml" = tomlFormat.generate "helix-theme" themeSettings;
+    "config/helix/config.toml" = configFile;
+    "config/helix/languages.toml" = languagesFile;
+    "config/helix/themes/custom.toml" = themeFile;
   };
 }

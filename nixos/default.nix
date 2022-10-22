@@ -1,4 +1,4 @@
-{ self, user, colour } : let
+{ self, } : let
 
   inputs = self.inputs;
 
@@ -16,18 +16,12 @@
   lib = inputs.nixpkgs.lib;
   
   my = {
-    inherit user;
-    flakePath = ../.;
-
     pkgs = self.packages.${system};
     lib = import ../lib { inherit pkgs; };
-
-    libs.hm = inputs.home-manager.lib.hm;
-		theme.base16 = (pkgs.callPackage inputs.base16 {}).mkSchemeAttrs colour;
   };
   
   machines = my.lib.collectMachines ./machines;
-  blocks = my.lib.collectBlocks ./blocks;
+  modules = my.lib.collectModules ./modules;
 
 in lib.mapAttrs (name: machineFolder: let
 
@@ -40,11 +34,10 @@ in lib.mapAttrs (name: machineFolder: let
 in lib.nixosSystem {
   inherit system pkgs specialArgs;
 
-  modules = blocks ++ [
+  modules = modules ++ [
     (machineFolder + "/hardware.nix")
     (machineFolder + "/config.nix")
     inputs.utils.nixosModules.autoGenFromInputs
-    inputs.home-manager.nixosModules.home-manager
     inputs.impermanence.nixosModules.impermanence
   ];
 }) machines

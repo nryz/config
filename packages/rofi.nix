@@ -1,50 +1,26 @@
-{ pkgs, my, base16, font, ... }:
+{ pkgs, my, base16, font, wrapPackage, ... }:
 
 let
-    # TODO:
-    # ''
-    # #!/usr/bin/env bash
+    script = ''
+      #/usr/bin/env bash
 
-    # arg="$*"
+      input=("''${1}")
+      for ((i=3; i<$#; i+=2)); do
+        input+=("\n''${!i}")
+      done
+      
+      ret=$(echo -e ''${input[@]} | ${placeholder "out"}/bin/rofi -dmenu -i -format i)
+      cmd=$((ret*2 + 2))
 
-    # list_entry() {
-    #   if [[ -z "$arg" ]]; then
-    #     echo "$1"
-    #   elif [ "$arg" = "$1" ]; then
-    #     $2
-    #     exit 0
-    #   fi
-    # }
-
-    # list() {
-    #   for tag in $(herbstclient complete 1 move); do
-    #   list_entry "Move window to tag $tag" "herbstclient move $tag"
-    # done
-
-  
-    #   list_entry 'floating' 'herbstclient set_attr clients.focus.floating toggle'
-    # list_entry 'fullscreen' 'herbstclient fullscreen toggle'
-    # }
-
-    # list
-    # '';
-    
-    
-    # ''
-    #   for tag in $(/nix/store/cp8i6lhxkgccgm37x0jzi5gf02dlqqq8-herbstluftwm-0.9.5/bin/herbstclient complete 1 use); do
-    #     list_entry "Go to tag $tag" "/nix/store/cp8i6lhxkgccgm37x0jzi5gf02dlqqq8-herbstluftwm-0.9.5/bin/herbstclient use $tag"
-    #   done
-    # '';
-    
-    
-    
+      ''${!cmd}
+    '';
     
     configFile = ''
-        configuration {
-        	modes: [drun,run,window,keys];
-        }
+      configuration {
+      	modes: [drun,run,window,keys];
+      }
         
-        @theme "custom"
+      @theme "custom"
     '';
 
     themeFile = with base16.withHashtag; ''
@@ -191,7 +167,7 @@ let
         }      
     '';
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.rofi;
   name = "rofi";
 
@@ -200,7 +176,11 @@ in my.lib.wrapPackageJoin {
   };
 
   files = {
-    "config/rofi/config.rasi" = pkgs.writeText "config.rasi" configFile;
-    "config/rofi/custom.rasi" = pkgs.writeText "config.rasi" themeFile;
+    "config/rofi/config.rasi" = configFile;
+    "config/rofi/custom.rasi" = themeFile;
+  };
+  
+  scripts = {
+    "scripts/list" = script; 
   };
 }

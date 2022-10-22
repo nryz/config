@@ -1,4 +1,4 @@
-{ pkgs, my, inputs, ... }:
+{ pkgs, my, inputs, terminal, wrapPackage, ... }:
 
 let
     configFile =  ''
@@ -40,15 +40,15 @@ let
       PartOf=graphical-session.target
     '';
     
-    # shellEscape = s: (replaceChars [ "\\" ] [ "\\\\" ] s);
-
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.picom.overrideAttrs(_: { src = inputs.picom-ibhagwan; });
 
   name = "picom";
   
   outputs.service = {
-    "etc/systemd/user/picom.service" = serviceFile;
+    files = {
+      "etc/systemd/user/picom.service" = serviceFile;
+    };
   };
 
   flags = [ 
@@ -57,6 +57,6 @@ in my.lib.wrapPackageJoin {
   ];
   
   files = {
-    "config/picom.conf" = pkgs.writeText "picom.conf" configFile;
+    "config/picom.conf" = configFile;
   };
 }

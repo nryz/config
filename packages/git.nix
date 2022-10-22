@@ -1,4 +1,4 @@
-{ pkgs, my, ... }:
+{ pkgs, my, wrapPackage, ... }:
 
 with pkgs.lib;
 let
@@ -25,7 +25,7 @@ let
         difftool = true
 		'';
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.git;
   name = "git";
 
@@ -34,6 +34,6 @@ in my.lib.wrapPackageJoin {
   };
 
   files = {
-    "config/git/config" = pkgs.writeText "git-config" configFile;
+    "config/git/config" = configFile;
   };
 }

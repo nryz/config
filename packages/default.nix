@@ -1,4 +1,4 @@
-{ self, system, colour }:
+{ self, system }:
 
 let
 	inputs = self.inputs;
@@ -9,29 +9,60 @@ let
 	};
 	
 	lib = pkgs.lib;
-	
 
   naersk = pkgs.callPackage inputs.naersk {};
-	base16 = pkgs.callPackage inputs.base16 {};
 
 	my.pkgs = self.packages.${system};
   my.lib = import ../lib { inherit pkgs; };
-
-	callPackage = with my.lib; pkgs.newScope { 
+	
+	args = with my.lib; rec { 
 		inherit inputs pkgs my; 
 
-		base16 = base16.mkSchemeAttrs colour;
+		base16 = (pkgs.callPackage inputs.base16 {}).mkSchemeAttrs ../content/base16/solarized-dark.yaml;
+
+		terminal = mkDefPkg my.pkgs.kitty;
+		editor = mkDefPkg my.pkgs.helix;
+		browser = mkDefPkg my.pkgs.qutebrowser;
+		
+		background = ../content/backgrounds/4;
+
+		# TODO: make this work for all applications
+		cursor.package = pkgs.vanilla-dmz;
+		cursor.name = "Vanilla-DMZ";
+		cursor.size = 16;
 
 	  font.package = pkgs.source-code-pro;
 	  font.name = "Source Code Pro";
 	  font.size = 9;
-	
-		terminal = mkDefPkg my.pkgs.kitty;
-		editor = mkDefPkg my.pkgs.helix;
+		
+		xdg = {
+			cacheHome = "$HOME/.cache";
+		  configHome = "$HOME/.config";
+		  dataHome = "$HOME/.local/share";
+		  stateHome = "$HOME/.local/state";
+		};
+		
+		wrapPackage = args: my.lib.wrapPackage ({
+			prefix = {
+				"XDG_DATA_DIRS" = [ ":" "${my.pkgs.theme}/share"];
+				"XCURSOR_PATH" = [ ":" "${my.pkgs.theme}/share/icons"];
+			};
+		} // args);
 	};
+
+	callPackage = pkgs.newScope args;	
 	
-in
-{
+	gtk = import ./gtk-functions.nix args;
+in (with pkgs; gtk.wrapGtkPackages [
+	blueberry
+	gucharmap
+	xfce.thunar
+	filezilla
+	gnome.nautilus
+	dolphin
+	lxappearance
+]) // {
+
 	lf = 						callPackage ./lf.nix {};
 	mpv = 					callPackage ./mpv.nix {};
 	imv = 					callPackage ./imv.nix {};
@@ -43,13 +74,13 @@ in
   kitty = 				callPackage ./kitty.nix {};
 	dunst = 				callPackage ./dunst.nix {};
   helix = 				callPackage ./helix.nix {};
-	river = 				callPackage ./wm/river.nix {};
+	theme = 				callPackage ./theme.nix {};
   picom = 				callPackage ./picom.nix {};
+	startx =				callPackage ./wm/startx.nix {};
 	direnv = 				callPackage ./direnv.nix {};
 	zathura = 			callPackage ./zathura.nix {};
 	firefox = 			callPackage ./firefox.nix {};
 	unclutter = 		callPackage ./unclutter.nix {};
-  zsh-vi-mode = 	callPackage ./zsh-vi-mode.nix { src = inputs.zsh-vi-mode; };
   qutebrowser = 	callPackage ./qutebrowser.nix {};
 	herbstluftwm = 	callPackage ./wm/herbstluftwm.nix {};
 	

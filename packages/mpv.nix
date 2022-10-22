@@ -1,4 +1,4 @@
-{ pkgs, my, ... }:
+{ pkgs, my, wrapPackage, ... }:
 
 let
   lib = pkgs.lib;
@@ -22,7 +22,7 @@ let
   luaEnv = pkgs.mpv-unwrapped.luaEnv;
   luaVersion = pkgs.mpv-unwrapped.lua.luaversion;
   
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.mpv;
   name = "mpv";
   
@@ -44,6 +44,6 @@ in my.lib.wrapPackageJoin {
     name = "config/scripts/${x.scriptName}"; 
     value = "${x}/share/mpv/scripts/${x.scriptName}";
   } ) scripts) // {
-    "config/mpv.conf" = pkgs.writeText "mpv.conf" configFile;
+    "config/mpv.conf" = configFile;
   };
 }

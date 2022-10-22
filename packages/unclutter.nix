@@ -1,4 +1,4 @@
-{ pkgs, my, base16, font, ... }:
+{ pkgs, my, base16, font, wrapPackage, ... }:
 
 let
 		serviceFile = ''
@@ -16,17 +16,19 @@ let
 			PartOf=graphical-session.target
 		'';
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.unclutter;
   name = "unclutter";
 
   outputs.service = {
-    "etc/systemd/user/unclutter.service" = serviceFile;
+		files = {
+	    "etc/systemd/user/unclutter.service" = serviceFile;
+		};
   };
 
   flags = [ 
-		"--timeout 1"
-		"--jitter 0"
+		"-idle 1"
+		"-jitter 0"
   ];
 
 }

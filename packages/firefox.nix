@@ -1,4 +1,4 @@
-{ pkgs, my, base16, ... }:
+{ pkgs, my, base16, wrapPackage, ... }:
 
 let
 	lib = pkgs.lib;
@@ -72,7 +72,7 @@ let
 		lockPref("toolkit.telemetry.unified", false);
  	'';
 
-in my.lib.wrapPackageJoin {
+in wrapPackage {
   pkg = pkgs.wrapFirefox pkgs.firefox-esr-unwrapped {
 		extraPrefs = settings;
 		nixExtensions = map (x:
