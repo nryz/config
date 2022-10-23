@@ -24,6 +24,11 @@
 
     naersk.url = "github:nix-community/naersk/master";
     naersk.inputs.nixpkgs.follows = "nixpkgs";
+    
+    joshuto.url = "github:kamiyaa/joshuto";
+    joshuto.flake = false;
+    
+    nix-index-database.url = "github:Mic92/nix-index-database";
   };
 
   outputs = inputs @ { self, utils, ... }: {

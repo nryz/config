@@ -2,7 +2,6 @@
 
 let
   lib = pkgs.lib;
-  theme = my.theme;
   
   settings = ''
     enable_audio_bell no

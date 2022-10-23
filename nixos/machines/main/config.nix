@@ -9,20 +9,19 @@ with lib;
   bluetooth.enable = false;
   hardware.nvidia.enable = true;
   
-  services.greetd = rec {
+  services.greetd = let
+    session.user = "nr";
+    session.command = "${my.pkgs.startx.override {
+      wm = my.pkgs.herbstluftwm;
+      drivers = [{
+        name = "nvidia";
+        package = config.hardware.nvidia.package.bin;
+      }];
+    }}/bin/startx";  
+  in {
     enable = true;
-    settings.default_session = {
-      user = "nr";
-      command = "${my.pkgs.startx.override {
-          wm = my.pkgs.herbstluftwm;
-          drivers = [{
-            name = "nvidia";
-            package = config.hardware.nvidia.package.bin;
-          }];
-        }}/bin/startx
-      ";
-    };
-    settings.initial_session = settings.default_session;
+    settings.default_session = session;
+    settings.initial_session = session;
   };
   
   my.persist.users = ["nr"];
@@ -59,24 +58,24 @@ with lib;
     "dunst.service"
   ];
   
-
   users.users.nr.packages = with my.pkgs; [
     rofi
     firefox
     git
-    kitty
+    alacritty
     helix
     qutebrowser
     zathura
     btop
     ssh
     mpv
-    lf
+    joshuto
     imv
     gucharmap
     thunar
     filezilla
     lxappearance
+    nix-index
   ] ++ (with pkgs; [
     gitui
     spotify

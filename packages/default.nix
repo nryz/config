@@ -17,14 +17,16 @@ let
 	
 	args = with my.lib; rec { 
 		inherit inputs pkgs my; 
+		
+		inherit naersk;
 
 		base16 = (pkgs.callPackage inputs.base16 {}).mkSchemeAttrs ../content/base16/solarized-dark.yaml;
 
-		terminal = mkDefPkg my.pkgs.kitty;
+		terminal = mkDefPkg my.pkgs.alacritty;
 		editor = mkDefPkg my.pkgs.helix;
 		browser = mkDefPkg my.pkgs.qutebrowser;
 		
-		background = ../content/backgrounds/4;
+		background = ../content/backgrounds/2;
 
 		# TODO: make this work for all applications
 		cursor.package = pkgs.vanilla-dmz;
@@ -48,6 +50,8 @@ let
 				"XCURSOR_PATH" = [ ":" "${my.pkgs.theme}/share/icons"];
 			};
 		} // args);
+		
+		nix-index-database = inputs.nix-index-database.legacyPackages.${system}.database;
 	};
 
 	callPackage = pkgs.newScope args;	
@@ -63,7 +67,6 @@ in (with pkgs; gtk.wrapGtkPackages [
 	lxappearance
 ]) // {
 
-	lf = 						callPackage ./lf.nix {};
 	mpv = 					callPackage ./mpv.nix {};
 	imv = 					callPackage ./imv.nix {};
 	git = 					callPackage ./git.nix {};
@@ -78,8 +81,11 @@ in (with pkgs; gtk.wrapGtkPackages [
   picom = 				callPackage ./picom.nix {};
 	startx =				callPackage ./wm/startx.nix {};
 	direnv = 				callPackage ./direnv.nix {};
+	joshuto =				callPackage ./joshuto.nix {};
 	zathura = 			callPackage ./zathura.nix {};
 	firefox = 			callPackage ./firefox.nix {};
+	nix-index =			callPackage ./nix-index.nix {};
+	alacritty =			callPackage ./alacritty.nix {};
 	unclutter = 		callPackage ./unclutter.nix {};
   qutebrowser = 	callPackage ./qutebrowser.nix {};
 	herbstluftwm = 	callPackage ./wm/herbstluftwm.nix {};

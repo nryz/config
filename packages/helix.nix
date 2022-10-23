@@ -45,7 +45,7 @@ let
     "ui.text.info" = "${base04}"
 
     "ui.help" = { fg = "${base04}", bg = "${base01}" }
-    "ui.gutter" = { bg = "${base01}" }
+    "ui.gutter" = { bg = "${base00}" }
 
     "comment" = { fg = "${base03}", modifiers = ["italic"] }
     "operator" = "${base09}"

@@ -70,7 +70,8 @@ let
   themeSettings = with base16.withHashtag; ''
     c.fonts.default_family = "${fontName}"
 
-    c.colors.webpage.darkmode.enabled = False
+    c.colors.webpage.darkmode.enabled = True
+    c.colors.webpage.darkmode.algorithm = "lightness-cielab"
 
     c.colors.completion.fg ="${base05}"
 

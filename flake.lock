@@ -149,11 +149,11 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1666400690,
-        "narHash": "sha256-VzJWMqOF6mppzv2KsRJ6LpD3xxYhVPk0018Qj1kBblk=",
+        "lastModified": 1666466741,
+        "narHash": "sha256-YiLY3OOVZMtyAUzgQk4QEmm7XD+NXNlPoY/jMADnfEU=",
         "owner": "helix-editor",
         "repo": "helix",
-        "rev": "d7d0d5ffb79b6f2e09c6ab8af6e112c41e6f73e8",
+        "rev": "ce469abfe2e99b5156c948bff27aaec3fbff7a6e",
         "type": "github"
       },
       "original": {
@@ -174,6 +174,22 @@
       "original": {
         "owner": "nix-community",
         "repo": "impermanence",
+        "type": "github"
+      }
+    },
+    "joshuto": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1666377045,
+        "narHash": "sha256-kPVPN0P2cuVDO/dlhi9uNGRBDfewYkm9W5FihQ31aLU=",
+        "owner": "kamiyaa",
+        "repo": "joshuto",
+        "rev": "dabcffdc32f1bd5e7d074ea2006fc485e65fcd3e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kamiyaa",
+        "repo": "joshuto",
         "type": "github"
       }
     },
@@ -225,6 +241,21 @@
         "type": "github"
       }
     },
+    "nix-index-database": {
+      "locked": {
+        "lastModified": 1666499671,
+        "narHash": "sha256-38g8n92j66tYvj8aANLstKwbEKLSZ5TaKFPGWy7g0Is=",
+        "owner": "Mic92",
+        "repo": "nix-index-database",
+        "rev": "cbf94af703cdbd4d0d077db12d410dbe3637a434",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nix-index-database",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1666377499,
@@ -243,11 +274,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1666445301,
-        "narHash": "sha256-DSgAqhkFI2AVGlKhlSV80U/AAXHGaU90IZz3ORur5+k=",
+        "lastModified": 1666459336,
+        "narHash": "sha256-1te5WLgrzPo+d5E0j2Ym2Qwgh8xJZ0HHJ+GjOYDRMLM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "b104aa7bba45290685d35fa5642cd853bd9d1c5d",
+        "rev": "012c66e50f7656aff4b7255ff35e813f76ccb1be",
         "type": "github"
       },
       "original": {
@@ -277,7 +308,9 @@
         "base16": "base16",
         "helix": "helix",
         "impermanence": "impermanence",
+        "joshuto": "joshuto",
         "naersk": "naersk",
+        "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
         "picom-ibhagwan": "picom-ibhagwan",

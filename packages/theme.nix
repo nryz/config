@@ -81,6 +81,7 @@ in pkgs.symlinkJoin {
     arc-icon-theme
     moka-icon-theme
     cursor.package
+    font.package
   ];
 }
 

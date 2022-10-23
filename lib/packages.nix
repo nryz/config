@@ -20,6 +20,7 @@ with lib;
     outputs ? {},
     extraPkgs  ? [],
     extraAttrs ? {},
+    alias ? "",
   }: let
     wrapperArgs = strings.escapeShellArgs ([
           "--inherit-argv0" 
@@ -84,9 +85,12 @@ with lib;
           '' else ''
             echo "${v}" >> ${output}/${n}
         '' )) oValue.files ))) finalOutputs )}
-        
-        
+                      
       makeWrapper "${pkg}/bin/${name}" "$out/bin/${name}" ${wrapperArgs}
+      
+      ${if (alias != "") then ''
+        ln -s $out/bin/${name} $out/bin/${alias}
+      '' else ""}
     '' ;
     
     meta = {

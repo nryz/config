@@ -108,14 +108,14 @@ let
     hc attr theme.floating.reset 1
 
     # frame
-    hc set frame_gap 8
+    hc set frame_gap 0
     hc set show_frame_decorations 'if_multiple'
     hc set frame_padding 0
-    hc set frame_border_width 0
+    hc set frame_border_width 1
     hc set frame_border_inner_width 0
     hc set frame_border_inner_color black
-    hc set frame_border_active_color black
-    hc set frame_border_normal_color black
+    hc set frame_border_active_color '${base09}'
+    hc set frame_border_normal_color '${base01}'
 
     hc set frame_bg_normal_color '${base00}'
     hc set frame_bg_active_color '${base02}'
@@ -135,33 +135,33 @@ let
     hc attr theme.title_font '${font.name}:pixelsize=${toString font.size}'
     # hc attr theme.title_font '-*-fixed-medium-r-*-*-13-*-*-*-*-*-*-*'
     hc attr theme.title_depth 3  # space below the title's baseline
-    hc attr theme.title_color '${base00}'
+    hc attr theme.title_color '${base05}'
     hc attr theme.normal.title_color '${base05}'
     hc attr theme.title_align center
 
     # tab
-    hc attr theme.tab_color '${base01}'
-    hc attr theme.tab_outer_width 1
+    hc attr theme.tab_color '${base00}'
+    hc attr theme.tab_outer_width 0
     hc attr theme.tab_outer_color black
     hc attr theme.active.tab_color '${base00}'
-    hc attr theme.active.tab_outer_color black
+    hc attr theme.active.tab_outer_color ${base00}'
     hc attr theme.active.tab_title_color '${base05}'
     hc attr theme.normal.tab_color '${base00}'
-    hc attr theme.normal.tab_outer_color black
+    hc attr theme.normal.tab_outer_color '${base00}'
     hc attr theme.normal.tab_title_color '${base05}'
 
     # border
     hc set window_gap 0
     hc set smart_window_surroundings off
-    hc attr theme.border_width 3
-    hc attr theme.inner_width 1
-    hc attr theme.outer_width 1
+    hc attr theme.border_width 0
+    hc attr theme.inner_width 0
+    hc attr theme.outer_width 0
     hc attr theme.inner_color black
     hc attr theme.outer_color black
-    hc attr theme.active.color '${base09}'
+    hc attr theme.active.color '${base01}'
     hc attr theme.normal.color '${base01}'
-    hc attr theme.urgent.color '${base0E}'
-    hc attr theme.urgent.inner_color '${base0E}'
+    hc attr theme.urgent.color '${base01}'
+    hc attr theme.urgent.inner_color '${base01}'
 
     hc attr theme.floating.border_width 4
     hc attr theme.floating.outer_width 1
