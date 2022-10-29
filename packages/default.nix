@@ -71,7 +71,7 @@ in (with pkgs; gtk.wrapGtkPackages [
 	git = 					callPackage ./git.nix {};
 	zsh = 					callPackage ./shell/zsh.nix {};
 	ssh = 					callPackage ./ssh.nix {};
-	btop = 					callPackage ./btop.nix {};
+	bottom = 				callPackage ./bottom.nix {};
 	rofi = 					callPackage ./rofi.nix {};
   kitty = 				callPackage ./kitty.nix {};
 	dunst = 				callPackage ./dunst.nix {};

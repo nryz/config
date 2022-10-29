@@ -60,7 +60,7 @@ with lib;
     helix
     qutebrowser
     zathura
-    btop
+    bottom
     ssh
     mpv
     joshuto
