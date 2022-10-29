@@ -1,4 +1,8 @@
-{ pkgs, my, base16, font, wrapPackage, ... }:
+{ pkgs, my
+, base16
+, font
+, wrapPackage
+}:
 
 let
 	askPass = "${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";

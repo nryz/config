@@ -1,28 +1,29 @@
-{ pkgs, my, base16, font, wrapPackage, ... }:
+{ pkgs, my
+, base16
+, font
+, wrapPackage
+}:
 
-let
-		serviceFile = ''
-			[Install]
-			WantedBy=graphical-session.target
-
-			[Service]
-			ExecStart=${placeholder "out"}/bin/unclutter
-			Restart=always
-			RestartSec=3
-
-			[Unit]
-			After=graphical-session-pre.target
-			Description=unclutter
-			PartOf=graphical-session.target
-		'';
-
-in wrapPackage {
+wrapPackage {
   pkg = pkgs.unclutter;
   name = "unclutter";
 
   outputs.service = {
 		files = {
-	    "etc/systemd/user/unclutter.service" = serviceFile;
+	    "etc/systemd/user/unclutter.service" = ''
+				[Install]
+				WantedBy=graphical-session.target
+
+				[Service]
+				ExecStart=${placeholder "out"}/bin/unclutter
+				Restart=always
+				RestartSec=3
+
+				[Unit]
+				After=graphical-session-pre.target
+				Description=unclutter
+				PartOf=graphical-session.target
+			'';
 		};
   };
 

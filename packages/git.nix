@@ -1,8 +1,20 @@
-{ pkgs, my, wrapPackage, ... }:
+{ pkgs, my
+, wrapPackage
+}:
 
 with pkgs.lib;
 let
-    configFile = let 
+
+in wrapPackage {
+  pkg = pkgs.git;
+  name = "git";
+
+  vars = { 
+    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
+  };
+
+  files = {
+    "config/git/config" = let 
 			difftCommand = concatStringsSep " " [
           "${pkgs.difftastic}/bin/difft"
           "--color always"
@@ -24,16 +36,5 @@ let
 			[pager]
         difftool = true
 		'';
-
-in wrapPackage {
-  pkg = pkgs.git;
-  name = "git";
-
-  vars = { 
-    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
-  };
-
-  files = {
-    "config/git/config" = configFile;
   };
 }

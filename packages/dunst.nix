@@ -1,7 +1,36 @@
-{ pkgs, my, base16, font, wrapPackage, ... }:
+{ pkgs, my
+, base16
+, font
+, wrapPackage
+}:
 
-let
-    configFile = with base16.withHashtag; ''
+wrapPackage {
+  pkg = pkgs.dunst;
+  name = "dunst";
+
+  outputs.service = {
+    files = {
+      "etc/systemd/user/dunst.service" = ''
+  			[Service]
+  			BusName=org.freedesktop.Notifications
+  			Environment=
+  			ExecStart=${placeholder "out"}/bin/dunst
+  			Type=dbus
+
+  			[Unit]
+  			After=graphical-session-pre.target
+  			Description=Dunst notification daemon
+  			PartOf=graphical-session.target
+  		'';
+    };
+  };
+
+  flags = [ 
+    "-config ${placeholder "out"}/config/dunstrc"
+  ];
+
+  files = {
+    "config/dunstrc" = with base16.withHashtag; ''
 			[global]
 			font="${font.name} ${toString font.size}"
 			frame_color="${base09}"
@@ -22,35 +51,5 @@ let
 			background="${base00}"
 			foreground="${base05}"
     '';
-		
-		serviceFile = ''
-			[Service]
-			BusName=org.freedesktop.Notifications
-			Environment=
-			ExecStart=${placeholder "out"}/bin/dunst
-			Type=dbus
-
-			[Unit]
-			After=graphical-session-pre.target
-			Description=Dunst notification daemon
-			PartOf=graphical-session.target
-		'';
-
-in wrapPackage {
-  pkg = pkgs.dunst;
-  name = "dunst";
-
-  outputs.service = {
-    files = {
-      "etc/systemd/user/dunst.service" = serviceFile;
-    };
-  };
-
-  flags = [ 
-    "-config ${placeholder "out"}/config/dunstrc"
-  ];
-
-  files = {
-    "config/dunstrc" = configFile;
   };
 }

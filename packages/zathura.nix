@@ -1,7 +1,20 @@
-{ pkgs, my, base16, font, wrapPackage, ... }:
+{ pkgs, my
+, base16
+, font
+, wrapPackage
+}:
 
 let
-    configFile = with base16.withHashtag; ''
+in wrapPackage {
+  pkg = pkgs.zathura;
+  name = "zathura";
+	
+	flags = [
+		"--config-dir ${placeholder "out"}/config"
+	];
+
+  files = {
+    "config/zathurarc" = with base16.withHashtag; ''
 			set font                        "${font.name} ${toString font.size}"
 			set default-bg                  "${base00}"
 			set default-fg                  "${base01}"
@@ -36,15 +49,5 @@ let
 
 			set recolor-keephue             "true"   
 		'';
-in wrapPackage {
-  pkg = pkgs.zathura;
-  name = "zathura";
-	
-	flags = [
-		"--config-dir ${placeholder "out"}/config"
-	];
-
-  files = {
-    "config/zathurarc" = configFile;
   };
 }

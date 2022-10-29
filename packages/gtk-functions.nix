@@ -1,4 +1,9 @@
-{ pkgs, my, font, cursor, ... }:
+{ pkgs, my
+, font
+, cursor
+, wrapPackage
+, ...
+}:
 
 with pkgs.lib;
 let
@@ -22,9 +27,8 @@ rec {
 		gtk-cursor-theme-name=${cursorName}
 	'';
 	
-	wrapGtk2Package = args: my.lib.wrapPackage ({
+	wrapGtk2Package = args: wrapPackage ({
 		prefix = {
-			"XDG_DATA_DIRS" = [ ":" "${placeholder "out"}/theme/share"];
 			"XCURSOR_PATH" = [ ":" "${placeholder "out"}/theme/share/icons"];
 		};
 
@@ -34,14 +38,12 @@ rec {
 		
 		files = {
 			"config/gtk-2.0/gtkrc" = gtk2Config;
-			"theme" = my.pkgs.gtk-theme;
 		};
 	} // args);
 	
-	wrapGtkPackage = args: my.lib.wrapPackage ({
+	wrapGtkPackage = args: wrapPackage ({
 	
 		prefix = {
-			"XDG_DATA_DIRS" = [ ":" "${placeholder "out"}/theme/share"];
 			"XCURSOR_PATH" = [ ":" "${placeholder "out"}/theme/share/icons"];
 		};
 		
@@ -54,7 +56,6 @@ rec {
 			"config/gtk-2.0/gtkrc" = gtk2Config;
 			"config/gtk-3.0/settings.ini" = gtkConfig;
 			"config/gtk-4.0/settings.ini" = gtkConfig;
-			"theme" = my.pkgs.theme;
 		};
 	} // args );
 	

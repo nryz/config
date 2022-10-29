@@ -1,4 +1,7 @@
-{ pkgs, my, base16, font, wrapPackage, nix-index-database, ... }:
+{ pkgs, my
+, wrapPackage
+, nix-index-database
+}:
 	
 wrapPackage {
   pkg = pkgs.nix-index;

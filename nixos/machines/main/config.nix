@@ -11,13 +11,9 @@ with lib;
   
   services.greetd = let
     session.user = "nr";
-    session.command = "${my.pkgs.startx.override {
-      wm = my.pkgs.herbstluftwm;
-      drivers = [{
-        name = "nvidia";
-        package = config.hardware.nvidia.package.bin;
-      }];
-    }}/bin/startx";  
+    session.command = "${my.pkgs.herbstluftwm.override {
+      drivers.nvidia = config.hardware.nvidia.package.bin;
+    }}/scripts/startx";  
   in {
     enable = true;
     settings.default_session = session;
@@ -47,13 +43,11 @@ with lib;
   environment.pathsToLink = ["/share/zsh"];
   
   systemd.packages = with my.pkgs; [
-    picom.service
     unclutter.service
     dunst.service
   ];
   
   systemd.user.targets.graphical-session.wants = [
-    "picom.service"
     "unclutter.service"
     "dunst.service"
   ];

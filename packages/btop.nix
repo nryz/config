@@ -1,7 +1,20 @@
-{ pkgs, my, wrapPackage, ... }:
+{ pkgs
+, my
+, wrapPackage
+}:
 
-let
-    configFile = ''
+wrapPackage {
+  pkg = pkgs.btop;
+  name = "btop";
+
+  # Currently doesn't work
+  # Presumably btop doesn't like XDG_CONFIG_HOME in read only dir
+  vars = { 
+    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
+  };
+
+  files = {
+    "config/btop/btop.conf" = ''
       color_theme = "TTY"
       theme_background = False
       rounded_corners = True
@@ -16,18 +29,5 @@ let
 
       disks_filter = "/ /nix /boot"
     '';
-
-in wrapPackage {
-  pkg = pkgs.btop;
-  name = "btop";
-
-  # Currently doesn't work
-  # Presumably btop doesn't like XDG_CONFIG_HOME in read only dir
-  vars = { 
-    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
-  };
-
-  files = {
-    "config/btop/btop.conf" = configFile;
   };
 }

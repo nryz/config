@@ -51,7 +51,7 @@ def build(options):
         
     if options.d:
         cmd += ["--show-trace"]
-        
+
     result = subprocess.run(cmd)
     
     if result.returncode == 0:

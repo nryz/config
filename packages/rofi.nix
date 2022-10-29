@@ -1,21 +1,19 @@
-{ pkgs, my, base16, font, wrapPackage, ... }:
+{ pkgs, my
+, base16
+, font
+, wrapPackage
+}:
 
-let
-    script = ''
-      #/usr/bin/env bash
+wrapPackage {
+  pkg = pkgs.rofi;
+  name = "rofi";
 
-      input=("''${1}")
-      for ((i=3; i<$#; i+=2)); do
-        input+=("\n''${!i}")
-      done
-      
-      ret=$(echo -e ''${input[@]} | ${placeholder "out"}/bin/rofi -dmenu -i -format i)
-      cmd=$((ret*2 + 2))
+  vars = { 
+    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
+  };
 
-      ''${!cmd}
-    '';
-    
-    configFile = ''
+  files = {
+    "config/rofi/config.rasi" = ''
       configuration {
       	modes: [drun,run,window,keys];
       }
@@ -23,7 +21,7 @@ let
       @theme "custom"
     '';
 
-    themeFile = with base16.withHashtag; ''
+    "config/rofi/custom.rasi" = with base16.withHashtag; ''
        * {
         font: "${font.name + " " + toString font.size}";
        }
@@ -166,21 +164,21 @@ let
           background-color: ${base00};
         }      
     '';
-
-in wrapPackage {
-  pkg = pkgs.rofi;
-  name = "rofi";
-
-  vars = { 
-    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
-  };
-
-  files = {
-    "config/rofi/config.rasi" = configFile;
-    "config/rofi/custom.rasi" = themeFile;
   };
   
   scripts = {
-    "scripts/list" = script; 
+    "scripts/list" = ''
+      #/usr/bin/env bash
+
+      input=("''${1}")
+      for ((i=3; i<$#; i+=2)); do
+        input+=("\n''${!i}")
+      done
+      
+      ret=$(echo -e ''${input[@]} | ${placeholder "out"}/bin/rofi -dmenu -i -format i)
+      cmd=$((ret*2 + 2))
+
+      ''${!cmd}
+    '';
   };
 }

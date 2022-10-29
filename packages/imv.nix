@@ -1,7 +1,18 @@
-{ pkgs, my, base16, wrapPackage, ... }:
+{ pkgs, my
+, base16
+, wrapPackage
+}:
 
-let
-    configFile = with base16; ''
+wrapPackage {
+  pkg = pkgs.imv;
+  name = "imv";
+
+  vars = { 
+    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
+  };
+
+  files = {
+    "config/imv/config" = with base16; ''
       [options]
       background = ${base00}
       loop_input = true
@@ -56,15 +67,5 @@ let
       t = slideshow +1
       <Shift+T> = slideshow -1
     '';
-in wrapPackage {
-  pkg = pkgs.imv;
-  name = "imv";
-
-  vars = { 
-    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
-  };
-
-  files = {
-    "config/imv/config" = configFile;
   };
 }

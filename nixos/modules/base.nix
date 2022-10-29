@@ -31,24 +31,8 @@ in
       lftp
       ncftp
       inetutils
-       pavucontrol
-       pamixer
-       (pkgs.writeScriptBin "ToggleVolume" ''
-          #!/usr/bin/env bash
-          pamixer -t
-        '')
-       (pkgs.writeScriptBin "IncreaseVolume" ''
-          #!/usr/bin/env bash
-          pamixer -i 5
-        '')
-       (pkgs.writeScriptBin "DecreaseVolume" ''
-          #!/usr/bin/env bash
-          pamixer -d 5
-        '')
-       (pkgs.writeScriptBin "GetVolume" ''
-          #!/usr/bin/env bash
-          pamixer --get-volume-human
-        '')
+      pavucontrol
+      pamixer
     ];
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -80,7 +64,6 @@ in
     hardware.bluetooth.disabledPlugins = [ "sap" ];
     hardware.bluetooth.settings.General.Enable = "Source,Sink,Media,Socket";
 
-
     networking.hostName = my.hostName;
     networking.useDHCP = false;
     networking.interfaces.enp2s0.useDHCP = true;
@@ -90,7 +73,6 @@ in
       "2a07:a8c0::df:f735"
       "2a07:a8c1::df:f735"
     ];
-
 
     programs.nm-applet.enable = true;
     programs.dconf.enable = true;

@@ -1,4 +1,8 @@
-{ lib , pkgs , font , base16, cursor }:
+{ lib, pkgs
+, font
+, base16
+, cursor
+}:
 
 let
   version = "20210322";
@@ -82,6 +86,8 @@ in pkgs.symlinkJoin {
     moka-icon-theme
     cursor.package
     font.package
+    pkgs.material-design-icons
+    pkgs.source-han-mono
   ];
 }
 

@@ -28,7 +28,6 @@ let
 		
 		background = ../content/backgrounds/2;
 
-		# TODO: make this work for all applications
 		cursor.package = pkgs.vanilla-dmz;
 		cursor.name = "Vanilla-DMZ";
 		cursor.size = 16;
@@ -44,12 +43,12 @@ let
 		  stateHome = "$HOME/.local/state";
 		};
 		
-		wrapPackage = args: my.lib.wrapPackage ({
-			prefix = {
-				"XDG_DATA_DIRS" = [ ":" "${my.pkgs.theme}/share"];
-				"XCURSOR_PATH" = [ ":" "${my.pkgs.theme}/share/icons"];
-			};
-		} // args);
+		wrapPackage = args: my.lib.wrapPackage (args // {
+			share = [ my.pkgs.theme ] ++ 
+				lib.optionals (args ? share) args.share;
+			prefix = { "XCURSOR_PATH" = [ ":" "${my.pkgs.theme}/share/icons"]; } // 
+				lib.optionalAttrs (args ? prefix) args.prefix;
+		});
 		
 		nix-index-database = inputs.nix-index-database.legacyPackages.${system}.database;
 	};
@@ -81,6 +80,7 @@ in (with pkgs; gtk.wrapGtkPackages [
   picom = 				callPackage ./picom.nix {};
 	startx =				callPackage ./wm/startx.nix {};
 	direnv = 				callPackage ./direnv.nix {};
+	yambar =				callPackage ./wm/yambar.nix {};
 	joshuto =				callPackage ./joshuto.nix {};
 	zathura = 			callPackage ./zathura.nix {};
 	firefox = 			callPackage ./firefox.nix {};

@@ -1,4 +1,6 @@
-{ pkgs, my, wrapPackage, ... }:
+{ pkgs, my
+, wrapPackage
+}:
 
 let
   lib = pkgs.lib;
@@ -10,14 +12,6 @@ let
     #sponsorblock
     #youtube-quality
   ];
-
- configFile = ''
-    keepaspect-window=no
-    keepaspect=yes
-    alang=Japanese,jpn,ja,English,eng,en
-    slang=English,eng,en
-    script-opts=ytdl_hook-ytdl_path=${pkgs.yt-dlp}/bin/yt-dlp
-  '';
 
   luaEnv = pkgs.mpv-unwrapped.luaEnv;
   luaVersion = pkgs.mpv-unwrapped.lua.luaversion;
@@ -44,6 +38,13 @@ in wrapPackage {
     name = "config/scripts/${x.scriptName}"; 
     value = "${x}/share/mpv/scripts/${x.scriptName}";
   } ) scripts) // {
-    "config/mpv.conf" = configFile;
+
+    "config/mpv.conf" = ''
+      keepaspect-window=no
+      keepaspect=yes
+      alang=Japanese,jpn,ja,English,eng,en
+      slang=English,eng,en
+      script-opts=ytdl_hook-ytdl_path=${pkgs.yt-dlp}/bin/yt-dlp
+    '';
   };
 }

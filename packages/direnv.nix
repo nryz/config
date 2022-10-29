@@ -1,11 +1,8 @@
-{ pkgs, my, wrapPackage, ... }:
+{ pkgs, my
+, wrapPackage
+}:
 
-let
-    configFile = ''
-			 source ${pkgs.nix-direnv}/share/nix-direnv/direnvrc
-    '';
-
-in wrapPackage {
+wrapPackage {
   pkg = pkgs.direnv;
   name = "direnv";
 
@@ -14,6 +11,8 @@ in wrapPackage {
   };
 
   files = {
-    "config/direnv/direnvrc" = configFile;
+    "config/direnv/direnvrc" = ''
+			 source ${pkgs.nix-direnv}/share/nix-direnv/direnvrc
+    '';
   };
 }

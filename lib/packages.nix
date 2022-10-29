@@ -15,23 +15,27 @@ with lib;
     path ? [],
     vars ? {},
     flags ? [],
+    appendFlags ? [],
     files ? {},
     scripts ? {}, # executable files
     outputs ? {},
     extraPkgs  ? [],
     extraAttrs ? {},
+    share ? [],
     alias ? "",
   }: let
     wrapperArgs = strings.escapeShellArgs ([
           "--inherit-argv0" 
+			] ++ optionals (share != [] ) [	
+          "--prefix" "XDG_DATA_DIRS" ":" (makeSearchPath "share" (unique share))
       ] ++ optionals (prefix != {}) (flatten (mapAttrsToList (n: v:
           [ "--prefix" "${n}" ] ++ v ) prefix)
       ) ++ optionals (path != []) [
           "--prefix" "PATH" ":" (makeBinPath path)
-      ] ++ optionals (vars != {}) (concatMap (x: 
-          ["--set"] ++ [x.name] ++ [x.value]) 
+      ] ++ optionals (vars != {}) (concatMap (x:  ["--set"] ++ [x.name] ++ [x.value]) 
               (mapAttrsToList (n: v: { name = n;  value = v; }) vars)
-      ) ++ optionals (flags != []) (concatMap (x: ["--add-flags"] ++ [x]) flags)
+      ) ++ optionals (flags != []) (concatMap (x: ["--add-flags"] ++ [x]) flags
+      ) ++ optionals (appendFlags != []) (concatMap (x: ["--append-flags"] ++ [x]) appendFlags)
     );
     
     finalOutputs = mapAttrs (n: v: {

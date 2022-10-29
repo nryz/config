@@ -1,7 +1,39 @@
-{ pkgs, my, inputs, terminal, wrapPackage, ... }:
+{ pkgs, my
+, inputs
+, terminal
+, wrapPackage
+}:
 
-let
-    configFile =  ''
+wrapPackage {
+  pkg = pkgs.picom.overrideAttrs(_: { src = inputs.picom-ibhagwan; });
+
+  name = "picom";
+  
+  outputs.service = {
+    files = {
+      "etc/systemd/user/picom.service" = ''
+        [Install]
+        WantedBy=graphical-session.target
+
+        [Service]
+        ExecStart=${placeholder "out"}/bin/picom
+        Restart=always
+        RestartSec=3
+
+        [Unit]
+        Description=Picom X11 compositor
+        PartOf=graphical-session.target
+      '';
+    };
+  };
+
+  flags = [ 
+    "--config ${placeholder "out"}/config/picom.conf"
+    "--experimental-backends"
+  ];
+  
+  files = {
+    "config/picom.conf" = ''
       active-opacity = 1.0;
       backend = "glx";
       blur = false;
@@ -25,38 +57,5 @@ let
       wintypes: { dropdown_menu = { opacity = 1.0; }; popup_menu = { opacity = 1.0; }; };
       xinerama-shadow-crop = true;
     '';
-  
-    serviceFile = ''
-      [Install]
-      WantedBy=graphical-session.target
-
-      [Service]
-      ExecStart=${placeholder "out"}/bin/picom
-      Restart=always
-      RestartSec=3
-
-      [Unit]
-      Description=Picom X11 compositor
-      PartOf=graphical-session.target
-    '';
-    
-in wrapPackage {
-  pkg = pkgs.picom.overrideAttrs(_: { src = inputs.picom-ibhagwan; });
-
-  name = "picom";
-  
-  outputs.service = {
-    files = {
-      "etc/systemd/user/picom.service" = serviceFile;
-    };
-  };
-
-  flags = [ 
-    "--config ${placeholder "out"}/config/picom.conf"
-    "--experimental-backends"
-  ];
-  
-  files = {
-    "config/picom.conf" = configFile;
   };
 }
