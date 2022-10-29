@@ -70,8 +70,8 @@ with lib;
     filezilla
     lxappearance
     nix-index
-  ] ++ (with pkgs; [
     gitui
+  ] ++ (with pkgs; [
     spotify
     discord
     bitwarden

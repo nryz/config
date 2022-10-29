@@ -78,6 +78,7 @@ in (with pkgs; gtk.wrapGtkPackages [
   helix = 				callPackage ./helix.nix {};
 	theme = 				callPackage ./theme.nix {};
   picom = 				callPackage ./picom.nix {};
+	gitui = 				callPackage ./gitui.nix {};
 	startx =				callPackage ./wm/startx.nix {};
 	direnv = 				callPackage ./direnv.nix {};
 	yambar =				callPackage ./wm/yambar.nix {};
