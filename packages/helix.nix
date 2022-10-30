@@ -62,7 +62,7 @@ in wrapPackage {
       "ui.menu" = { fg = "${base04}", bg = "${base01}"}
       "ui.menu.selected" = { fg = "${base01}", bg = "${base04}" }
 
-      "ui.popup" = { bg = "${base00}", fg = "${base00}" }
+      "ui.popup" = { bg = "${base01}", fg = "${base00}" }
       "ui.popup.info" = { bg = "${base01}", fg = "${base04}" }
 
       "ui.window" = { fg = "${base01}", bg = "${base01}" }

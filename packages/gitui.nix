@@ -21,29 +21,32 @@ in wrapPackage {
   ];
 
   files = {
-    "config/gitui/custom.ron" = ''
+    "config/gitui/theme.ron" = with base16; let
+      mkRgb = n: let b = base16; in
+        "Rgb(${b."base${n}-rgb-r"},${b."base${n}-rgb-g"},${b."base${n}-rgb-b"})";
+    in ''
       (
-        selected_tab: Color::Reset,
-  			command_fg: Color::White,
-  			selection_bg: Color::Black,
-  			selection_fg: Color::White,
-  			cmdbar_bg: Color::Blue,
-  			cmdbar_extra_lines_bg: Color::Blue,
-  			disabled_fg: Color::DarkGray,
-  			diff_line_add: Color::Green,
-  			diff_line_delete: Color::Red,
-  			diff_file_added: Color::LightGreen,
-  			diff_file_removed: Color::LightRed,
-  			diff_file_moved: Color::LightMagenta,
-  			diff_file_modified: Color::Yellow,
-  			commit_hash: Color::Magenta,
-  			commit_time: Color::LightCyan,
-  			commit_author: Color::Green,
-  			danger_fg: Color::Red,
-  			push_gauge_bg: Color::Blue,
-  			push_gauge_fg: Color::Reset,
-  			tag_fg: Color::LightMagenta,
-  			branch_fg: Color::LightYellow,
+        selected_tab: ${mkRgb "09"},
+  			command_fg: ${mkRgb "05"},
+  			selection_bg: ${mkRgb "01"},
+  			selection_fg: ${mkRgb "05"},
+  			cmdbar_bg: ${mkRgb "00"},
+  			cmdbar_extra_lines_bg: ${mkRgb "01"},
+  			disabled_fg: ${mkRgb "02"},
+  			diff_line_add: Green,
+  			diff_line_delete: Red,
+  			diff_file_added: LightGreen,
+  			diff_file_removed: LightRed,
+  			diff_file_moved: LightMagenta,
+  			diff_file_modified: Yellow,
+  			commit_hash: Magenta,
+  			commit_time: LightCyan,
+  			commit_author: Green,
+  			danger_fg: Red,
+  			push_gauge_bg: Blue,
+  			push_gauge_fg: Reset,
+  			tag_fg: LightMagenta,
+  			branch_fg: LightYellow,
       )
     '';
     

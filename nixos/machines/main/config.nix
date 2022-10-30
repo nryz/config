@@ -71,6 +71,7 @@ with lib;
     lxappearance
     nix-index
     gitui
+    direnv
   ] ++ (with pkgs; [
     spotify
     discord
