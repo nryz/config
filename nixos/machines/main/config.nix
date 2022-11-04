@@ -20,24 +20,28 @@ with lib;
     settings.initial_session = session;
   };
   
-  my.persist.users = ["nr"];
-  my.state = {
-    directories = [
-      "/var/lib/alsa"
-      "/var/lib/bluetooth"
-      "/etc/NetworkManager"
-      "/etc/ssh" 
+  environment.sessionVariables."CARGO_HOME" = "${config.users.users.nr.home}/.config/cargo";
+  
+  xdg.mime.enable = true;
+  environment.etc."xdg/mimeapps.list".source = my.pkgs.mimeapps;
+  
+  persist.users = ["nr"];
+  persist.state.directories = [
+    "/var/lib/alsa"
+    "/var/lib/bluetooth"
+    "/etc/NetworkManager"
+    "/etc/ssh" 
 
-      ".config/Bitwarden"
-      ".config/spotify"
-      ".config/pulse"
-      ".local/share/direnv"
-      ".local/share/qutebrowser"
-      ".local/state/zsh/history"
-      ".mozilla/firefox/default"
-      ".ssh"
-    ];
-  };
+    ".config/Bitwarden"
+    ".config/spotify"
+    ".config/pulse"
+    ".config/cargo"
+    ".local/share/direnv"
+    ".local/share/qutebrowser"
+    ".local/state/zsh/history"
+    ".mozilla/firefox/default"
+    ".ssh"
+  ];
   
   users.defaultUserShell = my.pkgs.zsh;
   environment.pathsToLink = ["/share/zsh"];

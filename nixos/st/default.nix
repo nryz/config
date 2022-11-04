@@ -1,5 +1,4 @@
 { system, inputs } : let
-  configPath = "/home/nr/config";
   
   pkgs = import inputs.nixpkgs { inherit system; };
  
@@ -18,7 +17,6 @@ in {
     import re
     import os
 
-    config_path = '${configPath}'
     nvd = '${pkgs.nvd}/bin/nvd'
     borg = '${pkgs.borgbackup}/bin/borg'
     doc_cmd = '${pkgs.nix-doc}/bin/nix-doc'

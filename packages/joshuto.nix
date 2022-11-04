@@ -24,6 +24,8 @@ in wrapPackage {
 
   files = {
     "config/joshuto.toml" = ''
+      use_trash = false
+    
       # Configurations related to the display
       [display]
       # Different view layouts

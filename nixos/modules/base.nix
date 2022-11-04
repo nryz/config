@@ -17,6 +17,7 @@ in
     nixpkgs.pkgs = pkgs;
 
     environment.systemPackages = with pkgs; [
+      xdg-utils
       nix-prefetch-scripts
       nixos-option
       manix
@@ -109,41 +110,33 @@ in
     systemd.targets.hibernate.enable = false;
     systemd.targets.hybrid-sleep.enable = false;
 
-    users = {
-      mutableUsers = false;
-      users.nr = {
-        extraGroups = [ "wheel" ];
-        isNormalUser = true;
-        passwordFile = "/etc/passwords/nr";
-        uid = 1000;
-      };
+    users.mutableUsers = false;
 
-      users.root.hashedPassword = "!";
+    users.users.nr = {
+      extraGroups = [ "wheel" ];
+      isNormalUser = true;
+      passwordFile = "/etc/passwords/nr";
+      uid = 1000;
     };
 
-    nix = {
-      generateRegistryFromInputs = true;
-      generateNixPathFromInputs = true;
-      linkInputs = true;
-    
-      package = pkgs.nixUnstable;
-      extraOptions = ''
-        experimental-features = nix-command flakes
-        warn-dirty = false
-        allow-dirty = true
-        keep-outputs = true
-        keep-derivations = true
-      '';
+    users.users.root.hashedPassword = "!";
 
-      gc = {
-        automatic = true;
-        options = "--delete-older-than 5d";
-      };
+    nix.generateRegistryFromInputs = true;
+    nix.generateNixPathFromInputs = true;
+    nix.linkInputs = true;
+    nix.package = pkgs.nixUnstable;
 
-      settings = {
-        auto-optimise-store = true;
-      };
-    };
+    nix.extraOptions = ''
+      experimental-features = nix-command flakes
+      warn-dirty = false
+      allow-dirty = true
+      keep-outputs = true
+      keep-derivations = true
+    '';
+
+    nix.gc.automatic = true;
+    nix.gc.options = "--delete-older-than 5d";
+    nix.settings.auto-optimise-store = true;
 
     assertions = [
       {

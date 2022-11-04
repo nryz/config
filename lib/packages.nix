@@ -2,13 +2,14 @@
 
 with lib;
 {
-	mkDefPkg = pkg: rec {
-		inherit pkg;
+	mkDefPkg = args: rec {
+		inherit (args) pkg desktop;
 		name = pkg.meta.mainProgram;
 		bin = "${pkg}/bin/${name}";
 	};
 
   wrapPackage = {
+    shell ? false,
     pkg,
     name,
     prefix ? {},
@@ -21,8 +22,10 @@ with lib;
     outputs ? {},
     extraPkgs  ? [],
     extraAttrs ? {},
+    run ? [],
     share ? [],
     alias ? "",
+    desktopItems ? [],
   }: let
     wrapperArgs = strings.escapeShellArgs ([
           "--inherit-argv0" 
@@ -35,7 +38,8 @@ with lib;
       ] ++ optionals (vars != {}) (concatMap (x:  ["--set"] ++ [x.name] ++ [x.value]) 
               (mapAttrsToList (n: v: { name = n;  value = v; }) vars)
       ) ++ optionals (flags != []) (concatMap (x: ["--add-flags"] ++ [x]) flags
-      ) ++ optionals (appendFlags != []) (concatMap (x: ["--append-flags"] ++ [x]) appendFlags)
+      ) ++ optionals (appendFlags != []) (concatMap (x: ["--append-flags"] ++ [x]) appendFlags
+      ) ++ optionals (shell && run != []) (concatMap (x: ["--run"] ++ [x]) run)
     );
     
     finalOutputs = mapAttrs (n: v: {
@@ -45,8 +49,11 @@ with lib;
 
   in pkgs.symlinkJoin {
     inherit name;
+    
+    inherit desktopItems;
 
-    nativeBuildInputs = [ pkgs.makeBinaryWrapper ];
+    nativeBuildInputs = (optionals (desktopItems != []) [pkgs.copyDesktopItems])
+                      ++ (if shell then [pkgs.makeWrapper] else [pkgs.makeBinaryWrapper]);
     
     outputs = ["out"] ++ (mapAttrsToList (n: v: "${n}") finalOutputs);
     
@@ -57,6 +64,10 @@ with lib;
 
     postBuild = ''
       mkdir -p $out/bin
+      
+      ${if shell then ''
+        rm $out/bin/${name}
+      '' else ""}
       
       ${concatStrings (mapAttrsToList (n: v: ''
             mkdir -p $(dirname $out/${n})
@@ -87,13 +98,17 @@ with lib;
           '' + (if isStorePath v then ''
             ln -s ${v} ${output}/${n}
           '' else ''
-            echo "${v}" >> ${output}/${n}
+            echo ""${strings.escapeShellArg v}"" >> ${output}/${n}
         '' )) oValue.files ))) finalOutputs )}
                       
       makeWrapper "${pkg}/bin/${name}" "$out/bin/${name}" ${wrapperArgs}
       
       ${if (alias != "") then ''
         ln -s $out/bin/${name} $out/bin/${alias}
+      '' else ""}
+      
+      ${if (desktopItems != []) then ''
+        copyDesktopItems
       '' else ""}
     '' ;
     

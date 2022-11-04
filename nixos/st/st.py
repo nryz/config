@@ -82,9 +82,6 @@ def show(options):
             subprocess.run(["nix-tree"])
    
 
-def install(options):
-    print('TODO')
-    
 def backup(options):
     today = date.today()
     id = today.strftime("%d-%m-%Y")
@@ -106,11 +103,8 @@ def backup(options):
                         "/nix/persist/home"])
             case 'projects':
                 subprocess.run(["sudo", borg, "create", 
-                        "-e", "/nix/persist/home/*/videos",
-                        "-e", "/nix/persist/home/*/music",
-                        "-e", "/nix/persist/home/*/downloads",
-                        "-e", "/nix/persist/home/*/pictures",
-                        "-e", "/nix/persist/home/*/documents",
+                        "-e", "/nix/persist/home/*/Media",
+                        "-e", "/nix/persist/home/*/Downloads",
                         "/media/backup::projects-" + id,
                         "/nix/persist/home"])
     else:
@@ -119,6 +113,11 @@ def backup(options):
 
 def doc(options):
     subprocess.run([doc_cmd, "search", options.string, doc_source])
+    
+
+def src(options):
+    path = subprocess.run(["nix", "eval", "--raw", ".#self.inputs.nixpkgs.outPath"], capture_output=True, text=True)
+    subprocess.run([options.cmd], cwd=path.stdout, shell=True)
 
 
 def main():
@@ -148,9 +147,6 @@ def main():
     parser_show.add_argument('arg', type=str, help='either generations/installed/changes/tree')
     parser_show.set_defaults(func=show)
 
-    parser_install = subparsers.add_parser('install', help='TODO: install the nixos system')
-    parser_install.set_defaults(func=install)
-
     parser_backup = subparsers.add_parser('backup', help='backup')
     parser_backup.add_argument('arg', type=str, help='either media/projects', 
                             nargs='?', default='projects', choices=["projects", "media"])
@@ -159,6 +155,10 @@ def main():
     parser_doc = subparsers.add_parser('doc', help='search fo functions in nixpkgs')
     parser_doc.add_argument('string', type=str)
     parser_doc.set_defaults(func=doc)
+
+    parser_src = subparsers.add_parser('src', help='cd to src')
+    parser_src.add_argument('cmd', type=str)
+    parser_src.set_defaults(func=src)
     
     
 
@@ -167,9 +167,7 @@ def main():
 
     options = parser.parse_args()
 
-    os.chdir(config_path)
     options.func(options)
-    
 
 
 if __name__ == '__main__':

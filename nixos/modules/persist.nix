@@ -3,38 +3,27 @@
 with lib;
 with my.lib;
 let
-  cfg = config.my;
+  cfg = config.persist;
   
   state.userDirs = filter (x: !(hasPrefix "/" x)) cfg.state.directories;
   state.userFiles = filter (x: !(hasPrefix "/" x)) cfg.state.files;
   state.dirs = filter (x: hasPrefix "/" x) cfg.state.directories;
   state.files = filter (x: hasPrefix "/" x) cfg.state.files;
-
-  backup.userDirs = filter (x: !(hasPrefix "/" x)) cfg.backup.directories;
-  backup.userFiles = filter (x: !(hasPrefix "/" x)) cfg.backup.files;
-  backup.dirs = filter (x: hasPrefix "/" x) cfg.backup.directories;
-  backup.files = filter (x: hasPrefix "/" x) cfg.backup.files;
-  
 in
 {
 
-  options.my = with types; {
-    persist.path = mkOpt' str;
+  options.persist = with types; {
+    path = mkOpt' str;
     
-    persist.users = mkOpt (listOf str) [];
+    users = mkOpt (listOf str) [];
     
     state = {
       directories = mkOpt (listOf str) [];
       files = mkOpt (listOf str) [];
     };
-    
-    backup = {
-      directories = mkOpt (listOf str) [];
-      files = mkOpt (listOf str) [];
-    };
   };
   
-  config = mkIf (cfg.persist.path != "") {
+  config = mkIf (cfg.path != "") {
     assertions = [{
         assertion = config.fileSystems."/".fsType == "tmpfs"; 
         message = "no root tmpfs found";
@@ -42,7 +31,7 @@ in
 
     programs.fuse.userAllowOther = true;
 
-    environment.persistence."${cfg.persist.path}/system" = {
+    environment.persistence."${cfg.path}/system" = {
       hideMounts = true;
 
       directories = [
@@ -57,23 +46,20 @@ in
 
     };
 
-    environment.persistence."${cfg.persist.path}" = {
+    environment.persistence."${cfg.path}" = {
       hideMounts = true;
       users = listToAttrs (map (n: nameValuePair n {
         files = map (f: { file = f; parentDirectory = { user = n; group = "users"; }; }) 
           state.userFiles;
 
         directories = [
-          "downloads"
-          "music"
-          "pictures"
-          "documents"
-          "videos"
+          "Downloads"
+          "Media"
           "projects"
           "config"
         ] ++ map (f: { directory = f; user = n; group = "users"; }) 
           state.userDirs;
-      }) cfg.persist.users);
+      }) cfg.users);
     };
   };
 }
