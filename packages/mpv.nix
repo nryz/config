@@ -34,6 +34,7 @@ in wrapPackage {
     "MPV_HOME" = "${placeholder "out"}/config";
   };
   
+  
   files = builtins.listToAttrs (map (x:  { 
     name = "config/scripts/${x.scriptName}"; 
     value = "${x}/share/mpv/scripts/${x.scriptName}";
@@ -44,6 +45,7 @@ in wrapPackage {
       keepaspect=yes
       alang=Japanese,jpn,ja,English,eng,en
       slang=English,eng,en
+      pulse-latency-hacks=yes
       script-opts=ytdl_hook-ytdl_path=${pkgs.yt-dlp}/bin/yt-dlp
     '';
   };
