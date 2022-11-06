@@ -13,7 +13,7 @@ def list_changes(new_override=''):
         new = dir_path + names[-1]
         prev = dir_path + names[-2]
         
-    elif new_override:
+    if new_override:
         new = new_override
         prev = dir_path + names[-1]
 
@@ -44,10 +44,7 @@ def switch(options):
 def build(options):
     cmd = []
     
-    if options.type:
-        cmd += ["sudo", "nixos-rebuild", options.type, "--flake", "."]
-    else:
-        cmd += ["sudo", "nixos-rebuild", "build", "--flake", "."]
+    cmd += ["sudo", "nixos-rebuild", options.type, "--flake", "."]
         
     if options.d:
         cmd += ["--show-trace"]
@@ -55,11 +52,8 @@ def build(options):
     result = subprocess.run(cmd)
     
     if result.returncode == 0:
-        if options.type:
-            list_changes('.result')
-        else:
-            list_changes()
-    
+        list_changes('./result')
+            
 
 def clean(options):
     subprocess.run(["sudo", "nix-collect-garbage", "-d"])

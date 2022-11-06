@@ -7,21 +7,21 @@
 wrapPackage {
   pkg = pkgs.rofi;
   name = "rofi";
-
-  vars = { 
-    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
-  };
+  
+  flags = [
+    "-config ${placeholder "out"}/config/config.rasi"
+  ];
 
   files = {
-    "config/rofi/config.rasi" = ''
+    "config/config.rasi" = ''
       configuration {
       	modes: [drun,run,window,keys];
       }
         
-      @theme "custom"
+      @theme "${placeholder "out"}/config/custom.rasi"
     '';
 
-    "config/rofi/custom.rasi" = with base16.withHashtag; ''
+    "config/custom.rasi" = with base16.withHashtag; ''
        * {
         font: "${font.name + " " + toString font.size}";
        }

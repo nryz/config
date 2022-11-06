@@ -5,21 +5,25 @@ with my.lib;
 let
   cfg = config.persist;
   
-  state.userDirs = filter (x: !(hasPrefix "/" x)) cfg.state.directories;
-  state.userFiles = filter (x: !(hasPrefix "/" x)) cfg.state.files;
-  state.dirs = filter (x: hasPrefix "/" x) cfg.state.directories;
-  state.files = filter (x: hasPrefix "/" x) cfg.state.files;
+  cfgHome = config.home;
+  
+  homeModule = with types; { name, config, ... }:
+    {
+      options.persist = {
+        directories = mkOpt (listOf str) [];
+        files = mkOpt (listOf str) [];
+      };
+    };
 in
 {
 
-  options.persist = with types; {
-    path = mkOpt' str;
+  options = with types; {
+    persist.path = mkOpt' str;
+    persist.directories = mkOpt (listOf str) [];
+    persist.files = mkOpt (listOf str) [];
     
-    users = mkOpt (listOf str) [];
-    
-    state = {
-      directories = mkOpt (listOf str) [];
-      files = mkOpt (listOf str) [];
+    home = mkOption {
+      type = types.attrsOf (types.submodule homeModule);
     };
   };
   
@@ -38,19 +42,19 @@ in
         "/var/log"
         "/var/lib/systemd/coredump"
         "/var/db/sudo/lectured"
-      ] ++ state.dirs;
+      ] ++ cfg.directories;
 
       files = [
         "/etc/machine-id"
-      ] ++ state.files;
+      ] ++ cfg.files;
 
     };
 
     environment.persistence."${cfg.path}" = {
       hideMounts = true;
-      users = listToAttrs (map (n: nameValuePair n {
+      users = (mapAttrs (n: v: {
         files = map (f: { file = f; parentDirectory = { user = n; group = "users"; }; }) 
-          state.userFiles;
+          v.persist.files;
 
         directories = [
           "Downloads"
@@ -58,8 +62,8 @@ in
           "projects"
           "config"
         ] ++ map (f: { directory = f; user = n; group = "users"; }) 
-          state.userDirs;
-      }) cfg.users);
+          v.persist.directories;
+      }) cfgHome);
     };
   };
 }

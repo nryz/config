@@ -20,31 +20,12 @@ with lib;
     settings.initial_session = session;
   };
   
-  environment.sessionVariables."CARGO_HOME" = "${config.users.users.nr.home}/.config/cargo";
-  
-  xdg.mime.enable = true;
-  environment.etc."xdg/mimeapps.list".source = my.pkgs.mimeapps;
-  
-  persist.users = ["nr"];
-  persist.state.directories = [
+  persist.directories = [
     "/var/lib/alsa"
     "/var/lib/bluetooth"
     "/etc/NetworkManager"
     "/etc/ssh" 
-
-    ".config/Bitwarden"
-    ".config/spotify"
-    ".config/pulse"
-    ".config/cargo"
-    ".local/share/direnv"
-    ".local/share/qutebrowser"
-    ".local/state/zsh/history"
-    ".mozilla/firefox/default"
-    ".ssh"
   ];
-  
-  users.defaultUserShell = my.pkgs.zsh;
-  environment.pathsToLink = ["/share/zsh"];
   
   systemd.packages = with my.pkgs; [
     unclutter.service
@@ -55,35 +36,56 @@ with lib;
     "unclutter.service"
     "dunst.service"
   ];
+
+  environment.etc."xdg/mimeapps.list".source = my.pkgs.mimeapps;
   
-  users.users.nr.packages = with my.pkgs; [
-    rofi
-    firefox
-    git
-    alacritty
-    helix
-    qutebrowser
-    zathura
-    bottom
-    ssh
-    mpv
-    joshuto
-    imv
-    gucharmap
-    thunar
-    filezilla
-    lxappearance
-    nix-index
-    gitui
-    direnv
-  ] ++ (with pkgs; [
-    spotify
-    discord
-    bitwarden
-    unzip
-    fontpreview
-    neofetch
-  ]);
   
+  home.nr = {
+    shell = (my.pkgs.zsh.override {
+      variables."CARGO_HOME" = "$XDG_CONFIG_HOME/cargo";
+    });
+    
+    persist.directories = [
+      ".config/Bitwarden"
+      ".config/spotify"
+      ".config/pulse"
+      ".config/cargo"
+      ".config/filezilla"
+      ".local/share/direnv"
+      ".local/share/qutebrowser"
+      ".local/state/zsh/history"
+      ".mozilla/firefox/default"
+      ".ssh"
+    ];
+
+    packages = with my.pkgs; [
+      rofi
+      firefox
+      git
+      alacritty
+      helix
+      qutebrowser
+      zathura
+      bottom
+      ssh
+      mpv
+      joshuto
+      imv
+      gucharmap
+      thunar
+      filezilla
+      lxappearance
+      nix-index
+      gitui
+      direnv
+    ] ++ (with pkgs; [
+      spotify
+      discord
+      bitwarden
+      unzip
+      fontpreview
+      neofetch
+    ]);
+  };
 }
 

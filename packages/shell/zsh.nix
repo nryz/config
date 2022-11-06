@@ -1,6 +1,8 @@
 { inputs, pkgs, my
 , xdg
 , stdenvNoCC
+, variables ? {}
+, editor
 }:
 
 let
@@ -22,7 +24,7 @@ let
     installFlags = [ "PREFIX=$(out)" ];
   };
   
-  common = import ./common.nix { inherit pkgs xdg; };
+  common = import ./common.nix { inherit pkgs xdg variables editor; };
 
 in my.lib.wrapPackage {
   pkg = pkgs.zsh;
@@ -98,11 +100,11 @@ in my.lib.wrapPackage {
       export FZF_DEFAULT_OPTS="--layout=reverse --info=inline --height=80% --multi --preview-window=:hidden --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200' --bind '?:toggle-preview'"
     '';
 
-    "config/.zshenv" = ''
+    "config/.zshenv" = common.defaultVariables + ''
       ${lib.concatStrings (lib.mapAttrsToList (n: v: ''
         export ${n}="${v}"
       '') common.variables)}
-    '' + common.defaultVariables;
+    '';
 
     "config/.zprofile" = "";
     "config/.zlogin" = "";

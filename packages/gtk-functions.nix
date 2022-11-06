@@ -65,4 +65,3 @@ rec {
 		in nameValuePair name ( wrapGtkPackage {inherit pkg name;} )) pkgs);
 }
 
-

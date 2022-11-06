@@ -1,4 +1,7 @@
-{ pkgs, xdg }:
+{ pkgs, xdg
+, variables
+, editor
+}:
 
 with pkgs.lib;
 {
@@ -25,10 +28,10 @@ with pkgs.lib;
 	};
 	
 	variables = {
-	  "EDITOR" = "hx";
-    "VISUAL" = "hx";
+	  "EDITOR" = "${editor.name}";
+    "VISUAL" = "${editor.name}";
     "LOCALE_ARCHIVE_2_27" = "${pkgs.glibcLocales}/lib/locale/locale-archive";
-	};
+	} // variables;
 	
 	defaultVariables = ''
 	  : ''${XDG_CACHE_HOME:="${xdg.cacheHome}"}

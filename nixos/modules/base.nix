@@ -16,6 +16,8 @@ in
     nixpkgs.config = pkgs.config;
     nixpkgs.pkgs = pkgs;
 
+    xdg.mime.enable = true;
+
     environment.systemPackages = with pkgs; [
       xdg-utils
       nix-prefetch-scripts
@@ -35,8 +37,6 @@ in
       pavucontrol
       pamixer
     ];
-
-    boot.kernelPackages = pkgs.linuxPackages_latest;
 
     boot.kernelParams = [ 
       "quiet"
