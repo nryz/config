@@ -19,7 +19,7 @@ let
 		inherit inputs pkgs my; 
 		inherit naersk;
 
-		base16 = (pkgs.callPackage inputs.base16 {}).mkSchemeAttrs ../content/base16/solarized-dark.yaml;
+		base16 = (pkgs.callPackage inputs.base16 {}).mkSchemeAttrs ../content/base16/rose-pine.yaml;
 
 		terminal = mkDefPkg {
 			pkg = my.pkgs.alacritty;
