@@ -48,5 +48,10 @@ in wrapPackage {
       pulse-latency-hacks=yes
       script-opts=ytdl_hook-ytdl_path=${pkgs.yt-dlp}/bin/yt-dlp
     '';
+    
+    "config/input.conf" = ''
+      n add chapter +1
+      p add chapter -1
+    '';
   };
 }
