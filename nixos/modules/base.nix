@@ -96,7 +96,7 @@ in
 
     fonts.enableDefaultFonts = true;
     fonts.fontDir.enable = true;
-    fonts.fonts = with pkgs; [ (nerdfonts.override { fonts = [ "Iosevka" ];}) ];
+    #fonts.fonts = with pkgs; [ (nerdfonts.override { fonts = [ "Iosevka" ];}) ];
 
     time.hardwareClockInLocalTime = true;
 

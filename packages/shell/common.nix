@@ -1,4 +1,6 @@
-{ pkgs, xdg
+{ my 
+, pkgs
+, xdg
 , variables
 , editor
 }:
@@ -16,7 +18,7 @@ with pkgs.lib;
 		    tree
 		    fd
 		    sd
-				fzf
+				my.pkgs.skim
 			]));
 	};
 

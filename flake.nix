@@ -3,9 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/release-22.11";
+
     nur.url = "github:nix-community/NUR";
     utils.url = "github:gytis-ivaskevicius/flake-utils-plus";
     impermanence.url = "github:nix-community/impermanence";
+
+    yt-dlp.url = "github:yt-dlp/yt-dlp";
+    yt-dlp.flake = false;
    
     zsh-pure-prompt.url = "github:sindresorhus/pure"; 
     zsh-pure-prompt.flake = false;

@@ -16,10 +16,10 @@ in wrapPackage {
   
   path = [ pkgs.qt5.qtwayland ];
 
-  vars = { 
-    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
-  };
-  
+  flags = [
+    "--config-py ${placeholder "out"}/config/qutebrowser/config.py"
+  ];
+
   files = {
     "config/qutebrowser/config.py" = with base16.withHashtag; ''
       config.load_autoconfig(False)
@@ -354,20 +354,17 @@ in wrapPackage {
       # c.colors.webpage.bg ="${base00}"
     '';
     
-    "config/qutebrowser/quickmarks" = ''
-      libgen libgen.li
-      nixMan nixos.org/manual/nix/unstable/
-      nixOptions search.nixos.org/options
-      nixPkgs search.nixos.org/packages
-      nixpkgMan nixos.org/manual/nixpkgs/unstable/
-      nixpkgs https://github.com/NixOS/nixpkgs
-      nixpkgsSearch search.nix.gsc.io/
-      scihub sci-hub-links.com/
-      z-lib booksc.org/
-    '';
+    # "config/qutebrowser/quickmarks" = ''
+    #   libgen libgen.li
+    #   nixMan nixos.org/manual/nix/unstable/
+    #   nixOptions search.nixos.org/options
+    #   nixPkgs search.nixos.org/packages
+    #   nixpkgMan nixos.org/manual/nixpkgs/unstable/
+    #   nixpkgs https://github.com/NixOS/nixpkgs
+    #   nixpkgsSearch search.nix.gsc.io/
+    #   scihub sci-hub-links.com/
+    #   z-lib booksc.org/
+    # '';
     
-    # So qutebrowser doesn't complain about read-only
-    "config/qutebrowser/bookmarks/urls" = "";
-    "config/qutebrowser/greasemonkey/greasemonkey" = "";
   };
 }

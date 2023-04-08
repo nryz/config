@@ -8,6 +8,10 @@ let
     overlays = [  inputs.nur.overlay  ];
 	};
 	
+	pkgs-stable = import inputs.nixpkgs-stable {
+		inherit system;
+	};
+	
 	lib = pkgs.lib;
 
   naersk = pkgs.callPackage inputs.naersk {};
@@ -18,6 +22,7 @@ let
 	args = with my.lib; rec { 
 		inherit inputs pkgs my; 
 		inherit naersk;
+		inherit pkgs-stable;
 
 		base16 = (pkgs.callPackage inputs.base16 {}).mkSchemeAttrs ../content/base16/rose-pine.yaml;
 
@@ -51,7 +56,7 @@ let
 			desktop = "org.pwmt.zathura.desktop";
 		};
 		
-		background = ../content/backgrounds/2;
+		background = ../content/backgrounds/17;
 
 		cursor.package = pkgs.vanilla-dmz;
 		cursor.name = "Vanilla-DMZ";
@@ -116,6 +121,7 @@ in (with pkgs; gtk.wrapGtkPackages [
 	yambar = callPackage ./wm/yambar.nix {};
 	zathura = callPackage ./zathura.nix {};
 	zsh = callPackage ./shell/zsh.nix {};
+	skim = callPackage ./skim.nix {};
 	
 	all = let
 		all-pkgs = builtins.filter (x: x.name != "all")

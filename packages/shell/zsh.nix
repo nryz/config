@@ -24,7 +24,7 @@ let
     installFlags = [ "PREFIX=$(out)" ];
   };
   
-  common = import ./common.nix { inherit pkgs xdg variables editor; };
+  common = import ./common.nix { inherit my pkgs xdg variables editor; };
 
 in my.lib.wrapPackage {
   pkg = pkgs.zsh;
@@ -90,15 +90,9 @@ in my.lib.wrapPackage {
 
       eval "$(${my.pkgs.direnv}/bin/direnv hook zsh)"
 
-      source "${pkgs.fzf}/share/fzf/completion.zsh"
-      source "${pkgs.fzf}/share/fzf/key-bindings.zsh"
-
-      export FZF_DEFAULT_COMMAND="${pkgs.fd}/bin/fd --hidden --follow --exclude '.git' --exclude '.cache'"
-      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-      export FZF_CTRL_R_COMMAND="$FZF_DEFAULT_COMMAND"
-      export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND --type d"
-      export FZF_DEFAULT_OPTS="--layout=reverse --info=inline --height=80% --multi --preview-window=:hidden --preview '([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2> /dev/null | head -200' --bind '?:toggle-preview'"
-    '';
+      source "${my.pkgs.skim}/share/skim/completion.zsh"
+      source "${my.pkgs.skim}/share/skim/key-bindings.zsh"
+  '';
 
     "config/.zshenv" = common.defaultVariables + ''
       ${lib.concatStrings (lib.mapAttrsToList (n: v: ''

@@ -1,9 +1,12 @@
 { pkgs, my
 , wrapPackage
+, inputs
 }:
 
 let
   lib = pkgs.lib;
+
+  yt-dlp = pkgs.yt-dlp.overrideAttrs(_: { src = inputs.yt-dlp; });
 
   scripts = with pkgs.mpvScripts; [
     mpv-playlistmanager
@@ -22,7 +25,7 @@ in wrapPackage {
   
   path = [
     luaEnv
-    pkgs.yt-dlp
+    yt-dlp
   ];
   
   prefix = {
@@ -46,7 +49,7 @@ in wrapPackage {
       alang=Japanese,jpn,ja,English,eng,en
       slang=English,eng,en
       pulse-latency-hacks=yes
-      script-opts=ytdl_hook-ytdl_path=${pkgs.yt-dlp}/bin/yt-dlp
+      script-opts=ytdl_hook-ytdl_path=${yt-dlp}/bin/yt-dlp
     '';
     
     "config/input.conf" = ''

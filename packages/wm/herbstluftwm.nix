@@ -5,10 +5,13 @@
 , cursor
 , background
 , drivers ? {}
+, pkgs-stable
 }:
 
 let
-  hc = "${pkgs.herbstluftwm}/bin/herbstclient";
+  pkg = pkgs-stable.herbstluftwm;
+
+  hc = "${pkg}/bin/herbstclient";
   
   pamixer = "${pkgs.pamixer}/bin/pamixer";
 
@@ -17,9 +20,9 @@ let
   yambar = my.pkgs.yambar.override {
     workspacesScript = ''
       #!/usr/bin/env bash
-      echo "tags|string|$(${pkgs.herbstluftwm}/bin/herbstclient tag_status | ${pkgs.coreutils}/bin/tr "\t" " ")"
+      echo "tags|string|$(${pkg}/bin/herbstclient tag_status | ${pkgs.coreutils}/bin/tr "\t" " ")"
 
-      echo "client_count|string|$(${pkgs.herbstluftwm}/bin/herbstclient get_attr tags.focus.client_count)"
+      echo "client_count|string|$(${pkg}/bin/herbstclient get_attr tags.focus.client_count)"
       echo ""
     '';  
   };
@@ -28,7 +31,7 @@ let
   
   
 in my.lib.wrapPackage {
-  pkg = pkgs.herbstluftwm;
+  pkg = pkg;
   name = "herbstluftwm";
   
   flags = [ 
@@ -53,7 +56,6 @@ in my.lib.wrapPackage {
       }
 
       hc emit_hook reload
-
     
       # Startup
       kill $(pidof picom)

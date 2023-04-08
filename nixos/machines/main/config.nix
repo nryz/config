@@ -54,7 +54,7 @@ with lib;
       ".local/share/direnv"
       ".local/share/qutebrowser"
       ".local/state/zsh/history"
-      ".mozilla/firefox/default"
+      ".mozilla/firefox"
       ".ssh"
     ];
 

@@ -13,7 +13,7 @@ let
 	 	old-reddit-redirect
 	 	reddit-enhancement-suite
 		
-	 	https-everywhere
+	 	# https-everywhere
 	 	ublock-origin
 	 	privacy-badger
 	 ];
