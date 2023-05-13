@@ -58,6 +58,9 @@ in wrapPackage {
       line-number = "relative"
       mouse = false
 
+      [editor.soft-wrap]
+      enable = true
+
       [editor.cursor-shape]
       insert = "bar"
       normal = "block"

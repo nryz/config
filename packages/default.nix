@@ -62,8 +62,8 @@ let
 		cursor.name = "Vanilla-DMZ";
 		cursor.size = 16;
 
-	  font.package = pkgs.source-code-pro;
-	  font.name = "Source Code Pro";
+		font.package = pkgs.nerdfonts.override { fonts = [ "SourceCodePro" ]; };
+		font.name = "SauceCode Pro Nerd Font";
 	  font.size = 9;
 		
 		xdg = {
@@ -122,6 +122,8 @@ in (with pkgs; gtk.wrapGtkPackages [
 	zathura = callPackage ./zathura.nix {};
 	zsh = callPackage ./shell/zsh.nix {};
 	skim = callPackage ./skim.nix {};
+
+	fontconfig = callPackage ./fontconfig.nix {};
 	
 	all = let
 		all-pkgs = builtins.filter (x: x.name != "all")

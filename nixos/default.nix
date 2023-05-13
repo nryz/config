@@ -35,8 +35,8 @@ in lib.nixosSystem {
   inherit system pkgs specialArgs;
 
   modules = modules ++ [
-    (machineFolder + "/hardware.nix")
-    (machineFolder + "/config.nix")
+    (machineFolder + "/hardware-configuration.nix")
+    (machineFolder + "/configuration.nix")
     inputs.utils.nixosModules.autoGenFromInputs
     inputs.impermanence.nixosModules.impermanence
   ];

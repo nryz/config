@@ -45,5 +45,7 @@ with pkgs.lib;
 		export XDG_CONFIG_HOME
 		export XDG_STATE_HOME
 		export XDG_DATA_HOME
+
+		export FONTCONFIG_FILE=${my.pkgs.fontconfig}
 	'';
 }

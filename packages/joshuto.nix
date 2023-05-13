@@ -64,7 +64,6 @@ in wrapPackage {
 
     "config/keymap.toml" = ''
       [default_view]
-
       keymap = [
       	{ keys = [ "escape" ],		command = "escape" },
       	{ keys = [ "T" ],		      command = "new_tab" },
@@ -136,8 +135,8 @@ in wrapPackage {
       	{ keys = [ "p", "l" ],		command = "symlink_files --relative=false" },
       	{ keys = [ "p", "L" ],		command = "symlink_files --relative=true" },
 
-      	{ keys = [ "delete" ],		command = "delete_files --foreground=true" },
-      	{ keys = [ "d", "D" ],		command = "delete_files --foreground=true" },
+      	{ keys = [ "delete" ],		command = "delete_files" },
+      	{ keys = [ "d", "D" ],		command = "delete_files" },
 
       	{ keys = [ "p", "p" ],		command = "paste_files" },
       	{ keys = [ "p", "o" ],		command = "paste_files --overwrite=true" },
