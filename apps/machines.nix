@@ -8,6 +8,10 @@ in lib.mapAttrs' (n: v: lib.nameValuePair n (let
     fi
   '';
 
+  set-profile-script = ''
+    sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
+  '';
+
   activate-script = ''
     sudo result/bin/switch-to-configuration switch
   '';
@@ -18,6 +22,7 @@ in lib.mapAttrs' (n: v: lib.nameValuePair n (let
     '');
 
     activate =  (pkgs.writeShellScriptBin "nixos-activate" ''
+      ${set-profile-script}
       ${activate-script}
     '');
 
@@ -26,11 +31,13 @@ in lib.mapAttrs' (n: v: lib.nameValuePair n (let
     '');
 
     activate-test =  (pkgs.writeShellScriptBin "nixos-activate-test" ''
+      ${set-profile-script}
       sudo result/bin/switch-to-configuration test
     '');
    
     switch = (pkgs.writeShellScriptBin "nixos-switch" ''
       ${build-script}
+      ${set-profile-script}
       ${activate-script}
     '');
 

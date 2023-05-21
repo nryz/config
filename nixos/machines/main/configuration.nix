@@ -38,6 +38,7 @@ with lib;
   ];
 
   environment.etc."xdg/mimeapps.list".source = my.pkgs.mimeapps;
+
   
   home.nr = {
     shell = (my.pkgs.zsh.override {
