@@ -10,7 +10,7 @@ in wrapPackage {
   name = "git";
 
   vars = { 
-    "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
+    "GIT_CONFIG_GLOBAL" = "${placeholder "out"}/config/git/config";
   };
 
   files = {
@@ -35,6 +35,9 @@ in wrapPackage {
 
 			[pager]
         difftool = true
+
+      [user]
+      useConfigOnly = true
 		'';
   };
 }

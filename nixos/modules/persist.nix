@@ -57,10 +57,6 @@ in
           v.persist.files;
 
         directories = [
-          "Downloads"
-          "Media"
-          "projects"
-          "config"
         ] ++ map (f: { directory = f; user = n; group = "users"; }) 
           v.persist.directories;
       }) cfgHome);

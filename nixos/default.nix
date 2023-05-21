@@ -1,17 +1,8 @@
-{ self, } : let
+{ self, pkgs } : let
 
   inputs = self.inputs;
 
   system = "x86_64-linux";
-  
-  pkgs = import inputs.nixpkgs {
-    inherit system;
-    config.allowUnfree = true;
-
-    overlays = [ 
-      inputs.nur.overlay 
-    ];
-  };
 
   lib = inputs.nixpkgs.lib;
   

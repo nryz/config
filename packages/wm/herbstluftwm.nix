@@ -5,11 +5,10 @@
 , cursor
 , background
 , drivers ? {}
-, pkgs-stable
 }:
 
 let
-  pkg = pkgs-stable.herbstluftwm;
+  pkg = pkgs.herbstluftwm;
 
   hc = "${pkg}/bin/herbstclient";
   

@@ -39,13 +39,16 @@ with lib;
 
   environment.etc."xdg/mimeapps.list".source = my.pkgs.mimeapps;
   
-  
   home.nr = {
     shell = (my.pkgs.zsh.override {
       variables."CARGO_HOME" = "$XDG_CONFIG_HOME/cargo";
     });
     
     persist.directories = [
+      "Downloads"
+      "media"
+      "dev"
+      "config"
       ".config/Bitwarden"
       ".config/spotify"
       ".config/pulse"
@@ -81,7 +84,7 @@ with lib;
     ] ++ (with pkgs; [
       spotify
       discord
-      bitwarden
+      # bitwarden
       unzip
       fontpreview
       neofetch

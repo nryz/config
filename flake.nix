@@ -36,17 +36,26 @@
     nix-index-database.url = "github:Mic92/nix-index-database";
   };
 
-  outputs = inputs @ { self, utils, ... }: {
-    inherit self;
+  outputs = inputs @ { self, utils, ... }: let 
+    system = "x86_64-linux";
+  	pkgs = import inputs.nixpkgs { 
+  		inherit system; 
 
-    nixosConfigurations = import ./nixos { inherit self; };
-    
-    templates = import ./templates;
+      config.allowUnfree = true;
 
-  } // utils.lib.eachDefaultSystem (system: {
+      overlays = [  
+        (self: super: {
+          herbstluftwm = inputs.nixpkgs-stable.legacyPackages.${system}.herbstluftwm;
+        })
+        inputs.nur.overlay
+      ];
+  	};
+  in {
+    nixosConfigurations = import ./nixos { inherit self pkgs; };
+    templates =           import ./templates;
 
-    apps.default = import ./nixos/st { inherit system inputs; }; 
-
-    packages = import ./packages { inherit self system; };
-  });
+    machines =           import ./apps/machines.nix { inherit self system pkgs; };
+    flake =              import ./apps/flake-app.nix { inherit self system pkgs; };
+    packages.${system} = import ./packages { inherit self system pkgs; };
+  };
 }

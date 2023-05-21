@@ -1,16 +1,7 @@
-{ self, system }:
+{ self, system, pkgs }:
 
 let
 	inputs = self.inputs;
-
-	pkgs = import inputs.nixpkgs { 
-		inherit system; 
-    overlays = [  inputs.nur.overlay  ];
-	};
-	
-	pkgs-stable = import inputs.nixpkgs-stable {
-		inherit system;
-	};
 	
 	lib = pkgs.lib;
 
@@ -22,7 +13,6 @@ let
 	args = with my.lib; rec { 
 		inherit inputs pkgs my; 
 		inherit naersk;
-		inherit pkgs-stable;
 
 		base16 = (pkgs.callPackage inputs.base16 {}).mkSchemeAttrs ../content/base16/rose-pine.yaml;
 
@@ -126,7 +116,7 @@ in (with pkgs; gtk.wrapGtkPackages [
 	fontconfig = callPackage ./fontconfig.nix {};
 	
 	all = let
-		all-pkgs = builtins.filter (x: x.name != "all")
+		all-pkgs = builtins.filter (x: lib.isDerivation x && x.name != "all" )
 			(lib.mapAttrsToList (n: v: v) my.pkgs);
 	in pkgs.linkFarmFromDrvs "all" all-pkgs;
 	
