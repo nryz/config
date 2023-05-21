@@ -14,7 +14,7 @@
   machines = my.lib.collectMachines ./machines;
   modules = my.lib.collectModules ./modules;
 
-in lib.mapAttrs (name: machineFolder: let
+in (lib.mapAttrs (name: machineFolder: let
 
   specialArgs = {
     inherit inputs pkgs lib;
@@ -31,4 +31,28 @@ in lib.nixosSystem {
     inputs.utils.nixosModules.autoGenFromInputs
     inputs.impermanence.nixosModules.impermanence
   ];
-}) machines
+}) machines) //
+{
+  iso = lib.nixosSystem {
+    inherit system;
+    modules = [
+      (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
+      ({ pkgs, lib, ...}:
+      {
+        isoImage.contents = [ {
+          source = self.outPath;
+          target = "config";
+        } ];
+
+        users.users.nixos = {
+          shell = my.pkgs.zsh;
+
+          packages = with my.pkgs; [
+            joshuto
+            helix
+          ];
+        };
+      })
+    ];
+  };
+}

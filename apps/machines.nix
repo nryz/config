@@ -1,7 +1,25 @@
 { self, system, pkgs } :
 let
   lib = self.inputs.nixpkgs.lib;
-in lib.mapAttrs' (n: v: lib.nameValuePair n (let
+in lib.mapAttrs' (n: v: if v.config.system.build ? isoImage then lib.nameValuePair n (let
+in {
+    build = (pkgs.writeShellScriptBin "iso-build" ''
+      nix build .#nixosConfigurations.${n}.config.system.build.isoImage
+    '');
+
+    test = (pkgs.writeShellScriptBin "iso-test" ''
+      ${pkgs.qemu}/bin/qemu-system-x86_64 -enable-kvm -m 256 -cdrom result/iso/${v.config.isoImage.isoName}
+    '');
+
+    dd = (pkgs.writeShellScriptBin "iso-dd" ''
+      if [ -z "$1" ]; then
+        echo "the first argument must be the device to flash to."
+      else
+        sudo ${pkgs.coreutils}/bin/dd if=result/iso/${v.config.isoImage.isoName} of=/dev/$1 bs=1M status=progress
+      fi
+    '');
+
+}) else lib.nameValuePair n (let
   build-script = ''
     if sudo nixos-rebuild build --flake .#${n}; then
       ${pkgs.nvd}/bin/nvd diff /run/current-system result
@@ -53,4 +71,7 @@ in lib.mapAttrs' (n: v: lib.nameValuePair n (let
     show-generations = (pkgs.writeShellScriptBin "nixos-show-generations" ''
       sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
     '');
-})) self.nixosConfigurations
+    })) self.nixosConfigurations
+# })) (lib.filterAttrs (n: v:
+#   !(v.config.system.build ? isoImage)
+# ) self.nixosConfigurations)
