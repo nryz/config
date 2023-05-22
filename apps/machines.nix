@@ -15,48 +15,34 @@ in {
       if [ -z "$1" ]; then
         echo "the first argument must be the device to flash to."
       else
-        sudo ${pkgs.coreutils}/bin/dd if=result/iso/${v.config.isoImage.isoName} of=/dev/$1 bs=1M status=progress
+        sudo ${pkgs.coreutils}/bin/dd if=result/iso/${v.config.isoImage.isoName} of=$1 bs=1M status=progress
       fi
     '');
 
 }) else lib.nameValuePair n (let
-  build-script = ''
-    if sudo nixos-rebuild build --flake .#${n}; then
-      ${pkgs.nvd}/bin/nvd diff /run/current-system result
-    fi
-  '';
-
-  set-profile-script = ''
-    sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
-  '';
-
-  activate-script = ''
-    sudo result/bin/switch-to-configuration switch
-  '';
-
   in {
     build =  (pkgs.writeShellScriptBin "nixos-build" ''
-      ${build-script}
+      if sudo nix build .#nixosConfigurations.${n}.config.system.build.toplevel; then
+        ${pkgs.nvd}/bin/nvd diff /run/current-system result
+      fi
     '');
 
     activate =  (pkgs.writeShellScriptBin "nixos-activate" ''
-      ${set-profile-script}
-      ${activate-script}
-    '');
-
-    activate-dry =  (pkgs.writeShellScriptBin "nixos-activate-dry" ''
-      sudo result/bin/switch-to-configuration dry-activate
+      sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
+      sudo result/bin/switch-to-configuration switch
     '');
 
     activate-test =  (pkgs.writeShellScriptBin "nixos-activate-test" ''
-      ${set-profile-script}
+      sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
       sudo result/bin/switch-to-configuration test
     '');
    
     switch = (pkgs.writeShellScriptBin "nixos-switch" ''
-      ${build-script}
-      ${set-profile-script}
-      ${activate-script}
+      if sudo nix build .#nixosConfigurations.${n}.config.system.build.toplevel; then
+        ${pkgs.nvd}/bin/nvd diff /run/current-system result
+        sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
+        sudo result/bin/switch-to-configuration switch
+      fi
     '');
 
     rollback = (pkgs.writeShellScriptBin "nixos-rollback" ''
@@ -72,6 +58,3 @@ in {
       sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
     '');
     })) self.nixosConfigurations
-# })) (lib.filterAttrs (n: v:
-#   !(v.config.system.build ? isoImage)
-# ) self.nixosConfigurations)
