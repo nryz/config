@@ -27,6 +27,7 @@ with pkgs.lib;
     "lsd" = "${pkgs.lsd}/bin/lsd --group-directories-first -1";
     "rg" = "${pkgs.ripgrep}/bin/rg --no-messages";
     "tree" = "tree --dirsfirst";
+		"lsb" = "lsblk -o name,label,type,size,rm,model,serial";
 	};
 	
 	variables = {

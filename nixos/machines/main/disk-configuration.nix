@@ -33,7 +33,7 @@
   disko = {
     devices.disk.main = {
       name = "nixos";
-      device = "/dev/sda";
+      device = "/dev/disk/by-id/ata-Crucial_CT525MX300SSD1_164614AEBEA4";
       type = "disk";
       content = {
         type = "table";
@@ -72,7 +72,7 @@
     devices.nodev = {
       "/" = {
         fsType = "tmpfs";
-        mountOptions = [ "defaults" "size=3G" "mod=755" ];
+        mountOptions = [ "defaults" "size=3G" "mode=755" ];
       };
     };
   };

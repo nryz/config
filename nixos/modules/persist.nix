@@ -35,6 +35,8 @@ in
 
     programs.fuse.userAllowOther = true;
 
+    # environment.etc."machine-id".source = "/nix/persist/etc/machine-id";
+
     environment.persistence."${cfg.path}/system" = {
       hideMounts = true;
 
@@ -45,7 +47,7 @@ in
       ] ++ cfg.directories;
 
       files = [
-        "/etc/machine-id"
+        # "/etc/machine-id"
       ] ++ cfg.files;
 
     };

@@ -41,9 +41,9 @@ in lib.nixosSystem {
       (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
       ({ pkgs, lib, ...}:
       {
-        isoImage.storeContents = [
-          self.nixosConfigurations.main.config.system.build.toplevel
-        ];
+        isoImage.storeContents = [ ] ++ (lib.mapAttrsToList (n: v:
+          v.config.system.build.toplevel
+        ) (lib.filterAttrs (n: v: !(v.config.system.build ? isoImage)) self.nixosConfigurations));
       
         isoImage.contents = [ {
           source = self.outPath;
