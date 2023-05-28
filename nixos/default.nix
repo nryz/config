@@ -27,9 +27,11 @@ in lib.nixosSystem {
 
   modules = modules ++ [
     (machineFolder + "/hardware-configuration.nix")
+    (machineFolder + "/disk-configuration.nix")
     (machineFolder + "/configuration.nix")
     inputs.utils.nixosModules.autoGenFromInputs
     inputs.impermanence.nixosModules.impermanence
+    inputs.disko.nixosModules.disko
   ];
 }) machines) //
 {
@@ -39,10 +41,26 @@ in lib.nixosSystem {
       (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
       ({ pkgs, lib, ...}:
       {
+        isoImage.storeContents = [
+          self.nixosConfigurations.main.config.system.build.toplevel
+        ];
+      
         isoImage.contents = [ {
           source = self.outPath;
           target = "config";
         } ];
+
+        nix.package = pkgs.nixUnstable;
+        nix.extraOptions = ''
+          experimental-features = nix-command flakes
+        '';
+
+        boot.postBootCommands = ''
+          mkdir /home/nixos/config
+          cp -r /iso/config/* /home/nixos/config/
+          chown -R nixos:users /home/nixos/config
+          chmod -R +w /home/nixos/config
+        '';
 
         users.users.nixos = {
           shell = my.pkgs.zsh;

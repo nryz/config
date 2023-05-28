@@ -114,7 +114,7 @@ in
     users.users.nr = {
       extraGroups = [ "wheel" ];
       isNormalUser = true;
-      passwordFile = "/etc/passwords/nr";
+      passwordFile = "/nix/passwords/nr";
       uid = 1000;
     };
 
@@ -134,14 +134,14 @@ in
     '';
 
     nix.gc.automatic = true;
-    nix.gc.options = "--delete-older-than 5d";
+    nix.gc.options = "--delete-older-than 10d";
     nix.settings.auto-optimise-store = true;
 
     assertions = [
-      {
-        assertion = lib.hasAttr "/etc/passwords" config.fileSystems;
-        message = "no passwords dir in fileSystems";
-      }
+      # {
+        # assertion = lib.hasAttr "/etc/passwords" config.fileSystems;
+        # message = "no passwords dir in fileSystems";
+      # }
       {
         assertion = lib.hasAttr "/" config.fileSystems;
         message = "no root in fileSystems";

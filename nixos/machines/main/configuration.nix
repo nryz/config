@@ -8,7 +8,7 @@ with lib;
 
   bluetooth.enable = false;
   hardware.nvidia.enable = true;
-  
+
   services.greetd = let
     session.user = "nr";
     session.command = "${my.pkgs.herbstluftwm.override {
@@ -89,6 +89,7 @@ with lib;
       unzip
       fontpreview
       neofetch
+      parsec-bin
     ]);
   };
 }

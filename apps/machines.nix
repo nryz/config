@@ -7,37 +7,54 @@ in {
       nix build .#nixosConfigurations.${n}.config.system.build.isoImage
     '');
 
-    test = (pkgs.writeShellScriptBin "iso-test" ''
-      ${pkgs.qemu}/bin/qemu-system-x86_64 -enable-kvm -m 256 -cdrom result/iso/${v.config.isoImage.isoName}
+    test-vm = (pkgs.writeShellScriptBin "iso-test" ''
+      if [ -f ./result/iso/${v.config.isoImage.isoName} ]; then
+        ${pkgs.qemu}/bin/qemu-system-x86_64 -enable-kvm -m 1024 -cdrom result/iso/${v.config.isoImage.isoName}
+      else
+        echo "build iso first"
+      fi
     '');
 
     dd = (pkgs.writeShellScriptBin "iso-dd" ''
       if [ -z "$1" ]; then
         echo "the first argument must be the device to flash to."
       else
-        sudo ${pkgs.coreutils}/bin/dd if=result/iso/${v.config.isoImage.isoName} of=$1 bs=1M status=progress
+        if [ -f ./result/iso/${v.config.isoImage.isoName} ]; then
+          sudo ${pkgs.coreutils}/bin/dd if=result/iso/${v.config.isoImage.isoName} of=$1 bs=1M status=progress
+        else
+          echo "build iso first"
+        fi
       fi
     '');
 
 }) else lib.nameValuePair n (let
+    check-flake = ''
+      if [ ! -f ./flake.nix ]; then
+        echo "No flake.nix is this directory."
+        exit 0
+      fi
+    '';
   in {
     build =  (pkgs.writeShellScriptBin "nixos-build" ''
-      if sudo nix build .#nixosConfigurations.${n}.config.system.build.toplevel; then
+      ${check-flake}
+      
+      if nix build .#nixosConfigurations.${n}.config.system.build.toplevel; then
         ${pkgs.nvd}/bin/nvd diff /run/current-system result
       fi
     '');
 
     activate =  (pkgs.writeShellScriptBin "nixos-activate" ''
-      sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
-      sudo result/bin/switch-to-configuration switch
-    '');
+      ${check-flake}
 
-    activate-test =  (pkgs.writeShellScriptBin "nixos-activate-test" ''
-      sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
-      sudo result/bin/switch-to-configuration test
+      if [ -f ./result/bin/switch-to-configuration ]; then
+        sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
+        sudo result/bin/switch-to-configuration switch
+      fi
     '');
    
     switch = (pkgs.writeShellScriptBin "nixos-switch" ''
+      ${check-flake}
+
       if sudo nix build .#nixosConfigurations.${n}.config.system.build.toplevel; then
         ${pkgs.nvd}/bin/nvd diff /run/current-system result
         sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
@@ -46,6 +63,8 @@ in {
     '');
 
     rollback = (pkgs.writeShellScriptBin "nixos-rollback" ''
+      ${check-flake}
+
       sudo nixos-rebuild switch --flake .#${n} --rollback
     '');
 
@@ -57,4 +76,26 @@ in {
     show-generations = (pkgs.writeShellScriptBin "nixos-show-generations" ''
       sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
     '');
+
+    diff-hardware-configuration = (pkgs.writeShellScriptBin "nixos-diff-hardware-configuration" ''
+      ${pkgs.diffutils}/bin/diff --color ./nixos/machines/${n}/hardware-configuration.nix <(nixos-generate-config --no-filesystems --show-hardware-config 2> /dev/null)
+    '');
+
+    install = (pkgs.writeShellScriptBin "nixos-install" ''
+      if [ -d "/iso" ]; then
+        # Format and mount
+        # echo nix build .#diskoConfigurations.#{n} ???
+        echo nix build .#nixosConfigurations.${n}.config.system.build.diskoScript
+        echo ./result
+        # Install
+        echo mkpasswd -m SHA-512 > /mnt/nix/passwords/nr
+        echo nixos-install --flake .#${n} --no-root-passwd
+      else
+        echo "Not running in an ISO image probably"
+      fi
+    '');
+      # echo mkpasswd -m SHA-512 > /mnt/nix/passwords/nr
+      # echo nixos-install --flake .#${n} --no-root-passwd
+
+    
     })) self.nixosConfigurations
