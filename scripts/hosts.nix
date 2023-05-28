@@ -86,7 +86,7 @@ in {
     '');
 
     diff-hardware-configuration = (pkgs.writeShellScriptBin "nixos-diff-hardware-configuration" ''
-      ${pkgs.diffutils}/bin/diff --color ./nixos/machines/${host}/hardware-configuration.nix <(nixos-generate-config --no-filesystems --show-hardware-config 2> /dev/null)
+      ${pkgs.diffutils}/bin/diff --color ./nixos/hosts/${host}/hardware-configuration.nix <(nixos-generate-config --no-filesystems --show-hardware-config 2> /dev/null)
     '');
 
 

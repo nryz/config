@@ -1,23 +1,22 @@
-{ self, pkgs } : let
+{ self, pkgs, system } : let
 
   inputs = self.inputs;
-
-  system = "x86_64-linux";
 
   lib = inputs.nixpkgs.lib;
   
   my = {
     pkgs = self.packages.${system};
-    lib = import ../lib { inherit pkgs; };
+    lib = self.lib;
   };
   
-  machines = my.lib.collectMachines ./machines;
-  modules = my.lib.collectModules ./modules;
+  hosts = my.lib.collectHosts ./hosts;
 
-in (lib.mapAttrs (name: machineFolder: let
+in (lib.mapAttrs (name: hostFolder: let
 
   specialArgs = {
     inherit inputs pkgs lib;
+
+    profiles = self.nixosModules;
     
     my = my // { hostName = name; };
   };
@@ -25,15 +24,14 @@ in (lib.mapAttrs (name: machineFolder: let
 in lib.nixosSystem {
   inherit system pkgs specialArgs;
 
-  modules = modules ++ [
-    (machineFolder + "/hardware-configuration.nix")
-    (machineFolder + "/disk-configuration.nix")
-    (machineFolder + "/configuration.nix")
+  modules = [
+    (hostFolder + "/hardware-configuration.nix")
+    (hostFolder + "/disk-configuration.nix")
+    (hostFolder + "/configuration.nix")
     inputs.utils.nixosModules.autoGenFromInputs
-    inputs.impermanence.nixosModules.impermanence
     inputs.disko.nixosModules.disko
   ];
-}) machines) //
+}) hosts) //
 {
   iso = lib.nixosSystem {
     inherit system;

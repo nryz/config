@@ -1,21 +1,16 @@
 { config, options, pkgs, lib, my, ... }:
 
-with lib;
-with my.lib;
-let
-  stateVersion = "21.11";
-in
 {
-  options = with types; {
-    bluetooth.enable = mkOpt bool false;
+  imports = [
+    ./graphical.nix
+    ./core.nix
+  ];
+
+  options = with lib.types; {
+    profile.bluetooth.enable = my.lib.mkOpt bool false;
   };
 
   config = {
-    system.stateVersion = stateVersion;
-
-    nixpkgs.config = pkgs.config;
-    nixpkgs.pkgs = pkgs;
-
     xdg.mime.enable = true;
 
     environment.systemPackages = with pkgs; [
@@ -61,13 +56,12 @@ in
     };
     boot.loader.efi.canTouchEfiVariables = true;
 
-    hardware.bluetooth.enable = config.bluetooth.enable;
+    hardware.bluetooth.enable = config.profile.bluetooth.enable;
     hardware.bluetooth.disabledPlugins = [ "sap" ];
     hardware.bluetooth.settings.General.Enable = "Source,Sink,Media,Socket";
 
-    networking.hostName = my.hostName;
-    networking.useDHCP = false;
-    networking.interfaces.enp2s0.useDHCP = true;
+    # networking.useDHCP = false;
+    # networking.interfaces.enp2s0.useDHCP = true;
     networking.networkmanager.enable = true;
 
     networking.nameservers = [
@@ -81,8 +75,8 @@ in
     services.fwupd.enable = true;
     services.tlp.enable = true;
     services.tlp.settings.USB_AUTOSUSPEND = 0;
-    services.blueman.enable = config.bluetooth.enable;
-    services.dbus.packages = optionals (config.bluetooth.enable) [ pkgs.blueman ];
+    services.blueman.enable = config.profile.bluetooth.enable;
+    services.dbus.packages = lib.optionals (config.profile.bluetooth.enable) [ pkgs.blueman ];
     services.fstrim.enable = true;
 
     sound.enable = true;
@@ -97,8 +91,6 @@ in
     fonts.enableDefaultFonts = true;
     fonts.fontDir.enable = true;
 
-    time.hardwareClockInLocalTime = true;
-
     # TODO: fix this
     # nscd fails due to start-limit-hit
     systemd.services.nscd.serviceConfig.StartLimitBurst = 20;
@@ -109,51 +101,5 @@ in
     systemd.targets.hibernate.enable = false;
     systemd.targets.hybrid-sleep.enable = false;
 
-    users.mutableUsers = false;
-
-    users.users.nr = {
-      extraGroups = [ "wheel" ];
-      isNormalUser = true;
-      passwordFile = "/nix/passwords/nr";
-      uid = 1000;
-    };
-
-    users.users.root.hashedPassword = "!";
-
-    nix.generateRegistryFromInputs = true;
-    nix.generateNixPathFromInputs = true;
-    nix.linkInputs = true;
-    nix.package = pkgs.nixUnstable;
-
-    nix.extraOptions = ''
-      experimental-features = nix-command flakes
-      warn-dirty = false
-      allow-dirty = true
-      keep-outputs = true
-      keep-derivations = true
-    '';
-
-    nix.gc.automatic = true;
-    nix.gc.options = "--delete-older-than 10d";
-    nix.settings.auto-optimise-store = true;
-
-    assertions = [
-      # {
-        # assertion = lib.hasAttr "/etc/passwords" config.fileSystems;
-        # message = "no passwords dir in fileSystems";
-      # }
-      {
-        assertion = lib.hasAttr "/" config.fileSystems;
-        message = "no root in fileSystems";
-      }
-      {
-        assertion = lib.hasAttr "/nix" config.fileSystems;
-        message = "no nix in fileSystems";
-      }
-      {
-        assertion = lib.hasAttr "/boot" config.fileSystems;
-        message = "no boot in fileSystems";
-      }
-    ];
   };
 }

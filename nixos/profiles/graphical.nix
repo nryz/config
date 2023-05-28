@@ -1,17 +1,12 @@
 { config, options, pkgs, lib, my, ... }:
 
-with lib;
-with my.lib;
-let
-	cfg = config.hardware;
-in 
-{  
-	options.hardware = with types; {
-		nvidia.enable = mkOpt bool false;
-	};
-	
-	config = mkMerge [
-		(mkIf cfg.nvidia.enable {
+{
+  options = with lib.types; {
+    profile.nvidia.enable = my.lib.mkOpt bool false;
+  };
+
+	config = lib.mkMerge [
+		(lib.mkIf config.profile.nvidia.enable {
 			services.xserver.videoDrivers = ["nvidia"];
 		  hardware.opengl.enable = true;
 		  hardware.nvidia.modesetting.enable = true;
@@ -20,4 +15,3 @@ in
 		})
 	];
 }
-

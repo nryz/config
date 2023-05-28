@@ -53,12 +53,18 @@
         inputs.nur.overlay
       ];
   	};
-  in {
-    nixosConfigurations = import ./nixos { inherit self pkgs; };
-    templates =           import ./templates;
 
-    machines =           import ./apps/machines.nix { inherit self system pkgs; };
-    flake =              import ./apps/flake-app.nix { inherit self system pkgs; };
+    lib = import ./lib { inherit pkgs; };
+  in {
+    inherit lib;
+
+    nixosConfigurations = import ./nixos { inherit self pkgs system; };
+    nixosModules = lib.collectModules ./nixos/profiles;
+
+    templates = import ./templates;
     packages.${system} = import ./packages { inherit self system pkgs; };
+
+    hosts = import ./scripts/hosts.nix { inherit self system pkgs; };
+    flake = import ./scripts/flake-app.nix { inherit self system pkgs; };
   };
 }

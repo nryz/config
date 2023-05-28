@@ -1,34 +1,5 @@
 { config, ... }: {
-    # fileSystems = {
-    #   "/" = { 
-    #     device = "none";
-    #     fsType = "tmpfs";
-    #     options = [ "defaults" "size=3G" "mode=755" ];
-    #   };
-    
-    #   "/etc/passwords" = { 
-    #     device = "/nix/persist/system/etc/passwords";
-    #     fsType = "none";
-    #     options = [ "bind" ];
-    #     neededForBoot = true;
-    #   };
-  
-    #   "/boot" = { 
-    #     device = "/dev/disk/by-uuid/B35B-71DB";
-    #     fsType = "vfat";
-    #   };
-  
-    #   "/nix" = { 
-    #     device = "/dev/disk/by-uuid/16b17eae-c8a9-48e1-bff2-466c327308b1";
-    #     fsType = "ext4";
-    #     neededForBoot = true;
-    #   };
-    # };
-
-  persist.path = "/nix/persist";
-
   fileSystems."/nix".neededForBoot = true;
-  # fileSystems."/etc/passwords".neededForBoot = true;
 
   disko = {
     devices.disk.main = {
