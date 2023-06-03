@@ -25,7 +25,10 @@ let
     installFlags = [ "PREFIX=$(out)" ];
   };
   
-  common = import ./common.nix { inherit my pkgs xdg variables editor; };
+  common = import ./common.nix { 
+    inherit my pkgs xdg variables editor; 
+    shell = "zsh";
+  };
 
 in wrapPackage {
   pkg = pkgs.zsh;
@@ -88,8 +91,6 @@ in wrapPackage {
 
       bindkey "^[[1;5C" forward-word #ctrl-right
       bindkey "^[[1;5D" backward-word #ctrl-left
-
-      eval "$(${my.pkgs.direnv}/bin/direnv hook zsh)"
 
       source "${my.pkgs.skim}/share/skim/completion.zsh"
       source "${my.pkgs.skim}/share/skim/key-bindings.zsh"

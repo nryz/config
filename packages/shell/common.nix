@@ -3,6 +3,7 @@
 , xdg
 , variables
 , editor
+, shell
 }:
 
 with pkgs.lib;
@@ -23,11 +24,11 @@ with pkgs.lib;
 	};
 
 	aliases = {
-    "cat" = "${pkgs.bat}/bin/bat";
     "lsd" = "${pkgs.lsd}/bin/lsd --group-directories-first -1";
     "rg" = "${pkgs.ripgrep}/bin/rg --no-messages";
     "tree" = "tree --dirsfirst";
 		"lsb" = "lsblk -o name,label,type,size,rm,model,serial";
+		"ndev" = "nix develop -c ${shell}";
 	};
 	
 	variables = {

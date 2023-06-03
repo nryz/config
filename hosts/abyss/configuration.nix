@@ -17,6 +17,10 @@
   profile.nvidia.enable = true;
 
   host-scripts.type = "desktop";
+  host-scripts.backup = [
+    "/home/nr/dev"
+    "/home/nr/media"
+  ];
 
   services.greetd = let
     session.user = "nr";

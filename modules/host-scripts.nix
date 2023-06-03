@@ -18,6 +18,10 @@ in
 
       default = null;
     };
+
+    backup = mkOption {
+      type = types.listOf types.string;
+    };
   };
 
   config.system.build.host-scripts = let
@@ -139,11 +143,38 @@ in
       find -H /nix/var/nix/gcroots/auto -type l | xargs -I {} sh -c 'readlink {}; realpath {}; echo'
     '');
 
+    backup = (if (cfg ? backup) then ( pkgs.writeShellScriptBin "backup" ''
+      ${check-host}
+
+      if [ -z "$1" ]; then
+        echo "the first argument must be the device to backup to."
+        exit 1;
+      fi
+
+      sudo mkdir /tmp/backup
+
+      if sudo mount $1 /tmp/backup; then
+
+        DEST=/tmp/backup/$(date +"%Y-%m-%d")
+        sudo mkdir $DEST
+
+        ${lib.concatStrings (builtins.map (x: ''
+          sudo ${pkgs.rsync}/bin/rsync -ahr --progress ${x} $DEST
+        '') cfg.backup)}
+
+        sudo umount /tmp/backup
+      fi
+
+      sudo rmdir /tmp/backup
+      
+    '')else {});
+
     desktopScripts = {
       inherit build activate switch rollback;
       inherit diff-hardware-configuration;
       inherit format install;
       inherit clean show-generations show-gc-roots;
+      inherit backup;
     };
 
     serverScripts = {
