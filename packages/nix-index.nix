@@ -1,6 +1,7 @@
 { pkgs, my
 , wrapPackage
-, nix-index-database
+, system
+, inputs
 }:
 	
 wrapPackage {
@@ -12,6 +13,6 @@ wrapPackage {
   ];
   
   files = {
-    "database/files" = nix-index-database;
+    "database/files" = inputs.nix-index-database.legacyPackages.${system}.database;
   };
 }

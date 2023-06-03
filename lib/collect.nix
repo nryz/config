@@ -1,14 +1,28 @@
-{ pkgs, lib }:
+{ lib }:
 
 with lib;
 rec {
-  collectHosts = dir:
+  collectConfigurationDirs = dir:
     let
-        mapHosts = dir:
+        mapDir = dir:
           mapAttrs' (n: v: 
             nameValuePair n (dir + "/${n}")
           ) ((filterAttrs (n: v: v == "directory"))(builtins.readDir dir));
-    in mapHosts dir;
+    in mapDir dir;
+
+  collectConfigurations = dir:
+    let
+      mapDir = dir:
+        mapAttrs' (n: v:
+          if v == "directory" then
+            nameValuePair n (dir + "/${n}/configuration.nix")
+          else
+            nameValuePair (removeSuffix ".nix" n) (dir + "/${n}")
+           ) (filterAttrs (n: v: 
+                  (v == "directory" && hasAttrByPath ["configuration.nix"] (builtins.readDir (dir + "/${n}")) || 
+                  (v == "regular"))
+              ) (builtins.readDir dir));
+    in mapDir dir;
 
   collectModules = dir:
     let

@@ -3,6 +3,7 @@
 , drivers ? {}
 , tty ? 1
 , font
+, wrapPackage
 }:
 
 # mostly taken from: https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/x11/xserver.nix
@@ -22,7 +23,7 @@ let
     pkgs.xorg.xf86inputevdev.out
   ] ++ (flatten (mapAttrsToList (n: v: v) drivers));
   
-  xserver = my.lib.wrapPackage {
+  xserver = wrapPackage {
     pkg = pkgs.xorg.xorgserver;
     name = "X";
     
@@ -166,7 +167,7 @@ let
   };
   
 
-in my.lib.wrapPackage {
+in wrapPackage {
   pkg = pkgs.xorg.xinit;
   name = "startx";
   

@@ -4,6 +4,7 @@
 , terminal
 , cursor
 , background
+, wrapPackage
 , drivers ? {}
 }:
 
@@ -29,7 +30,7 @@ let
   cursorPath = "${cursor.package}/share/icons/${cursor.name}/cursors/left_ptr";
   
   
-in my.lib.wrapPackage {
+in wrapPackage {
   pkg = pkg;
   name = "herbstluftwm";
   

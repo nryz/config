@@ -3,6 +3,7 @@
 , stdenvNoCC
 , variables ? {}
 , editor
+, wrapPackage
 }:
 
 let
@@ -26,7 +27,7 @@ let
   
   common = import ./common.nix { inherit my pkgs xdg variables editor; };
 
-in my.lib.wrapPackage {
+in wrapPackage {
   pkg = pkgs.zsh;
   name = "zsh";
 

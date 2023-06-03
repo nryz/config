@@ -1,9 +1,9 @@
-{ pkgs }:
+{ lib }:
 
 let
-  lib = pkgs.lib;
-  
-  options = import ./options.nix { inherit pkgs lib; };
-  collect = import ./collect.nix { inherit pkgs lib; };
-  packages = import ./packages.nix { inherit pkgs lib; };
-in  options // collect // packages
+  options = import ./options.nix { inherit lib; };
+  collect = import ./collect.nix { inherit lib; };
+  packages = import ./packages.nix { inherit lib; };
+  misc = import ./misc.nix { inherit lib; };
+
+in  options // collect // packages // misc

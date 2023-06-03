@@ -9,7 +9,7 @@ let
 	
 	pkg = pkgs.openssh;
 
-	ak = my.lib.wrapPackage {
+	ak = wrapPackage {
 	  pkg = pkgs.writeShellScriptBin "ak" ''
 		  eval $(ssh-agent) >/dev/null
 	    ${pkg}/bin/ssh-add -K

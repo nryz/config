@@ -9,7 +9,6 @@
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
     nur.url = "github:nix-community/NUR";
-    utils.url = "github:gytis-ivaskevicius/flake-utils-plus";
     impermanence.url = "github:nix-community/impermanence";
 
     yt-dlp.url = "github:yt-dlp/yt-dlp";
@@ -39,32 +38,74 @@
     nix-index-database.url = "github:Mic92/nix-index-database";
   };
 
-  outputs = inputs @ { self, utils, ... }: let 
-    system = "x86_64-linux";
-  	pkgs = import inputs.nixpkgs { 
-  		inherit system; 
+  outputs = inputs @ { self, nixpkgs, ... }: let 
+    lib = import ./lib { lib = nixpkgs.lib; };
 
-      config.allowUnfree = true;
+    nixosModules = (lib.collectModules ./profiles) // 
+      (nixpkgs.lib.mapAttrs (n: v: import v { inherit inputs; }) 
+      (lib.collectModules ./modules)); 
+      
+     modules = nixosModules // {
+        impermanence = inputs.impermanence.nixosModules.impermanence;
+        disko = inputs.disko.nixosModules.disko;
+     };
 
-      overlays = [  
-        (self: super: {
-          herbstluftwm = inputs.nixpkgs-stable.legacyPackages.${system}.herbstluftwm;
-        })
-        inputs.nur.overlay
-      ];
-  	};
-
-    lib = import ./lib { inherit pkgs; };
-  in {
-    inherit lib;
-
-    nixosConfigurations = import ./nixos { inherit self pkgs system; };
-    nixosModules = lib.collectModules ./nixos/profiles;
+    packages = nixpkgs.lib.genAttrs [ 
+        "x86_64-linux" 
+        "aarch64-linux" 
+      ] (system: import ./packages { inherit inputs system; } );
 
     templates = import ./templates;
-    packages.${system} = import ./packages { inherit self system pkgs; };
 
-    hosts = import ./scripts/hosts.nix { inherit self system pkgs; };
-    flake = import ./scripts/flake-app.nix { inherit self system pkgs; };
+    host-scripts = nixpkgs.lib.mapAttrs (n: v:
+        v.config.system.build.host-scripts
+      ) self.nixosConfigurations;
+
+    mkNixosConfiguration = args: nixpkgs.lib.nixosSystem (nixpkgs.lib.recursiveUpdate {
+        specialArgs = { nixosModules = modules; };
+      } args);
+
+    nixosConfigurations = {
+      abyss = mkNixosConfiguration {
+        system = "x86_64-linux";
+        modules = [ ./hosts/abyss/configuration.nix ];
+      };
+
+      telas = mkNixosConfiguration {
+        system =  "aarch64-linux";     
+        modules = [ ./hosts/telas/configuration.nix  ];
+      };
+
+      iso-x86_64-linux = nixpkgs.lib.nixosSystem {
+        system =  "x86_64-linux";     
+        modules = [ ./installers/iso-x86_64-linux.nix ];
+
+        specialArgs = {
+          nixosModules = modules;
+          outPath = self.outPath;
+          additionalStorePaths = [
+            self.nixosConfigurations.abyss.config.system.build.toplevel
+          ];
+        };
+      };
+
+      sd-rpi4 = mkNixosConfiguration {
+        system =  "aarch64-linux";     
+        modules = [ ./installers/sd-rpi4.nix ];
+
+        specialArgs = {
+          outPath = self.outPath;
+          additionalStorePaths = [
+            self.nixosConfigurations.telas.config.system.build.toplevel
+          ];
+        };
+      };
+    };
+
+  in {
+    inherit lib templates packages;
+    inherit nixosConfigurations nixosModules;
+
+    hosts = host-scripts;
   };
 }

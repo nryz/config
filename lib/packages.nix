@@ -1,14 +1,15 @@
-{ pkgs, lib }:
+{ lib }:
 
 with lib;
 {
-	mkDefPkg = args: rec {
-		inherit (args) pkg desktop;
+	mkDefPkg = pkg: desktop: rec {
+		inherit pkg desktop;
 		name = pkg.meta.mainProgram;
 		bin = "${pkg}/bin/${name}";
 	};
 
   wrapPackage = {
+    pkgs,
     shell ? false,
     pkg,
     name,
