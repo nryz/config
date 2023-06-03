@@ -55,17 +55,22 @@
         "aarch64-linux" 
       ] (system: import ./packages { inherit inputs system; } );
 
+    devShells = nixpkgs.lib.genAttrs [
+        "x86_64-linux" 
+      ] (system: import ./devshells { inherit inputs system; } );
+
     templates = import ./templates;
 
     host-scripts = nixpkgs.lib.mapAttrs (n: v:
         v.config.system.build.host-scripts
       ) self.nixosConfigurations;
 
-    mkNixosConfiguration = args: nixpkgs.lib.nixosSystem (nixpkgs.lib.recursiveUpdate {
-        specialArgs = { nixosModules = modules; };
-      } args);
-
-    nixosConfigurations = {
+    nixosConfigurations = let
+      mkNixosConfiguration = args: 
+        nixpkgs.lib.nixosSystem (nixpkgs.lib.recursiveUpdate {
+          specialArgs = { nixosModules = modules; };
+        } args);
+    in {
       abyss = mkNixosConfiguration {
         system = "x86_64-linux";
         modules = [ ./hosts/abyss/configuration.nix ];
@@ -76,13 +81,12 @@
         modules = [ ./hosts/telas/configuration.nix  ];
       };
 
-      iso-x86_64-linux = nixpkgs.lib.nixosSystem {
+      iso-x86_64-linux = mkNixosConfiguration {
         system =  "x86_64-linux";     
         modules = [ ./installers/iso-x86_64-linux.nix ];
 
         specialArgs = {
-          nixosModules = modules;
-          outPath = self.outPath;
+          inherit (self) outPath;
           additionalStorePaths = [
             self.nixosConfigurations.abyss.config.system.build.toplevel
           ];
@@ -94,7 +98,7 @@
         modules = [ ./installers/sd-rpi4.nix ];
 
         specialArgs = {
-          outPath = self.outPath;
+          inherit (self) outPath;
           additionalStorePaths = [
             self.nixosConfigurations.telas.config.system.build.toplevel
           ];
@@ -103,7 +107,7 @@
     };
 
   in {
-    inherit lib templates packages;
+    inherit lib templates packages devShells;
     inherit nixosConfigurations nixosModules;
 
     hosts = host-scripts;
