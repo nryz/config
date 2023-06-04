@@ -36,7 +36,7 @@ in
       ];
     };
 
-    users.users.root.hashedPassword = lib.mkDefault "!";
+    users.users.root.hashedPassword = "!";
 
     services.resolved.enable = true;
 
