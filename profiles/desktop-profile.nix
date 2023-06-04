@@ -37,18 +37,18 @@
     ];
 
     boot.kernelParams = [ 
-      "quiet"
-      "splash"
-      "rd.systemd.show_status=false"
-      "rd.udev.log_level=3"
-      "udev.log_priority=3"
-      "vt.global_cursor_default=0"
+      # "quiet"
+      # "splash"
+      # "rd.systemd.show_status=false"
+      # "rd.udev.log_level=3"
+      # "udev.log_priority=3"
+      # "vt.global_cursor_default=0"
     ];
 
-    boot.consoleLogLevel = 0;
-    boot.initrd.verbose = false;
-    boot.plymouth.enable = true;
-    boot.plymouth.theme = "text";
+    # boot.consoleLogLevel = 0;
+    # boot.initrd.verbose = false;
+    # boot.plymouth.enable = true;
+    # boot.plymouth.theme = "text";
 
     boot.loader.timeout = 1;
     boot.loader.systemd-boot = {
