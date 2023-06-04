@@ -1,8 +1,14 @@
-{ nixosModules, self, config, options, pkgs, lib, ... }:
-let
-  stateVersion = "21.11";
-in
 {
+  nixosModules,
+  self,
+  config,
+  options,
+  pkgs,
+  lib,
+  ...
+}: let
+  stateVersion = "21.11";
+in {
   imports = [
     nixosModules.nix-inputs
     nixosModules.disko
@@ -25,7 +31,7 @@ in
     users.mutableUsers = lib.mkDefault false;
 
     users.users.nr = {
-      extraGroups = [ "wheel" ];
+      extraGroups = ["wheel"];
       isNormalUser = true;
       uid = 1000;
 

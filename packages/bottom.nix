@@ -1,13 +1,13 @@
-{ pkgs
-, my
-, wrapPackage
-, base16
+{
+  pkgs,
+  my,
+  wrapPackage,
+  base16,
 }:
-
 wrapPackage {
   pkg = pkgs.bottom;
   name = "btm";
-  
+
   flags = [
     "--config ${placeholder "out"}/config/bottom.toml"
   ];
@@ -22,7 +22,7 @@ wrapPackage {
       selected_text_color="${base00}"
       selected_bg_color="${base09}"
       table_header_color="${base0D}"
-      
+
       # Layout
       [[row]]
         ratio=30
@@ -44,7 +44,7 @@ wrapPackage {
         [[row.child]]
           type="proc"
           default=true
-          
+
       [mount_filter]
       is_list_ignored = true
       regex = true

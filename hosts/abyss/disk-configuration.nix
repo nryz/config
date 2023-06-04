@@ -1,24 +1,27 @@
-{ config, lib, ... }: let
-
+{
+  config,
+  lib,
+  ...
+}: let
   post-mount-script = ''
-      if ! [ -f /mnt/nix/passwords ]; then
-        sudo mkdir /mnt/nix/passwords
+    if ! [ -f /mnt/nix/passwords ]; then
+      sudo mkdir /mnt/nix/passwords
+    fi
+
+    ${lib.concatStrings (lib.mapAttrsToList (user: userValue: ''
+      if ! [ -f /mnt/nix/passwords/${user} ]; then
+        echo "Input password for user ${user}"
+        mkpasswd -m SHA-512 | sudo tee /mnt/nix/passwords/${user} > /dev/null
       fi
+    '') (lib.filterAttrs (n: v: v.isNormalUser) config.users.users))}
 
-      ${lib.concatStrings ( lib.mapAttrsToList (user: userValue: ''
-        if ! [ -f /mnt/nix/passwords/${user} ]; then
-          echo "Input password for user ${user}"
-          mkpasswd -m SHA-512 | sudo tee /mnt/nix/passwords/${user} > /dev/null
-        fi
-      '') (lib.filterAttrs (n: v: v.isNormalUser) config.users.users))}
-
-      ${lib.concatStrings ( lib.mapAttrsToList (path: pathValue: ''
+    ${lib.concatStrings (lib.mapAttrsToList (path: pathValue: ''
         if ! [ -d /mnt${path} ]; then
           sudo mkdir /mnt${path}
         fi
-      '') config.environment.persistence)}
+      '')
+      config.environment.persistence)}
   '';
-
 in {
   fileSystems."/nix".neededForBoot = true;
 
@@ -65,7 +68,7 @@ in {
     devices.nodev = {
       "/" = {
         fsType = "tmpfs";
-        mountOptions = [ "defaults" "size=3G" "mode=755" ];
+        mountOptions = ["defaults" "size=3G" "mode=755"];
       };
     };
   };

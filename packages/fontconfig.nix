@@ -1,6 +1,9 @@
-{ lib, pkgs, my 
-, font}:
-
+{
+  lib,
+  pkgs,
+  my,
+  font,
+}:
 pkgs.writeText "fonts.conf" ''
   <?xml version='1.0'?>
   <!DOCTYPE fontconfig SYSTEM 'urn:fontconfig:fonts.dtd'>

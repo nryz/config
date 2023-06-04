@@ -1,5 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  ...
+}:
 pkgs.mkShell {
-  buildInputs = with pkgs; [ cargo rustc rustfmt pre-commit rustPackages.clippy rust-analyzer];
+  buildInputs = with pkgs; [cargo rustc rustfmt pre-commit rustPackages.clippy rust-analyzer];
   RUST_SRC_PATH = pkgs.rustPlatform.rustLibSrc;
 }

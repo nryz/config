@@ -1,14 +1,15 @@
-{ pkgs, my
-, inputs
-, terminal
-, wrapPackage
+{
+  pkgs,
+  my,
+  inputs,
+  terminal,
+  wrapPackage,
 }:
-
 wrapPackage {
-  pkg = pkgs.picom.overrideAttrs(_: { src = inputs.picom-ibhagwan; });
+  pkg = pkgs.picom.overrideAttrs (_: {src = inputs.picom-ibhagwan;});
 
   name = "picom";
-  
+
   outputs.service = {
     files = {
       "etc/systemd/user/picom.service" = ''
@@ -27,11 +28,11 @@ wrapPackage {
     };
   };
 
-  flags = [ 
+  flags = [
     "--config ${placeholder "out"}/config/picom.conf"
     "--experimental-backends"
   ];
-  
+
   files = {
     "config/picom.conf" = ''
       active-opacity = 1.0;

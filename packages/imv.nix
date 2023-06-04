@@ -1,13 +1,14 @@
-{ pkgs, my
-, base16
-, wrapPackage
+{
+  pkgs,
+  my,
+  base16,
+  wrapPackage,
 }:
-
 wrapPackage {
   pkg = pkgs.imv;
   name = "imv";
 
-  vars = { 
+  vars = {
     "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
   };
 

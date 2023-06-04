@@ -1,6 +1,11 @@
-{ config, options, pkgs, lib, my, ... }:
-
 {
+  config,
+  options,
+  pkgs,
+  lib,
+  my,
+  ...
+}: {
   imports = [
     ./graphical-profile.nix
     ./core-profile.nix
@@ -36,7 +41,7 @@
       ncdu
     ];
 
-    boot.kernelParams = [ 
+    boot.kernelParams = [
       # "quiet"
       # "splash"
       # "rd.systemd.show_status=false"
@@ -60,7 +65,7 @@
     boot.loader.efi.canTouchEfiVariables = true;
 
     hardware.bluetooth.enable = config.profile.bluetooth.enable;
-    hardware.bluetooth.disabledPlugins = [ "sap" ];
+    hardware.bluetooth.disabledPlugins = ["sap"];
     hardware.bluetooth.settings.General.Enable = "Source,Sink,Media,Socket";
 
     programs.nm-applet.enable = true;
@@ -70,14 +75,14 @@
     services.tlp.enable = true;
     services.tlp.settings.USB_AUTOSUSPEND = 0;
     services.blueman.enable = config.profile.bluetooth.enable;
-    services.dbus.packages = lib.optionals (config.profile.bluetooth.enable) [ pkgs.blueman ];
+    services.dbus.packages = lib.optionals (config.profile.bluetooth.enable) [pkgs.blueman];
     services.fstrim.enable = true;
 
     sound.enable = true;
 
     hardware.pulseaudio.enable = true;
     hardware.pulseaudio.extraConfig = ''
-       load-module module-switch-on-connect
+      load-module module-switch-on-connect
     '';
     hardware.enableAllFirmware = true;
     hardware.cpu.intel.updateMicrocode = true;

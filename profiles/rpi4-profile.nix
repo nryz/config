@@ -1,6 +1,11 @@
-{ config, options, pkgs, lib, my, ... }:
-
 {
+  config,
+  options,
+  pkgs,
+  lib,
+  my,
+  ...
+}: {
   imports = [
     ./core-profile.nix
   ];
@@ -13,7 +18,7 @@
     kernelPackages = pkgs.linuxPackages_rpi4;
     tmp.useTmpfs = true;
 
-    initrd.availableKernelModules = [ "usbhid" "usb_storage" ];
+    initrd.availableKernelModules = ["usbhid" "usb_storage"];
 
     # ttyAMA0 is the serial console broken out to the GPIO
     kernelParams = [
@@ -22,8 +27,8 @@
       "console=tty1"
       # A lot GUI programs need this, nearly all wayland applications
       "cma=128M"
-    ]; 
-   };
+    ];
+  };
 
   hardware.enableRedistributableFirmware = true;
 }

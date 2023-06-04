@@ -1,6 +1,12 @@
-{ additionalStorePaths, config, nixosModules, pkgs, lib, modulesPath, ...}:
-
 {
+  additionalStorePaths,
+  config,
+  nixosModules,
+  pkgs,
+  lib,
+  modulesPath,
+  ...
+}: {
   imports = [
     nixosModules.core-profile
     (modulesPath + "/installer/sd-card/sd-image-aarch64.nix")
@@ -16,7 +22,7 @@
   # less privileged nixos user
   users.users.nixos = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" ];
+    extraGroups = ["wheel" "networkmanager" "video"];
     initialHashedPassword = "";
   };
 

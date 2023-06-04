@@ -1,7 +1,11 @@
-{ inputs, ... }: let
-
-in ({ config, options, pkgs, lib, ... }:
-{
+{inputs, ...}: let
+in ({
+  config,
+  options,
+  pkgs,
+  lib,
+  ...
+}: {
   options = {
     mypkgs = lib.mkOption {
       type = lib.types.attrs;
@@ -13,14 +17,13 @@ in ({ config, options, pkgs, lib, ... }:
       default = {};
     };
   };
-  
+
   config = {
-    mypkgs = (import ../packages { 
-        inherit inputs;
-        system = config.nixpkgs.system; 
-      });
+    mypkgs = import ../packages {
+      inherit inputs;
+      system = config.nixpkgs.system;
+    };
 
-    mylib = import ../lib { inherit lib; };
+    mylib = import ../lib {inherit lib;};
   };
-
 })

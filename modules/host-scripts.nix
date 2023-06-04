@@ -1,16 +1,18 @@
-{ inputs, ... }: let
-
-in ({ config, options, pkgs, lib, ... }:
-
-let
+{inputs, ...}: let
+in ({
+  config,
+  options,
+  pkgs,
+  lib,
+  ...
+}: let
   cfg = config.host-scripts;
 
   mkScript = name: script: (pkgs.writeShellScriptBin name script);
-in
-{
+in {
   options.host-scripts = with lib; {
     type = mkOption {
-      type = types.enum [ 
+      type = types.enum [
         "desktop"
         "server"
         "isoImage"
@@ -27,7 +29,7 @@ in
   };
 
   config.system.build.host-scripts = let
-   check-flake = ''
+    check-flake = ''
       if ! [ -f ./flake.nix ]; then
         echo "No flake.nix in this directory."
         exit 1
@@ -50,7 +52,7 @@ in
 
     build = mkScript "build-script" ''
       ${check-flake}
-  
+
       if nix build ${config.system.build.toplevel}; then
         if [ $(hostname) == "${config.networking.hostName}" ]; then
           ${pkgs.nvd}/bin/nvd diff /run/current-system result
@@ -107,7 +109,7 @@ in
       ${check-flake}
       ${check-ISO}
 
-  
+
       sudo nixos-install --flake .#${config.networking.hostName} --no-root-passwd
     '';
 
@@ -131,31 +133,36 @@ in
       find -H /nix/var/nix/gcroots/auto -type l | xargs -I {} sh -c 'readlink {}; realpath {}; echo'
     '';
 
-    backup = (if (cfg ? backup) then ( mkScript "backup-script" ''
-      ${check-host}
+    backup =
+      if (cfg ? backup)
+      then
+        (mkScript "backup-script" ''
+          ${check-host}
 
-      if [ -z "$1" ]; then
-        echo "the first argument must be the device to backup to."
-        exit 1;
-      fi
+          if [ -z "$1" ]; then
+            echo "the first argument must be the device to backup to."
+            exit 1;
+          fi
 
-      sudo mkdir /tmp/backup
+          sudo mkdir /tmp/backup
 
-      if sudo mount $1 /tmp/backup; then
+          if sudo mount $1 /tmp/backup; then
 
-        DEST=/tmp/backup/$(date +"%Y-%m-%d")
-        sudo mkdir $DEST
+            DEST=/tmp/backup/$(date +"%Y-%m-%d")
+            sudo mkdir $DEST
 
-        ${lib.concatStrings (builtins.map (x: ''
-          sudo ${pkgs.rsync}/bin/rsync -ahr --progress ${x} $DEST
-        '') cfg.backup)}
+            ${lib.concatStrings (builtins.map (x: ''
+              sudo ${pkgs.rsync}/bin/rsync -ahr --progress ${x} $DEST
+            '')
+            cfg.backup)}
 
-        sudo umount /tmp/backup
-      fi
+            sudo umount /tmp/backup
+          fi
 
-      sudo rmdir /tmp/backup
-      
-    '') else {});
+          sudo rmdir /tmp/backup
+
+        '')
+      else {};
 
     desktopScripts = {
       inherit build activate switch rollback;
@@ -192,41 +199,46 @@ in
       '';
     };
 
-    isoImageScripts = {
-      build = mkScript "build-script" ''
-        ${check-flake}
+    isoImageScripts =
+      {
+        build = mkScript "build-script" ''
+          ${check-flake}
 
-        nix build ${config.system.build.isoImage}
-      '';
+          nix build ${config.system.build.isoImage}
+        '';
 
+        flash = mkScript "flash-script" ''
+          ${check-flake}
 
-      flash = mkScript "flash-script" ''
-        ${check-flake}
-
-        if [ -z "$1" ]; then
-          echo "the first argument must be the device to flash to."
-        else
-          if [ -f ./result/iso/${config.isoImage.isoName} ]; then
-            sudo ${pkgs.coreutils}/bin/dd if=result/iso/${config.isoImage.isoName} of=$1 bs=1M status=progress
+          if [ -z "$1" ]; then
+            echo "the first argument must be the device to flash to."
           else
-            echo "build iso first"
+            if [ -f ./result/iso/${config.isoImage.isoName} ]; then
+              sudo ${pkgs.coreutils}/bin/dd if=result/iso/${config.isoImage.isoName} of=$1 bs=1M status=progress
+            else
+              echo "build iso first"
+            fi
           fi
-        fi
-      '';
-    } // (if (config.nixpkgs.system == "x86_64-linux") then {
-      test-vm = mkScript "test-script" ''
-        ${check-flake}
+        '';
+      }
+      // (
+        if (config.nixpkgs.system == "x86_64-linux")
+        then {
+          test-vm = mkScript "test-script" ''
+            ${check-flake}
 
-        if [ -f ./result/iso/${config.isoImage.isoName} ]; then
-          ${pkgs.qemu}/bin/qemu-system-x86_64 -enable-kvm -m 1024 -cdrom result/iso/${config.isoImage.isoName}
-        else
-          echo "build iso first"
-        fi
-      '';
-    } else {});
+            if [ -f ./result/iso/${config.isoImage.isoName} ]; then
+              ${pkgs.qemu}/bin/qemu-system-x86_64 -enable-kvm -m 1024 -cdrom result/iso/${config.isoImage.isoName}
+            else
+              echo "build iso first"
+            fi
+          '';
+        }
+        else {}
+      );
 
     sdImageScripts = {
-       build = mkScript "build-script" ''
+      build = mkScript "build-script" ''
         nix build ${config.system.build.sdImage}
       '';
 
@@ -244,10 +256,14 @@ in
         fi
       '';
     };
-    
-  in if cfg.type == "desktop" then desktopScripts
-     else if cfg.type == "server" then serverScripts
-     else if cfg.type == "isoImage" then  isoImageScripts 
-     else if cfg.type == "sdImage" then sdImageScripts
-     else {};
-}) 
+  in
+    if cfg.type == "desktop"
+    then desktopScripts
+    else if cfg.type == "server"
+    then serverScripts
+    else if cfg.type == "isoImage"
+    then isoImageScripts
+    else if cfg.type == "sdImage"
+    then sdImageScripts
+    else {};
+})

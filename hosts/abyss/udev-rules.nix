@@ -1,7 +1,12 @@
-{ config, options, pkgs, lib, my, ... }: 
-
-with lib;
 {
+  config,
+  options,
+  pkgs,
+  lib,
+  my,
+  ...
+}:
+with lib; {
   services.udev.packages = with pkgs; [
     (pkgs.writeTextFile {
       name = "50-qmk.rules";
@@ -102,5 +107,5 @@ with lib;
 
       destination = "/etc/udev/rules.d/50-wally.rules";
     })
-    ];
+  ];
 }

@@ -1,6 +1,13 @@
-{ additionalStorePaths, outPath, nixosModules, config, pkgs, lib, modulesPath, ...}:
-
 {
+  additionalStorePaths,
+  outPath,
+  nixosModules,
+  config,
+  pkgs,
+  lib,
+  modulesPath,
+  ...
+}: {
   imports = [
     nixosModules.core-profile
     (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
@@ -12,11 +19,13 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  isoImage.storeContents = additionalStorePaths; 
-  isoImage.contents = [ {
-    source = outPath;
-    target = "config";
-  } ];
+  isoImage.storeContents = additionalStorePaths;
+  isoImage.contents = [
+    {
+      source = outPath;
+      target = "config";
+    }
+  ];
 
   boot.postBootCommands = ''
     mkdir /home/nixos/config
