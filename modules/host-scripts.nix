@@ -4,6 +4,8 @@ in ({ config, options, pkgs, lib, ... }:
 
 let
   cfg = config.host-scripts;
+
+  mkScript = name: script: (pkgs.writeShellScriptBin name script);
 in
 {
   options.host-scripts = with lib; {
@@ -46,15 +48,17 @@ in
       fi
     '';
 
-    build = (pkgs.writeShellScriptBin "nixos-build" ''
+    build = mkScript "build-script" ''
       ${check-flake}
   
       if nix build ${config.system.build.toplevel}; then
-        ${pkgs.nvd}/bin/nvd diff /run/current-system result
+        if [ $(hostname) == "${config.networking.hostName}" ]; then
+          ${pkgs.nvd}/bin/nvd diff /run/current-system result
+        fi
       fi
-    '');
+    '';
 
-    activate = (pkgs.writeShellScriptBin "nixos-activate" ''
+    activate = mkScript "activate-script" ''
       ${check-flake}
       ${check-host}
 
@@ -62,9 +66,9 @@ in
         sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
         sudo result/bin/switch-to-configuration switch
       fi
-    '');
+    '';
 
-    switch = (pkgs.writeShellScriptBin "nixos-switch" ''
+    switch = mkScript "switch-script" ''
       ${check-flake}
       ${check-host}
 
@@ -73,16 +77,16 @@ in
         sudo nix-env -p /nix/var/nix/profiles/system --set $(readlink result)
         sudo result/bin/switch-to-configuration switch
       fi
-    '');
+    '';
 
-    diff-hardware-configuration = (pkgs.writeShellScriptBin "nixos-diff-hardware-configuration" ''
+    diff-hardware-configuration = mkScript "diff-hardware-configuration-script" ''
       ${check-flake}
       ${check-host}
 
       ${pkgs.diffutils}/bin/diff --color ./hosts/${config.networking.hostName}/hardware-configuration.nix <(nixos-generate-config --no-filesystems --show-hardware-config 2> /dev/null)
-    '');
+    '';
 
-    format = (pkgs.writeShellScriptBin "nixos-format" ''
+    format = mkScript "format-script" ''
       ${check-flake}
       ${check-ISO}
 
@@ -97,53 +101,37 @@ in
       nix build ${config.system.build.mountScript}
       sudo ./result
 
-    '');
+    '';
 
-    install = (pkgs.writeShellScriptBin "nixos-install" ''
+    install = mkScript "install-script" ''
       ${check-flake}
       ${check-ISO}
 
-      if ! [ -f /mnt/nix/passwords ]; then
-        sudo mkdir /mnt/nix/passwords
-      fi
-
-      ${lib.concatStrings ( lib.mapAttrsToList (user: userValue: ''
-        if ! [ -f /mnt/nix/passwords/${user} ]; then
-          echo "Input password for user ${user}"
-          mkpasswd -m SHA-512 | sudo tee /mnt/nix/passwords/${user} > /dev/null
-        fi
-      '') (lib.filterAttrs (n: v: v.isNormalUser) config.users.users))}
-
-      ${lib.concatStrings ( lib.mapAttrsToList (path: pathValue: ''
-        if ! [ -d /mnt${path} ]; then
-          sudo mkdir /mnt${path}
-        fi
-      '') config.environment.persistence)}
   
       sudo nixos-install --flake .#${config.networking.hostName} --no-root-passwd
-    '');
+    '';
 
-    rollback = (pkgs.writeShellScriptBin "nixos-rollback" ''
+    rollback = mkScript "rollback-script" ''
       ${check-flake}
       ${check-host}
 
       sudo nixos-rebuild switch --flake .#${config.networking.hostName} --rollback
-    '');
+    '';
 
-    clean = (pkgs.writeShellScriptBin "nixos-clean" ''
+    clean = mkScript "clean-script" ''
       sudo nix-collect-garbage -d
       sudo nix-store --optimise
-    '');
+    '';
 
-    show-generations = (pkgs.writeShellScriptBin "nixos-show-generations" ''
+    show-generations = mkScript "nixos-show-generations-script" ''
       sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-    '');
+    '';
 
-    show-gc-roots = (pkgs.writeShellScriptBin "nixos-gc-roots" ''
+    show-gc-roots = mkScript "nixos-gc-roots-script" ''
       find -H /nix/var/nix/gcroots/auto -type l | xargs -I {} sh -c 'readlink {}; realpath {}; echo'
-    '');
+    '';
 
-    backup = (if (cfg ? backup) then ( pkgs.writeShellScriptBin "backup" ''
+    backup = (if (cfg ? backup) then ( mkScript "backup-script" ''
       ${check-host}
 
       if [ -z "$1" ]; then
@@ -167,7 +155,7 @@ in
 
       sudo rmdir /tmp/backup
       
-    '')else {});
+    '') else {});
 
     desktopScripts = {
       inherit build activate switch rollback;
@@ -179,24 +167,40 @@ in
 
     serverScripts = {
       inherit build;
-      inherit diff-hardware-configuration;
-      inherit format install;
-      inherit clean show-generations show-gc-roots;
 
-      # activate = activate-remote;
-      # switch = switch-remote;
-      # rollback = rollback-remote;
+      switch = mkScript "switch-script" ''
+        set -e
+
+        ${check-flake}
+
+        outpath=${config.system.build.toplevel.outPath}
+        hostname=${config.networking.hostName}
+
+        if [ "$1" ]; then
+          hostname=$1
+        fi
+
+        if sudo nix build ${config.system.build.toplevel}; then
+
+          echo "Copying system closure to target"
+          nix-copy-closure --to $hostname $outpath
+
+          echo "Activating system closure on target"
+          ssh -t $hostname sudo nix-env -p /nix/var/nix/profiles/system --set $outpath
+          ssh -t $hostname sudo $outpath/bin/switch-to-configuration switch
+        fi
+      '';
     };
 
     isoImageScripts = {
-      build = (pkgs.writeShellScriptBin "iso-build" ''
+      build = mkScript "build-script" ''
         ${check-flake}
 
         nix build ${config.system.build.isoImage}
-      '');
+      '';
 
 
-      flash = (pkgs.writeShellScriptBin "iso-flash" ''
+      flash = mkScript "flash-script" ''
         ${check-flake}
 
         if [ -z "$1" ]; then
@@ -208,9 +212,9 @@ in
             echo "build iso first"
           fi
         fi
-      '');
-    } // (lib.mkIf (config.nixpkgs.system == "x86_64-linux") {
-      test-vm = (pkgs.writeShellScriptBin "iso-test" ''
+      '';
+    } // (if (config.nixpkgs.system == "x86_64-linux") then {
+      test-vm = mkScript "test-script" ''
         ${check-flake}
 
         if [ -f ./result/iso/${config.isoImage.isoName} ]; then
@@ -218,15 +222,15 @@ in
         else
           echo "build iso first"
         fi
-      '');
-    });
+      '';
+    } else {});
 
     sdImageScripts = {
-       build = (pkgs.writeShellScriptBin "sd-image-build" ''
+       build = mkScript "build-script" ''
         nix build ${config.system.build.sdImage}
-      '');
+      '';
 
-      flash = (pkgs.writeShellScriptBin "sd-image-flash" ''
+      flash = mkScript "flash-script" ''
         ${check-flake}
 
         if [ -z "$1" ]; then
@@ -238,12 +242,12 @@ in
             echo "build image first"
           fi
         fi
-      '');
+      '';
     };
     
   in if cfg.type == "desktop" then desktopScripts
      else if cfg.type == "server" then serverScripts
-     else if cfg.type == "iso-image" then  isoImageScripts 
-     else if cfg.type == "sd-image" then sdImageScripts
+     else if cfg.type == "isoImage" then  isoImageScripts 
+     else if cfg.type == "sdImage" then sdImageScripts
      else {};
 }) 

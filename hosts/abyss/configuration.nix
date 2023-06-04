@@ -9,6 +9,8 @@
     ./udev-rules.nix 
   ];
 
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   networking.hostName = "abyss";
   
   time.timeZone = "Europe/London";
@@ -20,6 +22,7 @@
   host-scripts.backup = [
     "/home/nr/dev"
     "/home/nr/media"
+    "/etc/nix/secret-keys"
   ];
 
   services.greetd = let
@@ -47,6 +50,7 @@
         "/var/lib/bluetooth"
         "/etc/NetworkManager"
         "/etc/ssh" 
+        "/etc/nix/secret-keys"
       ];
 
       files = [ 
@@ -88,6 +92,8 @@
   environment.pathsToLink = [ "/share/zsh" ];
 
   users.users.nr = {
+    passwordFile = "/nix/passwords/nr";
+
     shell = (config.mypkgs.zsh.override {
       variables."CARGO_HOME" = "$XDG_CONFIG_HOME/cargo";
     });

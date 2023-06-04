@@ -10,10 +10,6 @@
 
   boot.consoleLogLevel = 0;
 
-  nixpkgs.config.allowUnsupportedSystem = true;
-  nixpkgs.hostPlatform.system = "aarch64-linux";
-  nixpkgs.buildPlatform = "x86_64-linux";
-
   sdImage.storePaths = additionalStorePaths;
   sdImage.compressImage = false;
 

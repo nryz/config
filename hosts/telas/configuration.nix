@@ -1,7 +1,7 @@
 { nixosModules, config, lib, pkgs, ... }: 
 
 {
-  imports = [ 
+  imports = [
     nixosModules.rpi4-profile
     ./hardware-configuration.nix
     ./disk-configuration.nix
@@ -13,6 +13,7 @@
 
   host-scripts.type = "server";
 
+  users.mutableUsers = true;
   users.users.nr = {
     shell = config.mypkgs.zsh;
 

@@ -78,7 +78,7 @@
 
       telas = mkNixosConfiguration {
         system =  "aarch64-linux";     
-        modules = [ ./hosts/telas/configuration.nix  ];
+        modules = [ ./hosts/telas/configuration.nix ];
       };
 
       iso-x86_64-linux = mkNixosConfiguration {
