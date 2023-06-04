@@ -37,7 +37,7 @@ let
 		videoPlayer = mkDefPkg mypkgs.imv "mpv.desktop";
 		pdfViewer = mkDefPkg mypkgs.zathura "org.pwmt.zathura.desktop";
 	
-		background = ../data/backgrounds/17;
+		backgrounds = ../data/backgrounds;
 
 		cursor.package = nixpkgs.vanilla-dmz;
 		cursor.name = "Vanilla-DMZ";

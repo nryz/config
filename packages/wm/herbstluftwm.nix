@@ -3,7 +3,7 @@
 , font
 , terminal
 , cursor
-, background
+, backgrounds
 , wrapPackage
 , drivers ? {}
 }:
@@ -60,7 +60,7 @@ in wrapPackage {
       # Startup
       kill $(pidof picom)
       ${my.pkgs.picom}/bin/picom -b
-      ${pkgs.feh}/bin/feh --bg-fill --no-fehbg ${background} &
+      ${pkgs.feh}/bin/feh --bg-fill --no-fehbg --randomize ${backgrounds} &
       ${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${cursorPath} ${toString cursor.size}
     
 

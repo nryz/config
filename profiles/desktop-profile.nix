@@ -33,6 +33,7 @@
       inetutils
       pavucontrol
       pamixer
+      ncdu
     ];
 
     boot.kernelParams = [ 
