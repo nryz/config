@@ -45,6 +45,10 @@
   }: let
     lib = import ./lib {lib = nixpkgs.lib;};
 
+    formatter = nixpkgs.lib.genAttrs [
+      "x86_64-linux"
+    ] (system: nixpkgs.legacyPackages.${system}.alejandra);
+
     nixosModules =
       (lib.collectModules ./profiles)
       // (nixpkgs.lib.mapAttrs (n: v: import v {inherit inputs;})
@@ -119,8 +123,7 @@
   in {
     inherit lib templates packages devShells;
     inherit nixosConfigurations nixosModules;
-
-    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+    inherit formatter;
 
     hosts = host-scripts;
   };

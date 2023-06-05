@@ -58,6 +58,18 @@ in
         line-number = "relative"
         mouse = false
 
+        [editor.whitespace.render]
+        space = "none"
+        tab = "all"
+        newline = "all"
+        nbsp = "all"
+        
+
+        [editor.indent-guides]
+        render = true
+        skip-levels = 0
+        
+
         [editor.soft-wrap]
         enable = true
 
