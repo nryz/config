@@ -117,7 +117,6 @@
         imv
         gucharmap
         thunar
-        filezilla
         lxappearance
         nix-index
         gitui
@@ -132,6 +131,7 @@
         neofetch
         parsec-bin
         tor-browser-bundle-bin
+        termscp
       ]);
   };
 }
