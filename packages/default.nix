@@ -102,7 +102,6 @@
       qutebrowser = callPackage ./qutebrowser.nix {};
       rofi = callPackage ./rofi.nix {};
       startx = callPackage ./wm/startx.nix {};
-      ssh = callPackage ./ssh.nix {};
       theme = callPackage ./theme.nix {};
       unclutter = callPackage ./unclutter.nix {};
       yambar = callPackage ./wm/yambar.nix {};

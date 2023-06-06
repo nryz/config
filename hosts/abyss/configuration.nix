@@ -112,7 +112,6 @@
         qutebrowser
         zathura
         bottom
-        ssh
         mpv
         joshuto
         imv
@@ -132,6 +131,7 @@
         fontpreview
         neofetch
         parsec-bin
+        tor-browser-bundle-bin
       ]);
   };
 }

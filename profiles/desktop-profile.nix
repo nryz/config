@@ -23,19 +23,12 @@
 
     environment.systemPackages = with pkgs; [
       xdg-utils
-      nix-prefetch-scripts
-      nixos-option
       lshw
       usbutils
       xclip
       wget
       moreutils
       nix-tree
-      networkmanager
-      sshfs-fuse
-      lftp
-      ncftp
-      inetutils
       pavucontrol
       pamixer
       ncdu
