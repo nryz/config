@@ -42,6 +42,12 @@ in {
       ];
     };
 
+    programs.ssh = {
+      startAgent = true;
+      agentTimeout = "1h";
+      askPassword = "${pkgs.ssh-askpass-fullscreen}/bin/ssh-askpass-fullscreen";
+    };
+
     users.users.root.hashedPassword = "!";
 
     services.resolved.enable = true;
