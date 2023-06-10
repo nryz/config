@@ -8,16 +8,18 @@
 
   yt-dlp = pkgs.yt-dlp.overrideAttrs (_: {src = inputs.yt-dlp;});
 
-  scripts = with pkgs.mpvScripts; [
-    mpv-playlistmanager
-
-    #TODO: these don't work currently fix
-    #sponsorblock
-    #youtube-quality
-  ];
-
   luaEnv = pkgs.mpv-unwrapped.luaEnv;
   luaVersion = pkgs.mpv-unwrapped.lua.luaversion;
+
+   
+  quality-menu = pkgs.fetchFromGitHub {
+    owner = "christoph-heinrich";
+    repo = "mpv-quality-menu";
+
+    rev = "9bb4d87681b9765a8035158c9076f4a37b6f7b07";
+    sha256 = "sha256-93WoTeX61xzbjx/tgBgUVuwyR9MkAUzCfVSrbAC7Ddc=";
+  };
+
 in
   wrapPackage {
     pkg = pkgs.mpv;
@@ -37,13 +39,15 @@ in
       "MPV_HOME" = "${placeholder "out"}/config";
     };
 
-    files =
-      builtins.listToAttrs (map (x: {
-          name = "config/scripts/${x.scriptName}";
-          value = "${x}/share/mpv/scripts/${x.scriptName}";
-        })
-        scripts)
-      // {
+    links = with pkgs.mpvScripts; {
+      "config/scripts/${sponsorblock.scriptName}" = 
+        "${sponsorblock}/share/mpv/scripts/${sponsorblock.scriptName}";
+
+      "config/scripts/quality-menu.lua" = "${quality-menu}/quality-menu.lua";
+      "config/script-opts/quality-menu.conf" = "${quality-menu}/quality-menu.conf";
+    };
+
+    files = {
         "config/mpv.conf" = ''
           keepaspect-window=no
           keepaspect=yes
@@ -56,6 +60,10 @@ in
         "config/input.conf" = ''
           n add chapter +1
           p add chapter -1
+
+          F     script-binding quality_menu/video_formats_toggle
+          Alt+f script-binding quality_menu/audio_formats_toggle
+          Ctrl+r script-binding quality_menu/reload
         '';
       };
   }

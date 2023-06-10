@@ -16,6 +16,7 @@ with lib; {
     vars ? {},
     flags ? [],
     appendFlags ? [],
+    links ? {},
     files ? {},
     scripts ? {}, # executable files
     outputs ? {},
@@ -102,6 +103,14 @@ with lib; {
           ''
           else ""
         }
+
+        ${concatStrings (mapAttrsToList (n: v:
+          ''
+            mkdir -p $(dirname $out/${n})
+            ln -s ${v} $out/${n}
+          ''
+          )
+        links)}
 
         ${concatStrings (mapAttrsToList (n: v:
           ''
