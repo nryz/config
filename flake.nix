@@ -27,7 +27,6 @@
     helix.inputs.nixpkgs.follows = "nixpkgs";
 
     base16.url = "github:SenchoPens/base16.nix";
-    base16.inputs.nixpkgs.follows = "nixpkgs";
 
     naersk.url = "github:nix-community/naersk/master";
     naersk.inputs.nixpkgs.follows = "nixpkgs";

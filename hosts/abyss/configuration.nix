@@ -69,12 +69,12 @@
       "downloads"
       "media"
       "dev"
-      "config"
       ".config/Bitwarden"
       ".config/spotify"
       ".config/pulse"
       ".config/cargo"
       ".config/filezilla"
+      ".config/seedbox"
       ".local/share/direnv"
       ".local/share/qutebrowser"
       ".local/state/zsh/history"
@@ -132,6 +132,27 @@
         parsec-bin
         tor-browser-bundle-bin
         termscp
+        (pkgs.writeShellScriptBin "seedbox-enter" ''
+          if [ -f ~/.config/seedbox/server ]; then
+            mkdir ~/seedbox
+            server=`cat ~/.config/seedbox/server`
+
+            if ${pkgs.sshfs}/bin/sshfs \
+              -o uid=`id -u $USER` \
+              -o gid=`id -g $USER` \
+              -o allow_other,default_permissions \
+              $server ~/seedbox; 
+            then
+                cwd=$(pwd)
+                cd ~/seedbox
+                $SHELL
+                cd $cwd
+                umount ~/seedbox
+            fi
+
+            rmdir ~/seedbox
+          fi
+        '')
       ]);
   };
 }

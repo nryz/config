@@ -16,6 +16,8 @@ pkgs.writeText "mimeapps.list" ''
   image/*=${imageViewer.desktop}
   text/*=${editor.desktop}
   text/html=${browser.desktop}
+  x-scheme-handler/http=${browser.desktop}
+  x-scheme-handler/https=${browser.desktop}
   video/*=${videoPlayer.desktop}
 
   [Removed Associations]

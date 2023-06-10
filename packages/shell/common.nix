@@ -28,7 +28,7 @@ with pkgs.lib; {
     "rg" = "${pkgs.ripgrep}/bin/rg --no-messages";
     "tree" = "tree --dirsfirst";
     "lsb" = "lsblk -o name,label,type,size,rm,model,serial";
-    "ndev" = "nix develop -c ${shell}";
+    "ndev" = "nix develop $@ -c ${shell}";
   };
 
   variables =

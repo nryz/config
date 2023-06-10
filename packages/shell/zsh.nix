@@ -72,8 +72,6 @@ in
 
         HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
 
-        chpwd() ${pkgs.lsd}/bin/lsd
-
         # Aliases
         ${lib.concatStrings (lib.mapAttrsToList (n: v: ''
             alias ${n}='${v}'

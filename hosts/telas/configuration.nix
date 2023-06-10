@@ -24,7 +24,6 @@
     packages = with config.mypkgs; [
       git
       helix
-      ssh
     ];
   };
 }
