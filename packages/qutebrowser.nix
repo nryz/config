@@ -69,6 +69,11 @@ in
         config.bind("d", "scroll-page 0 0.5", mode="normal")
         config.bind("u", "scroll-page 0 -0.5", mode="normal")
 
+        config.bind("h", "scroll-px -50 0", mode="normal")
+        config.bind("j", "scroll-px 0 50", mode="normal")
+        config.bind("k", "scroll-px 0 -50", mode="normal")
+        config.bind("l", "scroll-px 50 0", mode="normal")
+
 
         # Theme
         c.fonts.default_family = "${fontName}"
@@ -353,17 +358,5 @@ in
         # color).
         # c.colors.webpage.bg ="${base00}"
       '';
-
-      # "config/qutebrowser/quickmarks" = ''
-      #   libgen libgen.li
-      #   nixMan nixos.org/manual/nix/unstable/
-      #   nixOptions search.nixos.org/options
-      #   nixPkgs search.nixos.org/packages
-      #   nixpkgMan nixos.org/manual/nixpkgs/unstable/
-      #   nixpkgs https://github.com/NixOS/nixpkgs
-      #   nixpkgsSearch search.nix.gsc.io/
-      #   scihub sci-hub-links.com/
-      #   z-lib booksc.org/
-      # '';
     };
   }

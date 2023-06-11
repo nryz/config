@@ -28,7 +28,8 @@
 
     naersk = nixpkgs.callPackage inputs.naersk {};
     base16 = let
-      attrs = builtins.fromJSON (builtins.readFile ../data/colours/rose-pine.json);
+      colour-scheme = "synth-midnight-dark";
+      attrs = builtins.fromJSON (builtins.readFile ../data/colours/${colour-scheme}.json);
     in
       (nixpkgs.callPackage inputs.base16.lib {}).mkSchemeAttrs attrs;
 
