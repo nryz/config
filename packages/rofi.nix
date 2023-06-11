@@ -14,7 +14,9 @@ wrapPackage {
   ];
 
   files = {
-    "config/config.rasi" = ''
+    "config/config.rasi" = 
+    #rasi
+    ''
       configuration {
       	modes: [drun,run,window,keys];
       }
@@ -22,7 +24,9 @@ wrapPackage {
       @theme "${placeholder "out"}/config/custom.rasi"
     '';
 
-    "config/custom.rasi" = with base16.withHashtag; ''
+    "config/custom.rasi" = with base16.withHashtag; 
+    #rasi
+    ''
       * {
        font: "${font.name + " " + toString font.size}";
       }
@@ -168,7 +172,9 @@ wrapPackage {
   };
 
   scripts = {
-    "scripts/list" = ''
+    "scripts/list" = 
+    #bash
+    ''
       #/usr/bin/env bash
 
       input=("''${1}")

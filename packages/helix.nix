@@ -46,7 +46,9 @@ in
     ];
 
     files = {
-      "config/helix/config.toml" = ''
+      "config/helix/config.toml" =
+      #toml
+      ''
         theme = "custom"
 
         [editor]
@@ -87,7 +89,9 @@ in
         right = ["diagnostics", "position-percentage", "file-type"]
       '';
 
-      "config/helix/languages.toml" = ''
+      "config/helix/languages.toml" = 
+      #toml
+      ''
         [[language]]
         name = "rust"
 
@@ -97,7 +101,9 @@ in
         procMacro = {enable = true}
       '';
 
-      "config/helix/themes/custom.toml" = with base16.withHashtag; ''
+      "config/helix/themes/custom.toml" = with base16.withHashtag; 
+      #toml
+      ''
         "ui.background" = { bg = "${base00}" }
         "ui.virtual.whitespace" = "${base03}"
 

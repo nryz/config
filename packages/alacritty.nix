@@ -16,7 +16,9 @@ in
     ];
 
     files = {
-      "config/alacritty.yml" = with base16.withHashtag; ''
+      "config/alacritty.yml" = with base16.withHashtag; 
+      #yml
+      ''
         window:
           opacity: 1.0
 

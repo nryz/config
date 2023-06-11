@@ -21,7 +21,9 @@ in
     ];
 
     files = {
-      "config/qutebrowser/config.py" = with base16.withHashtag; ''
+      "config/qutebrowser/config.py" = with base16.withHashtag; 
+      #python
+      ''
         config.load_autoconfig(False)
         c.auto_save.session = True
 

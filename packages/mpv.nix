@@ -48,7 +48,9 @@ in
     };
 
     files = {
-        "config/mpv.conf" = ''
+        "config/mpv.conf" = 
+        #conf
+        ''
           keepaspect-window=no
           keepaspect=yes
           alang=Japanese,jpn,ja,English,eng,en
@@ -57,7 +59,9 @@ in
           script-opts=ytdl_hook-ytdl_path=${yt-dlp}/bin/yt-dlp
         '';
 
-        "config/input.conf" = ''
+        "config/input.conf" = 
+        #conf
+        ''
           n add chapter +1
           p add chapter -1
 
