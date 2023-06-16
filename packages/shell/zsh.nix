@@ -92,6 +92,8 @@ in
         bindkey "^[[1;5C" forward-word #ctrl-right
         bindkey "^[[1;5D" backward-word #ctrl-left
 
+        export SKIM_DEFAULT_COMMAND="git ls-files -oc || find ."
+        export SKIM_CTRL_T_COMMAND="git ls-files -oc || find ."
         source "${my.pkgs.skim}/share/skim/completion.zsh"
         source "${my.pkgs.skim}/share/skim/key-bindings.zsh"
       '';
