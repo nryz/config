@@ -56,7 +56,9 @@ in
           alang=Japanese,jpn,ja,English,eng,en
           slang=English,eng,en
           pulse-latency-hacks=yes
+
           script-opts=ytdl_hook-ytdl_path=${yt-dlp}/bin/yt-dlp
+          ytdl-format=bestvideo[height<=?2560]+bestaudio/best
         '';
 
         "config/input.conf" = 

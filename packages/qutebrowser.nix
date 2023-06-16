@@ -66,8 +66,8 @@ in
         c.url.searchengines['qt'] = "https://github.com/qtile/qtile/search?q={}"
         c.url.searchengines['r'] = "https://reddit.com/r/{}"
 
-        config.bind(";M", "spawn ${my.pkgs.mpv}/bin/mpv {url} --pause --no-sub-visibility --ytdl-format=bestvideo[height<=?1080]+bestaudio/best", mode="normal")
-        config.bind(";m", "hint links spawn ${my.pkgs.mpv}/bin/mpv {hint-url} --pause --no-sub-visibility --ytdl-format=bestvideo[height<=?1080]+bestaudio/best", mode="normal")
+        config.bind(";M", "spawn ${my.pkgs.mpv}/bin/mpv {url} --pause --no-sub-visibility", mode="normal")
+        config.bind(";m", "hint links spawn ${my.pkgs.mpv}/bin/mpv {hint-url} --pause --no-sub-visibility", mode="normal")
         config.bind("d", "scroll-page 0 0.5", mode="normal")
         config.bind("u", "scroll-page 0 -0.5", mode="normal")
 
