@@ -15,9 +15,7 @@ in
 
     alias = "js";
 
-    path = with pkgs; [
-      file
-    ];
+    binPath = with pkgs; [file];
 
     vars = {
       "JOSHUTO_CONFIG_HOME" = "${placeholder "out"}/config";
@@ -397,9 +395,8 @@ in
       '';
     };
 
-    scripts = {
+    shellScripts = {
       "scripts/image-view" = ''
-        #!/usr/bin/env bash
         ${my.pkgs.imv}/bin/imv . -n $1
       '';
     };

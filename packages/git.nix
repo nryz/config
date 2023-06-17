@@ -22,27 +22,27 @@ in
           "--display side-by-side"
         ];
       in ''
-        [alias]
-        lb = branch -avvv
-        lc = log --oneline
-        lf = status -sb
-        last = log -1 HEAD --stat
-        
-        [diff]
-      	external = ${difftCommand}
-        tool = difftastic
+         [alias]
+         lb = branch -avvv
+         lc = log --oneline
+         lf = status -sb
+         last = log -1 HEAD --stat
 
-        [difftool]
-        prompt = false
+         [diff]
+        external = ${difftCommand}
+         tool = difftastic
 
-        [difftool "difftastic"]
-        cmd = ${difftCommand} "$LOCAL" "$REMOTE"
+         [difftool]
+         prompt = false
 
-        [pager]
-        difftool = true
+         [difftool "difftastic"]
+         cmd = ${difftCommand} "$LOCAL" "$REMOTE"
 
-        [user]
-        useConfigOnly = true
+         [pager]
+         difftool = true
+
+         [user]
+         useConfigOnly = true
       '';
     };
   }

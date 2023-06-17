@@ -46,9 +46,8 @@ in
       '';
     };
 
-    scripts = {
+    shellScripts = {
       "config/autostart" = with base16.withHashtag; ''
-        #!/usr/bin/env bash
 
         hc() {
           ${hc} "$@"
@@ -247,8 +246,6 @@ in
       '';
 
       "scripts/window" = ''
-        #/usr/bin/env bash
-
         input=()
         for tag in $(${hc} complete 1 move); do
           input+=("Move window to tag $tag" "${hc} move $tag")
@@ -261,23 +258,12 @@ in
       '';
 
       "scripts/tag" = ''
-        #/usr/bin/env bash
-
         input=()
         for tag in $(${hc} complete 1 use); do
           input+=("Go to tag $tag" "${hc} use $tag")
         done
 
         ${my.pkgs.rofi}/scripts/list "''${input[@]}"
-      '';
-
-      "scripts/toggleBar" = ''
-        pid=$(pidof yambar)
-        if [[ $pid ]]; then
-          kill $pid
-        else
-          ${yambar}/bin/yambar &
-        fi
       '';
 
       "scripts/startx" = ''

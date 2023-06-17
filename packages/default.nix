@@ -56,17 +56,18 @@
     xdg.stateHome = "$HOME/.local/state";
 
     wrapPackage = args:
-      mylib.wrapPackage (args
-        // {
+      mylib.wrapPackage (
+        mylib.mergeAttrsRecursive args {
           pkgs = nixpkgs;
 
-          share =
-            [mypkgs.theme]
-            ++ lib.optionals (args ? share) args.share;
-          prefix =
-            {"XCURSOR_PATH" = [":" "${mypkgs.theme}/share/icons"];}
-            // lib.optionalAttrs (args ? prefix) args.prefix;
-        });
+          vars."FONTCONFIG_FILE" = "${my.pkgs.fontconfig}";
+
+          paths = {
+            "XDG_DATA_DIRS,:" = [mypkgs.theme];
+            "XCURSOR_PATH,:" = ["${mypkgs.theme}/share/icons"];
+          };
+        }
+      );
   };
 
   callPackage = nixpkgs.newScope args;
@@ -108,6 +109,7 @@
       yambar = callPackage ./wm/yambar.nix {};
       zathura = callPackage ./zathura.nix {};
       zsh = callPackage ./shell/zsh.nix {};
+      nushell = callPackage ./shell/nushell {};
       skim = callPackage ./skim.nix {};
 
       fontconfig = callPackage ./fontconfig.nix {};

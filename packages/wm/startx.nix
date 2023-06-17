@@ -29,7 +29,7 @@ with pkgs.lib; let
     name = "X";
 
     extraPkgs = modules;
-    path = modules;
+    binPath = modules;
 
     flags = [
       "-config ${placeholder "out"}/config/xorg.conf"
@@ -172,7 +172,7 @@ in
     pkg = pkgs.xorg.xinit;
     name = "startx";
 
-    path = with pkgs.xorg; [
+    binPath = with pkgs.xorg; [
       xauth
       xinit
     ];

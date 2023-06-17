@@ -12,6 +12,8 @@ wrapPackage {
     "XDG_CONFIG_HOME" = "${placeholder "out"}/config";
   };
 
+  paths."TEST_PATH,:" = ["value1" "value4" "value5"];
+
   files = {
     "config/imv/config" = with base16; ''
       [options]

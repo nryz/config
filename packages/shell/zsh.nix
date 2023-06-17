@@ -4,7 +4,7 @@
   my,
   xdg,
   stdenvNoCC,
-  variables ? {},
+  env ? {},
   editor,
   wrapPackage,
 }: let
@@ -26,19 +26,15 @@
     installFlags = ["PREFIX=$(out)"];
   };
 
-  common = import ./common.nix {
-    inherit my pkgs xdg variables editor;
-    shell = "zsh";
+  common-env = import ./env.nix {
+    inherit my pkgs xdg editor;
   };
 in
   wrapPackage {
     pkg = pkgs.zsh;
     name = "zsh";
 
-    outputs.extraPkgs = {
-      install = true;
-      files = common.pkgs;
-    };
+    extraPkgs = [my.pkgs.skim];
 
     vars = {
       "ZDOTDIR" = "${placeholder "out"}/config";
@@ -73,10 +69,10 @@ in
         HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
 
         # Aliases
-        ${lib.concatStrings (lib.mapAttrsToList (n: v: ''
-            alias ${n}='${v}'
-          '')
-          common.aliases)}
+        alias lsd="${pkgs.lsd}/bin/lsd --group-directories-first -1"
+        alias rg="${pkgs.ripgrep}/bin/rg --no-messages"
+        alias tree="tree --dirsfirst"
+        alias lsb="lsblk -o name,label,type,size,rm,model,serial"
 
 
         # Prompt
@@ -98,14 +94,17 @@ in
         source "${my.pkgs.skim}/share/skim/key-bindings.zsh"
       '';
 
-      "config/.zshenv" =
-        common.defaultVariables
-        + ''
-          ${lib.concatStrings (lib.mapAttrsToList (n: v: ''
-              export ${n}="${v}"
-            '')
-            common.variables)}
-        '';
+      "config/.zshenv" = ''
+        ${lib.concatStrings (lib.mapAttrsToList (n: v: ''
+            export ${n}="${v}"
+          '')
+          common-env)}
+
+        ${lib.concatStrings (lib.mapAttrsToList (n: v: ''
+            export ${n}="${v}"
+          '')
+          env)}
+      '';
 
       "config/.zprofile" = "";
       "config/.zlogin" = "";

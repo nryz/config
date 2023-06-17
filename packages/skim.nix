@@ -21,27 +21,28 @@ in
       "--preview-window=:hidden"
     ];
 
-    scripts = {
-      "scripts/preview.sh" = ''
-        #!/usr/bin/env bash
+    shellScripts = {
+      "scripts/preview.sh" =
+        # bash
+        ''
 
-        if [ -z "$1" ]; then
-          echo "usage: $0 FILENAME"
-          exit 1
-        fi
+          if [ -z "$1" ]; then
+            echo "usage: $0 FILENAME"
+            exit 1
+          fi
 
-        IFS=':' read -r -a INPUT <<< "$1"
-        FILE=''${INPUT[0]}
+          IFS=':' read -r -a INPUT <<< "$1"
+          FILE=''${INPUT[0]}
 
-        if [[ -f $FILE ]]; then
-          ${pkgs.bat}/bin/bat --style=numbers --color=always $FILE
-          exit 0
-        fi
+          if [[ -f $FILE ]]; then
+            ${pkgs.bat}/bin/bat --style=numbers --color=always $FILE
+            exit 0
+          fi
 
-        if [[ -d $FILE ]]; then
-          tree -C $FILE | less
-          exit 0
-        fi
-      '';
+          if [[ -d $FILE ]]; then
+            tree -C $FILE | less
+            exit 0
+          fi
+        '';
     };
   }

@@ -99,7 +99,7 @@
     passwordFile = "/nix/passwords/nr";
 
     shell = config.mypkgs.zsh.override {
-      variables."CARGO_HOME" = "$XDG_CONFIG_HOME/cargo";
+      env."CARGO_HOME" = "$XDG_CONFIG_HOME/cargo";
     };
 
     packages = with config.mypkgs;
@@ -141,7 +141,7 @@
               -o uid=`id -u $USER` \
               -o gid=`id -g $USER` \
               -o allow_other,default_permissions \
-              $server ~/seedbox; 
+              $server ~/seedbox;
             then
                 cwd=$(pwd)
                 cd ~/seedbox

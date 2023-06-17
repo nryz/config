@@ -11,19 +11,18 @@ with lib; {
     shell ? false,
     pkg,
     name,
-    prefix ? {},
-    path ? [],
+    paths ? {},
+    binPath ? [],
     vars ? {},
     flags ? [],
     appendFlags ? [],
     links ? {},
     files ? {},
-    scripts ? {}, # executable files
+    shellScripts ? {},
     outputs ? {},
     extraPkgs ? [],
     extraAttrs ? {},
     run ? [],
-    share ? [],
     alias ? "",
     desktopItems ? [],
   }: let
@@ -31,22 +30,27 @@ with lib; {
       [
         "--inherit-argv0"
       ]
-      ++ optionals (share != []) [
-        "--prefix"
-        "XDG_DATA_DIRS"
-        ":"
-        (makeSearchPath "share" (unique share))
-      ]
-      ++ optionals (prefix != {}) (
-        flatten (mapAttrsToList (n: v:
-          ["--prefix" "${n}"] ++ v)
-        prefix)
+      ++ optionals (paths != {}) (
+        flatten ((
+            mapAttrsToList
+            (
+              pathName: pathValues: let
+                split = splitString "," pathName;
+              in [
+                "--prefix"
+                (elemAt split 0)
+                (elemAt split 1)
+                (concatStringsSep (elemAt split 1) (unique pathValues))
+              ]
+            )
+          )
+          paths)
       )
-      ++ optionals (path != []) [
+      ++ optionals (binPath != []) [
         "--prefix"
         "PATH"
         ":"
-        (makeBinPath path)
+        (makeBinPath binPath)
       ]
       ++ optionals (vars != {}) (
         concatMap (x: ["--set"] ++ [x.name] ++ [x.value])
@@ -104,13 +108,13 @@ with lib; {
           else ""
         }
 
-        ${concatStrings (mapAttrsToList (n: v:
-          ''
-            mkdir -p $(dirname $out/${n})
-            ln -s ${v} $out/${n}
-          ''
+        ${concatStrings (mapAttrsToList (
+            n: v: ''
+              mkdir -p $(dirname $out/${n})
+              ln -s ${v} $out/${n}
+            ''
           )
-        links)}
+          links)}
 
         ${concatStrings (mapAttrsToList (n: v:
           ''
@@ -127,23 +131,25 @@ with lib; {
           ))
         files)}
 
-        ${concatStrings (mapAttrsToList (n: v:
-          ''
-            mkdir -p $(dirname $out/${n})
-          ''
-          + (
-            if isStorePath v
-            then ''
-              ln -s ${v} $out/${n}
-            ''
-            else ''
-              echo ""${strings.escapeShellArg v}"" >> $out/${n}
-            ''
+        ${concatStrings (mapAttrsToList (
+            n: v: let
+              script =
+                ''
+                  #!${pkgs.bash}/bin/bash
+
+                ''
+                + v;
+            in
+              if isStorePath v
+              then builtins.abort "${n} should not be a store path in shellScripts"
+              else ''
+                mkdir -p $(dirname $out/${n})
+
+                echo ""${strings.escapeShellArg script}"" >> $out/${n}
+                chmod +x $out/${n}
+              ''
           )
-          + ''
-            chmod +x $out/${n}
-          '')
-        scripts)}
+          shellScripts)}
 
         ${concatStrings (mapAttrsToList (oName: oValue: let
           output = "$" + "${oName}";

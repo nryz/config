@@ -70,9 +70,8 @@ in
       '';
     };
 
-    scripts = {
+    shellScripts = {
       "scripts/volume" = ''
-        #!/usr/bin/env bash
         echo "percent|string|$(${pkgs.pamixer}/bin/pamixer --get-volume-human)"
         echo ""
       '';

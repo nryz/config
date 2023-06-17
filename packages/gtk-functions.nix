@@ -28,8 +28,8 @@ in rec {
 
   wrapGtk2Package = args:
     wrapPackage ({
-        prefix = {
-          "XCURSOR_PATH" = [":" "${placeholder "out"}/theme/share/icons"];
+        paths = {
+          "XCURSOR_PATH,:" = ["${placeholder "out"}/theme/share/icons"];
         };
 
         vars = {
@@ -44,8 +44,8 @@ in rec {
 
   wrapGtkPackage = args:
     wrapPackage ({
-        prefix = {
-          "XCURSOR_PATH" = [":" "${placeholder "out"}/theme/share/icons"];
+        paths = {
+          "XCURSOR_PATH,:" = ["${placeholder "out"}/theme/share/icons"];
         };
 
         vars = {
