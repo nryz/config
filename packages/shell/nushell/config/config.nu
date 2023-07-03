@@ -1,91 +1,4 @@
-let base16_theme = {
-    background: $base00
-    foreground: $base05
-    cursor: $base05
-
-    separator: $base03
-    leading_trailing_space_bg: { attr: "n" }
-    header: { fg: $base0B attr: "b" }
-    empty: $base0D
-    bool: {|| if $in { $base0C } else { "light_gray" } }
-    int: $base0B
-
-    filesize: {|e|
-        if $e == 0b {
-          $base05
-        } else if $e < 1mb {
-          $base0C
-        } else {{ fg: $base0D }}
-    }
-
-    duration: $base08
-
-    date: {|| (date now) - $in |
-       if $in < 1hr {
-        { fg: $base08 attr: "b" }
-      } else if $in < 6hr {
-        $base08
-      } else if $in < 1day {
-        $base0A
-      } else if $in < 3day {
-        $base0B
-      } else if $in < 1wk {
-        { fg: $base0B attr: "b" }
-      } else if $in < 6wk {
-        $base0C
-      } else if $in < 52wk {
-        $base0D
-      } else { "dark_gray" }
-    }
-
-    range: $base08
-    float: $base08
-    string: $base04
-    nothing: $base08
-    binary: $base08
-    cellpath: $base08
-    row_index: $base0C
-    record: $base05
-    list: $base05
-    block: $base05
-    hints: dark_gray
-    search_result: { fg: $base08 bg: $base05 }
-
-
-
-    shape_and: $base0E
-    shape_binary: $base0E
-    shape_block: $base0D
-    shape_bool: $base0D
-    shape_custom: {attr: "b"}
-    shape_datetime: $base0C
-    shape_directory: $base0C
-    shape_external: $base0C
-    shape_externalarg: { fg: $base0B attr: "b"}
-    shape_filepath: $base0D
-    shape_flag: { fg: $base0D attr: "b"}
-    shape_float: { fg: $base0E attr: "b"}
-    shape_garbage: { fg: "#FFFFFF" bg: "#FF0000" attr: "b"}
-    shape_globpattern: { fg: $base0D attr: "b"}
-    shape_int: { fg: $base0E attr: "b"}
-    shape_internalcall: { fg: $base0C attr: "b"}
-    shape_list: $base0C
-    shape_literal: $base0D
-    shape_match_pattern: $base0B
-    shape_matching_brackets: { attr: "u" }
-    shape_nothing: $base0C
-    shape_operator: $base0A
-    shape_or: { fg: $base0E attr: "b"}
-    shape_pipe: { fg: $base0E attr: "b"}
-    shape_range: { fg: $base0A attr: "b"}
-    shape_record: { fg: $base0C attr: "b"}
-    shape_redirection: { fg: $base0E attr: "b"}
-    shape_signature: { fg: $base0B attr: "b"}
-    shape_string: $base0B
-    shape_string_interpolation: { fg: $base0C attr: "b" }
-    shape_table: { fg: $base0D attr: "b" }
-    shape_variable: $base0E
-}
+use flake.nu *
 
 let-env config = {
   show_banner: false
@@ -173,6 +86,7 @@ let-env config = {
     file_format: "plaintext"
     history_isolation: true
   }
+
   completions: {
     case_sensitive: false
     quick: true
@@ -184,16 +98,105 @@ let-env config = {
       completer: null
     }
   }
+
   filesize: {
     metric: true
     format: "auto"
   }
+
   cursor_shape: {
     emacs: line
     vi_insert: line
     vi_normal: block
   }
-  color_config: $base16_theme
+
+  color_config: {
+    background: $base16.base00
+    foreground: $base16.base05
+    cursor: $base16.base05
+
+    separator: $base16.base03
+    leading_trailing_space_bg: { attr: "n" }
+    header: { fg: $base16.base0B attr: "b" }
+    empty: $base16.base0D
+    bool: {|| if $in { $base16.base0C } else { "light_gray" } }
+    int: $base16.base0B
+
+    filesize: {|e|
+        if $e == 0b {
+          $base16.base05
+        } else if $e < 1mb {
+          $base16.base0C
+        } else {{ fg: $base16.base0D }}
+    }
+
+    duration: $base16.base08
+
+    date: {|| (date now) - $in |
+       if $in < 1hr {
+        { fg: $base16.base08 attr: "b" }
+      } else if $in < 6hr {
+        $base16.base08
+      } else if $in < 1day {
+        $base16.base0A
+      } else if $in < 3day {
+        $base16.base0B
+      } else if $in < 1wk {
+        { fg: $base16.base0B attr: "b" }
+      } else if $in < 6wk {
+        $base16.base0C
+      } else if $in < 52wk {
+        $base16.base0D
+      } else { "dark_gray" }
+    }
+
+    range: $base16.base08
+    float: $base16.base08
+    string: $base16.base04
+    nothing: $base16.base08
+    binary: $base16.base08
+    cellpath: $base16.base08
+    row_index: $base16.base0C
+    record: $base16.base05
+    list: $base16.base05
+    block: $base16.base05
+    hints: dark_gray
+    search_result: { fg: $base16.base08 bg: $base16.base05 }
+
+    shape_and: $base16.base0E
+    shape_binary: $base16.base0E
+    shape_block: $base16.base0D
+    shape_bool: $base16.base0D
+    shape_custom: {attr: "b"}
+    shape_datetime: $base16.base0C
+    shape_directory: $base16.base0C
+    shape_external: $base16.base0C
+    shape_externalarg: { fg: $base16.base0B attr: "b"}
+    shape_filepath: $base16.base0D
+    shape_flag: { fg: $base16.base0D attr: "b"}
+    shape_float: { fg: $base16.base0E attr: "b"}
+    shape_garbage: { fg: "#FFFFFF" bg: "#FF0000" attr: "b"}
+    shape_globpattern: { fg: $base16.base0D attr: "b"}
+    shape_int: { fg: $base16.base0E attr: "b"}
+    shape_internalcall: { fg: $base16.base0C attr: "b"}
+    shape_list: $base16.base0C
+    shape_literal: $base16.base0D
+    shape_match_pattern: $base16.base0B
+    shape_matching_brackets: { attr: "u" }
+    shape_nothing: $base16.base0C
+    shape_operator: $base16.base0A
+    shape_or: { fg: $base16.base0E attr: "b"}
+    shape_pipe: { fg: $base16.base0E attr: "b"}
+    shape_range: { fg: $base16.base0A attr: "b"}
+    shape_record: { fg: $base16.base0C attr: "b"}
+    shape_redirection: { fg: $base16.base0E attr: "b"}
+    shape_signature: { fg: $base16.base0B attr: "b"}
+    shape_string: $base16.base0B
+    shape_string_interpolation: { fg: $base16.base0C attr: "b" }
+    shape_table: { fg: $base16.base0D attr: "b" }
+    shape_variable: $base16.base0E
+  }
+
   use_grid_icons: true
   footer_mode: "25"
   float_precision: 2
@@ -205,14 +208,15 @@ let-env config = {
 
   hooks: {
     pre_prompt: [{||
-      null  # replace with source code to run before the prompt is shown
+      null
+      #print pre_prompt # replace with source code to run before the prompt is shown
     }]
     pre_execution: [{||
       null  # replace with source code to run before the repl input is run
     }]
     env_change: {
       PWD: [{|before, after|
-        null  # replace with source code to run if the PWD environment is different since the last repl input
+        null # replace with source code to run if the PWD environment is different since the last repl input
       }]
     }
     display_output: {||

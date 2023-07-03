@@ -18,32 +18,25 @@
     // env;
 
   base16-vars = with base16.withHashtag; ''
-    let base00 = "${base00}"
-    let base01 = "${base01}"
-    let base02 = "${base02}"
-    let base03 = "${base03}"
-    let base04 = "${base04}"
-    let base05 = "${base05}"
-    let base06 = "${base06}"
-    let base07 = "${base07}"
-    let base08 = "${base08}"
-    let base09 = "${base09}"
-    let base0A = "${base0A}"
-    let base0B = "${base0B}"
-    let base0C = "${base0C}"
-    let base0D = "${base0D}"
-    let base0E = "${base0E}"
-    let base0F = "${base0F}"
+    let base16 = {
+      base00: "${base00}"
+      base01: "${base01}"
+      base02: "${base02}"
+      base03: "${base03}"
+      base04: "${base04}"
+      base05: "${base05}"
+      base06: "${base06}"
+      base07: "${base07}"
+      base08: "${base08}"
+      base09: "${base09}"
+      base0A: "${base0A}"
+      base0B: "${base0B}"
+      base0C: "${base0C}"
+      base0D: "${base0D}"
+      base0E: "${base0E}"
+      base0F: "${base0F}"
+    }
   '';
-
-  scopedNuFile = str:
-    ''
-      if true {
-    ''
-    + str
-    + ''
-      }
-    '';
 in
   wrapPackage {
     pkg = pkgs.nushell;
@@ -54,13 +47,15 @@ in
       "--env-config ${placeholder "out"}/config/env.nu"
     ];
 
+    links = {
+      "modules" = ./modules;
+    };
+
     files = {
       "config/config.nu" =
-        scopedNuFile
-        (base16-vars + (builtins.readFile ./config.nu));
+        (base16-vars + (builtins.readFile ./config/config.nu));
 
       "config/env.nu" =
-        scopedNuFile
         (base16-vars
           + ''
             load-env {
@@ -75,8 +70,14 @@ in
               ))
               combined-env)}
             }
+
+            let-env NU_LIB_DIRS = ["${placeholder "out"}/modules/"]
+            let-env NU_PLUGIN_DIRS = ["${placeholder "out"}/plugins/"]
+
+            let-env PATH = ($env.PATH | append "${placeholder "out"}/bin/")
+
           ''
-          + (builtins.readFile ./env.nu));
+          + (builtins.readFile ./config/env.nu));
     };
 
     extraAttrs.shellPath = "/bin/nu";

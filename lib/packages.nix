@@ -18,6 +18,7 @@ with lib; {
     appendFlags ? [],
     links ? {},
     files ? {},
+    dirs ? {},
     shellScripts ? {},
     outputs ? {},
     extraPkgs ? [],
