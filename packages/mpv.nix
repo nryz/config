@@ -41,10 +41,13 @@ in
       "config/scripts/${sponsorblock.scriptName}" = "${sponsorblock}/share/mpv/scripts/${sponsorblock.scriptName}";
 
       "config/scripts/quality-menu.lua" = "${quality-menu}/quality-menu.lua";
-      "config/script-opts/quality-menu.conf" = "${quality-menu}/quality-menu.conf";
     };
 
     files = {
+      "config/script-opts/quality-menu.conf" = ''
+        fetch_on_start=no
+      '';
+      
       "config/mpv.conf" =
         #conf
         ''
