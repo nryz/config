@@ -95,7 +95,9 @@ let-env config = {
     external: {
       enable: true
       max_results: 100
-      completer: null
+      completer: {|spans|
+        ^$carapace $spans.0 nushell $spans | from json
+      }
     }
   }
 

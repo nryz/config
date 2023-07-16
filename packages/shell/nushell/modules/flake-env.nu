@@ -1,3 +1,7 @@
+export def-env load-flake-env [] {
+  nu -e "overlay use -r flake-env.nu"
+}
+
 export-env {
   if ($env.IS_IN_FLAKE_ENV_OVERLAY? | is-empty) {
     def get-env-variables [name: string = ""] {

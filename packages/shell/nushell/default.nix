@@ -52,8 +52,9 @@ in
     };
 
     files = {
-      "config/config.nu" =
-        (base16-vars + (builtins.readFile ./config/config.nu));
+      "config/config.nu" = (''
+        let carapace = "${pkgs.carapace}/bin/carapace"
+      '' + base16-vars + (builtins.readFile ./config/config.nu));
 
       "config/env.nu" =
         (base16-vars
