@@ -125,13 +125,9 @@
       ++ (with pkgs; [
         spotify
         discord
-        # bitwarden
-        unzip
-        fontpreview
         neofetch
         parsec-bin
         tor-browser-bundle-bin
-        termscp
         (pkgs.writeShellScriptBin "seedbox-enter" ''
           if [ -f ~/.config/seedbox/server ]; then
             mkdir ~/seedbox
