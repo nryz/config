@@ -54,7 +54,7 @@ in
           keepaspect-window=no
           keepaspect=yes
           alang=Japanese,jpn,ja,English,eng,en
-          slang=English,eng,en
+          slang=English,eng,Eng,en,En
           pulse-latency-hacks=yes
 
           script-opts=ytdl_hook-ytdl_path=${yt-dlp}/bin/yt-dlp

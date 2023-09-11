@@ -96,6 +96,7 @@
       herbstluftwm = callPackage ./wm/herbstluftwm.nix {};
       imv = callPackage ./imv.nix {};
       joshuto = callPackage ./joshuto.nix {};
+      yazi = callPackage ./yazi.nix {};
       kitty = callPackage ./kitty.nix {};
       mimeapps = callPackage ./mimeapps.nix {};
       mpv = callPackage ./mpv.nix {};

@@ -178,7 +178,7 @@ in
 
         	{ keys = [ "m", "s" ],		command = "linemode size" },
         	{ keys = [ "m", "m" ],		command = "linemode mtime" },
-        	{ keys = [ "m", "M" ],		command = "linemode sizemtime" },
+        	{ keys = [ "m", "M" ],		command = "linemode size | mtime" },
 
         	{ keys = [ "g", "r" ],		command = "cd /" },
         	{ keys = [ "g", "h" ],		command = "cd ~/" },

@@ -7,19 +7,15 @@
   lib = pkgs.lib;
 
   extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-    bitwarden
-    vimium
-
-    old-reddit-redirect
-    reddit-enhancement-suite
+    # vimium
 
     # https-everywhere
-    ublock-origin
-    privacy-badger
+    # ublock-origin
+    # privacy-badger
   ];
 in
   wrapPackage {
-    pkg = pkgs.wrapFirefox pkgs.firefox-esr-unwrapped {
+    pkg = pkgs.wrapFirefox pkgs.firefox-unwrapped {
       extraPrefs = with base16.withHashtag; ''
 
         // IMPORTANT: Start your code on the 2nd line
@@ -77,15 +73,15 @@ in
         lockPref("toolkit.telemetry.unified", false);
       '';
 
-      nixExtensions =
-        map (
-          x: (pkgs.fetchFirefoxAddon {
-            name = x.name;
-            url = x.src.url;
-            sha256 = x.src.outputHash;
-          })
-        )
-        extensions;
+      # nixExtensions =
+      #   map (
+      #     x: (pkgs.fetchFirefoxAddon {
+      #       name = x.name;
+      #       url = x.src.url;
+      #       sha256 = x.src.outputHash;
+      #     })
+      #   )
+      #   extensions;
     };
     name = "firefox";
   }

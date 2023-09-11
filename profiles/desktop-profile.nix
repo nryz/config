@@ -66,7 +66,7 @@
     hardware.enableAllFirmware = true;
     hardware.cpu.intel.updateMicrocode = true;
 
-    fonts.enableDefaultFonts = true;
+    fonts.enableDefaultPackages = true;
     fonts.fontDir.enable = true;
 
     # TODO: fix this

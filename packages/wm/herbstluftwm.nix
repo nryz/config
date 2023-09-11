@@ -75,7 +75,7 @@ in
         hc keybind XF86AudioRaiseVolume spawn ${pamixer} -i 5
 
         #launchers
-        hc keybind $Mod-space spawn ${my.pkgs.rofi}/bin/rofi -show drun
+        hc keybind $Mod-space spawn ${my.pkgs.rofi}/bin/rofi -show run
         hc keybind $Mod-g spawn ${placeholder "out"}/scripts/tag
         hc keybind $Mod-m spawn ${placeholder "out"}/scripts/window
 

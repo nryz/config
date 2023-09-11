@@ -15,6 +15,9 @@
 
   boot.binfmt.emulatedSystems = ["aarch64-linux"];
 
+  boot.kernelModules = [ "xpad" "joydev" ];
+  boot.extraModulePackages = [ pkgs.xpad ];
+
   networking.hostName = "abyss";
 
   time.timeZone = "Europe/London";
@@ -75,6 +78,7 @@
       ".config/cargo"
       ".config/filezilla"
       ".config/seedbox"
+      ".config/deluge"
       ".local/share/direnv"
       ".local/share/qutebrowser"
       ".local/state/zsh/history"
@@ -95,6 +99,8 @@
 
   environment.pathsToLink = ["/share/zsh"];
 
+  programs.steam.enable = true;
+
   users.users.nr = {
     passwordFile = "/nix/passwords/nr";
 
@@ -113,7 +119,7 @@
         zathura
         bottom
         mpv
-        joshuto
+        yazi
         imv
         gucharmap
         thunar
@@ -123,10 +129,15 @@
         direnv
       ]
       ++ (with pkgs; [
+        antimicrox
+        (pkgs.writeShellScriptBin "gamepad-mouse" ''
+          antimicrox --profile ${./gamepad_mouse_input.gamecontroller.amgp}
+        '')
         spotify
         discord
         neofetch
         parsec-bin
+        deluge
         tor-browser-bundle-bin
         (pkgs.writeShellScriptBin "seedbox-enter" ''
           if [ -f ~/.config/seedbox/server ]; then
@@ -144,6 +155,7 @@
                 $SHELL
                 cd $cwd
                 umount ~/seedbox
+                rmdir ~/seedbox
             fi
 
             rmdir ~/seedbox

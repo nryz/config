@@ -5,6 +5,7 @@
   font,
   editor,
   wrapPackage,
+  inputs,
 }: let
   lib = pkgs.lib;
 
@@ -14,7 +15,9 @@ in
     pkg = pkgs.qutebrowser;
     name = "qutebrowser";
 
-    binPath = [pkgs.qt5.qtwayland];
+    binPath = [
+      pkgs.qt6.qtwayland
+    ];
 
     flags = [
       "--config-py ${placeholder "out"}/config/qutebrowser/config.py"
